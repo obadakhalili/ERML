@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",  
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "allowJs": false,
+    "strict": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "outDir": "dist",
+    "sourceMap": false
+  }
+}
