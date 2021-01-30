@@ -12,5 +12,6 @@
     "alwaysStrict": true,
     "outDir": "dist",
     "sourceMap": false
-  }
+  },
+  "include": ["src"]
 }
