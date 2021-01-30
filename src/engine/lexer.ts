@@ -15,7 +15,7 @@ export const tokensRegexs = {
   comment: `#.*|\\/\\*[^]*?\\*\\/`,
 }
 
-export default function (ERML: string) {
+export default function (ERML: string): Tokens {
   const tokenizerRegex = new RegExp(Object.values(tokensRegexs).join("|"), "g")
   const commentRegex = new RegExp(tokensRegexs.comment)
   const matches = ERML.matchAll(tokenizerRegex)
