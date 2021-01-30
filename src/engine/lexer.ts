@@ -1,4 +1,4 @@
-export type Tokens = { token: string; position: number; line: number }[]
+export type Tokens = { value: string; position: number; line: number }[]
 
 export const tokensRegexs = {
   wordChar: "\\w+",
@@ -20,9 +20,9 @@ export default function (ERML: string): Tokens {
   const commentRegex = new RegExp(tokensRegexs.comment)
   const matches = ERML.matchAll(tokenizerRegex)
   return Array.from(matches)
-    .map(({ 0: token, index: position }) => {
+    .map(({ 0: value, index: position }) => {
       const line = (ERML.slice(0, position).match(/\n/g)?.length || 0) + 1
-      return { token, position, line }
+      return { value, position, line }
     })
-    .filter(({ token }) => commentRegex.test(token) === false)
+    .filter(({ value }) => commentRegex.test(value) === false)
 }
