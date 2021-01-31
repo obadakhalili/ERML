@@ -1,62 +1,60 @@
-import { isValidIdentifier, groupingSymbolsMatchAt } from "./common"
+import { Tokens } from "../lexer"
+import {
+  parseKeywordProcess,
+  parseIdentifierProcess,
+  parseBodyProcess,
+  walkPipeline
+} from "./pipeline"
+
+export type Token = Tokens[0]
 
 const enum Initializers {
   ENTITY = "ENTITY",
 }
 
 const enum Delimiters {
-  OPENING_CURLY_BRACKET = "{",
-  CLOSING_CURLY_BRACKET = "}",
+  OPENING_BRACE = "{",
+  CLOSING_BRACE = "}",
   COMMA = ",",
 }
 
-interface Node {
-  type: "entity" | "weak entity" | "relationship" | "identifying relationship"
-  identifierName: string
-  // attrs, owner, participating entities
-}
-
 function parseAttrs(
-  tokens: string[],
+  tokens: Tokens,
   bodyStartAt: number,
   bodyEndAt: number,
   allowMultipleValuedAttrs = false
-) {}
-
-function parseEntity(tokens: string[], currentPosition: number): Node | null {
-  if (tokens[currentPosition] !== Initializers.ENTITY) {
-    return null
-  }
-
-  const identifierName = tokens[++currentPosition]
-  let closingBracketPosition: number | null
-
-  if (!isValidIdentifier(identifierName)) {
-    throw new Error(`Entity identifier name "${identifierName}" is invalid`)
-  } else if (tokens[++currentPosition] !== Delimiters.OPENING_CURLY_BRACKET) {
-    throw new Error(`Expected "{" after identifier "${identifierName}"`)
-  } else if (
-    (closingBracketPosition = groupingSymbolsMatchAt(
-      tokens,
-      currentPosition,
-      Delimiters.OPENING_CURLY_BRACKET,
-      Delimiters.CLOSING_CURLY_BRACKET
-    )) === null
-  ) {
-    throw new Error('Grouping symbols ("{" and "}") don\'t match')
-  }
-
-  const attrs = parseAttrs(
-    tokens,
-    currentPosition + 1,
-    closingBracketPosition - 1,
-    true
-  )
-
-  return { type: "entity", identifierName }
+) {
+  return [{ type: "simple", value: "name" }]
 }
 
-export default function (tokens: string[]) {
+function parseEntity(tokens: Tokens, currentTokenIndex: number) {
+  const parsingPipeline = [
+    (token: Token) =>
+      parseKeywordProcess(
+        token,
+        Initializers.ENTITY,
+        () => ({ type: Initializers.ENTITY.toLocaleLowerCase() }),
+        true
+      ),
+    (token: Token) =>
+      parseIdentifierProcess(token, () => ({ name: token.value })),
+    (token: Token, tokenIndex: number) =>
+      parseBodyProcess(
+        tokens,
+        tokenIndex,
+        Delimiters.OPENING_BRACE,
+        Delimiters.CLOSING_BRACE,
+        (bodyStart: number, bodyEnd: number) => ({
+          attributes: parseAttrs(tokens, bodyStart, bodyEnd, true),
+        })
+      ),
+  ]
+
+  return walkPipeline(parsingPipeline, tokens, currentTokenIndex)
+}
+
+export default function (tokens: Tokens) {
+  return parseEntity(tokens, 0)
   // Parse Entity
   // Parse Weak Entity
   // Parse Relatonship
