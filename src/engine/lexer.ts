@@ -1,28 +1,18 @@
-export type Tokens = { value: string; position: number; line: number }[]
-
-export const tokensRegexs = {
-  wordChar: "\\w+",
-  openingBrace: "{",
-  closingBrace: "}",
-  openingBracket: "\\[",
-  closingBracket: "\\]",
-  openingAngle: "<",
-  closingAngle: ">",
-  openingParen: "\\(",
-  closingParen: "\\)",
-  comma: ",",
-  string: `"(?:[^"\\\\]|\\\\.)*"`,
-  comment: `#.*|\\/\\*[^]*?\\*\\/`,
+export interface Token {
+  value: string
+  position: number
+  line: number
 }
+export type Tokens = Token[]
 
 export default function (ERML: string): Tokens {
-  const tokenizerRegex = new RegExp(Object.values(tokensRegexs).join("|"), "g")
-  const commentRegex = new RegExp(tokensRegexs.comment)
-  const matches = ERML.matchAll(tokenizerRegex)
-  return Array.from(matches)
+  const matches = ERML.matchAll(
+    /\w+|{|}|\[|\]|<|>|\(|\)|,|"(?:[^"\\]|\\.)*"|#.*|\/\*[^]*?\*\//g
+  )
+  return (Array.from(matches) as { [index: number]: string; index: number }[])
     .map(({ 0: value, index: position }) => {
       const line = (ERML.slice(0, position).match(/\n/g)?.length || 0) + 1
       return { value, position, line }
     })
-    .filter(({ value }) => commentRegex.test(value) === false)
+    .filter(({ value }) => /#.*|\/\*[^]*?\*\//.test(value) === false)
 }

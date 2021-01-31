@@ -6,7 +6,7 @@
     "baseUrl": "./",
     "allowJs": false,
     "strict": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "alwaysStrict": true,

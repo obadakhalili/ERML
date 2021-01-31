@@ -3,7 +3,7 @@ import {
   parseKeywordProcess,
   parseIdentifierProcess,
   parseBodyProcess,
-  walkPipeline
+  walkPipeline,
 } from "./pipeline"
 
 export type Token = Tokens[0]

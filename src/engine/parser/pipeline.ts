@@ -87,7 +87,11 @@ export function parseBodyProcess(
   return bodyParser(tokenIndex + 1, closingSymbolPosition - 1)
 }
 
-export function walkPipeline(parsingPipeline: any, tokens: Tokens, currentTokenIndex: number) {
+export function walkPipeline(
+  parsingPipeline: any,
+  tokens: Tokens,
+  currentTokenIndex: number
+) {
   let node = {}
 
   for (const process of parsingPipeline) {
