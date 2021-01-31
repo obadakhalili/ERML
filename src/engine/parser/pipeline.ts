@@ -1,11 +1,13 @@
 import { Token, Tokens } from "../lexer"
 
-type Keyword = Keywords.ENTITY
+type Keyword = Keywords.ENTITY | Keywords.WEAK | Keywords.OWNER
 type OpeningSymbol = Delimiters.OPENING_BRACE
 type ClosingSymbol = Delimiters.CLOSING_BRACE
 
 export const enum Keywords {
   ENTITY = "ENTITY",
+  WEAK = "WEAK",
+  OWNER = "OWNER",
 }
 
 export const enum Delimiters {
@@ -14,7 +16,7 @@ export const enum Delimiters {
 }
 
 export interface Node {
-  type: "entity"
+  type: "entity" | "weak entity"
   name: string
   attributes: unknown[]
 }
@@ -31,7 +33,7 @@ export type ParsingPipeline = ((
 export function parseKeywordProcess(
   token: Token,
   expectedKeyword: Keyword,
-  getNodeProp: () => { type: Node["type"] },
+  getNodeProp: () => Record<string, never> | { type: Node["type"] },
   silent = false
 ) {
   try {
@@ -47,7 +49,7 @@ export function parseKeywordProcess(
 
 export function parseIdentifierProcess(
   token: Token,
-  getNodeProp: () => { name: Node["name"] }
+  getNodeProp: () => { name: Node["name"] } | { owner: string }
 ) {
   if (!/^[a-zA-Z_]\w{0,29}$/.test(token.value)) {
     throw new Error(
@@ -91,7 +93,6 @@ export function walkPipeline(
   currentTokenIndex: number
 ): [number, Node | null] {
   let node = {} as Node
-  const startIndex = currentTokenIndex
 
   for (const process of parsingPipeline) {
     if (!tokens[currentTokenIndex]) {
@@ -107,7 +108,7 @@ export function walkPipeline(
     )
 
     if (!processResult) {
-      return [startIndex, null]
+      return [-1, null]
     }
 
     if (processResult.constructor === Array) {
@@ -124,7 +125,7 @@ export function walkPipeline(
 function assertToken(token: Token, expectedValue: string) {
   if (token.value !== expectedValue) {
     throw new Error(
-      `Expected to find "${expectedValue}" at at position ${token.position}, line ${token.line}. Instead found "${token.value}"`
+      `Expected to find "${expectedValue}" at position ${token.position}, line ${token.line}. Instead found "${token.value}"`
     )
   }
 }
