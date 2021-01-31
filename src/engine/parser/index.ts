@@ -1,39 +1,31 @@
-import { Tokens } from "../lexer"
+import { Token, Tokens } from "../lexer"
 import {
   parseKeywordProcess,
   parseIdentifierProcess,
   parseBodyProcess,
   walkPipeline,
+  ParsingPipeline,
+  Node,
+  Keywords,
+  Delimiters,
 } from "./pipeline"
-
-export type Token = Tokens[0]
-
-const enum Initializers {
-  ENTITY = "ENTITY",
-}
-
-const enum Delimiters {
-  OPENING_BRACE = "{",
-  CLOSING_BRACE = "}",
-  COMMA = ",",
-}
 
 function parseAttrs(
   tokens: Tokens,
   bodyStartAt: number,
   bodyEndAt: number,
   allowMultipleValuedAttrs = false
-) {
+): Node["attributes"] {
   return [{ type: "simple", value: "name" }]
 }
 
 function parseEntity(tokens: Tokens, currentTokenIndex: number) {
-  const parsingPipeline = [
+  const parsingPipeline: ParsingPipeline = [
     (token: Token) =>
       parseKeywordProcess(
         token,
-        Initializers.ENTITY,
-        () => ({ type: Initializers.ENTITY.toLocaleLowerCase() }),
+        Keywords.ENTITY,
+        () => ({ type: "entity" }),
         true
       ),
     (token: Token) =>
@@ -44,9 +36,10 @@ function parseEntity(tokens: Tokens, currentTokenIndex: number) {
         tokenIndex,
         Delimiters.OPENING_BRACE,
         Delimiters.CLOSING_BRACE,
-        (bodyStart: number, bodyEnd: number) => ({
-          attributes: parseAttrs(tokens, bodyStart, bodyEnd, true),
-        })
+        (bodyStart: number, bodyEnd: number) => [
+          bodyEnd + 2,
+          { attributes: parseAttrs(tokens, bodyStart, bodyEnd, true) },
+        ]
       ),
   ]
 
