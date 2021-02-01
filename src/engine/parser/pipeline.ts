@@ -1,6 +1,11 @@
 import { Token, Tokens } from "../lexer"
 
-type Keyword = Keywords.ENTITY | Keywords.WEAK | Keywords.OWNER
+export type Keyword =
+  | Keywords.ENTITY
+  | Keywords.WEAK
+  | Keywords.OWNER
+  | Keywords.RELATIONSHIP
+  | Keywords.IDENTIFYING_RELATIONSHIP
 type OpeningSymbol = Delimiters.OPENING_BRACE
 type ClosingSymbol = Delimiters.CLOSING_BRACE
 
@@ -8,6 +13,8 @@ export const enum Keywords {
   ENTITY = "ENTITY",
   WEAK = "WEAK",
   OWNER = "OWNER",
+  RELATIONSHIP = "RELATIONSHIP",
+  IDENTIFYING_RELATIONSHIP = "IDEN",
 }
 
 export const enum Delimiters {
@@ -16,35 +23,29 @@ export const enum Delimiters {
 }
 
 export interface Node {
-  type: "entity" | "weak entity"
+  type: "entity" | "weak entity" | "relationship" | "identifying relationship"
   name: string
-  attributes: unknown[]
+  owner?: string
+  attributes?: unknown[]
+  participatingEntities?: unknown[]
 }
 
 export type ParsingPipeline = ((
   token: Token,
   tokenIndex: number
 ) => ReturnType<
-  | typeof parseKeywordProcess
+  | typeof assertKeywordProcess
   | typeof parseIdentifierProcess
   | typeof parseBodyProcess
 >)[]
 
-export function parseKeywordProcess(
+export function assertKeywordProcess(
   token: Token,
   expectedKeyword: Keyword,
-  getNodeProp: () => Record<string, never> | { type: Node["type"] },
-  silent = false
+  getNodeProp: () => Record<string, never> | { type: Node["type"] }
 ) {
-  try {
-    assertToken(token, expectedKeyword)
-    return getNodeProp()
-  } catch (e) {
-    if (!silent) {
-      throw e
-    }
-    return null
-  }
+  assertToken(token, expectedKeyword)
+  return getNodeProp()
 }
 
 export function parseIdentifierProcess(
@@ -67,7 +68,13 @@ export function parseBodyProcess(
   bodyParser: (
     bodyStart: number,
     bodyEnd: number
-  ) => [number, { attributes: Node["attributes"] }]
+  ) => [
+    number,
+    (
+      | { attributes: Node["attributes"] }
+      | { participatingEntities: Node["participatingEntities"] }
+    )
+  ]
 ) {
   const token = tokens[tokenIndex]
   assertToken(token, openingSymbol)
@@ -91,7 +98,7 @@ export function walkPipeline(
   parsingPipeline: ParsingPipeline,
   tokens: Tokens,
   currentTokenIndex: number
-): [number, Node | null] {
+): [number, Node] {
   let node = {} as Node
 
   for (const process of parsingPipeline) {
@@ -106,10 +113,6 @@ export function walkPipeline(
       tokens[currentTokenIndex],
       currentTokenIndex++
     )
-
-    if (!processResult) {
-      return [-1, null]
-    }
 
     if (processResult.constructor === Array) {
       currentTokenIndex = processResult[0]
