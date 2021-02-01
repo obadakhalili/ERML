@@ -1,33 +1,9 @@
 import { Token, Tokens } from "../lexer"
+import { Keyword } from "./"
 
-export type Keyword =
-  | Keywords.ENTITY
-  | Keywords.WEAK
-  | Keywords.OWNER
-  | Keywords.RELATIONSHIP
-  | Keywords.IDENTIFYING_RELATIONSHIP
-type OpeningSymbol = Delimiters.OPENING_BRACE
-type ClosingSymbol = Delimiters.CLOSING_BRACE
-
-export const enum Keywords {
-  ENTITY = "ENTITY",
-  WEAK = "WEAK",
-  OWNER = "OWNER",
-  RELATIONSHIP = "RELATIONSHIP",
-  IDENTIFYING_RELATIONSHIP = "IDEN",
-}
-
-export const enum Delimiters {
+const enum Delimiters {
   OPENING_BRACE = "{",
   CLOSING_BRACE = "}",
-}
-
-export interface Node {
-  type: "entity" | "weak entity" | "relationship" | "identifying relationship"
-  name: string
-  owner?: string
-  attributes?: unknown[]
-  participatingEntities?: unknown[]
 }
 
 export type ParsingPipeline = ((
@@ -42,87 +18,60 @@ export type ParsingPipeline = ((
 export function assertKeywordProcess(
   token: Token,
   expectedKeyword: Keyword,
-  getNodeProp: () => Record<string, never> | { type: Node["type"] }
+  callback?: () => void
 ) {
   assertToken(token, expectedKeyword)
-  return getNodeProp()
+  if (callback) {
+    callback()
+  }
 }
 
-export function parseIdentifierProcess(
-  token: Token,
-  getNodeProp: () => { name: Node["name"] } | { owner: string }
-) {
-  if (!/^[a-zA-Z_]\w{0,29}$/.test(token.value)) {
+export function parseIdentifierProcess(token: Token, callback: () => void) {
+  if (/^[a-zA-Z_]\w{0,29}$/.test(token.value) === false) {
     throw new Error(
       `"${token.value}" at position ${token.position}, line ${token.line} is not a valid identifier`
     )
   }
-  return getNodeProp()
+  callback()
 }
 
 export function parseBodyProcess(
   tokens: Tokens,
   tokenIndex: number,
-  openingSymbol: OpeningSymbol,
-  closingSymbol: ClosingSymbol,
-  bodyParser: (
-    bodyStart: number,
-    bodyEnd: number
-  ) => [
-    number,
-    (
-      | { attributes: Node["attributes"] }
-      | { participatingEntities: Node["participatingEntities"] }
-    )
-  ]
+  callback: (bodyStart: number, bodyEnd: number) => void
 ) {
   const token = tokens[tokenIndex]
-  assertToken(token, openingSymbol)
-  const closingSymbolPosition = groupingSymbolsMatchAt(
-    tokens,
-    tokenIndex,
-    openingSymbol,
-    closingSymbol
-  )
+  assertToken(token, Delimiters.OPENING_BRACE)
+  const closingBracePosition = bracesMatchAt(tokens, tokenIndex)
 
-  if (!closingSymbolPosition) {
+  if (closingBracePosition === null) {
     throw new Error(
-      `Grouping symbols ("${openingSymbol}" and "${closingSymbol}") don't match after "${openingSymbol}" at position ${token.position}, line ${token.line}`
+      `Grouping symbols ("${Delimiters.OPENING_BRACE}" and "${Delimiters.CLOSING_BRACE}") don't match after "${Delimiters.OPENING_BRACE}" at position ${token.position}, line ${token.line}`
     )
   }
-
-  return bodyParser(tokenIndex + 1, closingSymbolPosition - 1)
+  callback(tokenIndex + 1, closingBracePosition - 1)
+  return closingBracePosition + 1
 }
 
 export function walkPipeline(
   parsingPipeline: ParsingPipeline,
   tokens: Tokens,
   currentTokenIndex: number
-): [number, Node] {
-  let node = {} as Node
-
+): number {
   for (const process of parsingPipeline) {
-    if (!tokens[currentTokenIndex]) {
+    if (tokens[currentTokenIndex] === undefined) {
       const previousToken = tokens[currentTokenIndex - 1]
       throw new Error(
         `Didn't expect to reach the end after token "${previousToken.value}" at position ${previousToken.position}, line ${previousToken.line}`
       )
     }
 
-    const processResult = process(
-      tokens[currentTokenIndex],
-      currentTokenIndex++
-    )
+    const nextTokenIndex = process(tokens[currentTokenIndex], currentTokenIndex)
 
-    if (processResult.constructor === Array) {
-      currentTokenIndex = processResult[0]
-      node = { ...node, ...processResult[1] }
-    } else {
-      node = { ...node, ...processResult }
-    }
+    currentTokenIndex = nextTokenIndex ? nextTokenIndex : currentTokenIndex + 1
   }
 
-  return [currentTokenIndex, node]
+  return currentTokenIndex
 }
 
 function assertToken(token: Token, expectedValue: string) {
@@ -133,23 +82,18 @@ function assertToken(token: Token, expectedValue: string) {
   }
 }
 
-function groupingSymbolsMatchAt(
-  tokens: Tokens,
-  currentPosition: number,
-  openingSymbol: OpeningSymbol,
-  closingSymbol: ClosingSymbol
-) {
-  let groupingSymbolsScales = 0
+function bracesMatchAt(tokens: Tokens, currentPosition: number) {
+  let scales = 0
 
   do {
-    groupingSymbolsScales +=
-      tokens[currentPosition].value === openingSymbol
+    scales +=
+      tokens[currentPosition].value === Delimiters.OPENING_BRACE
         ? 1
-        : tokens[currentPosition].value === closingSymbol
+        : tokens[currentPosition].value === Delimiters.CLOSING_BRACE
         ? -1
         : 0
 
-    if (groupingSymbolsScales === 0) {
+    if (scales === 0) {
       return currentPosition
     }
   } while (++currentPosition < tokens.length)

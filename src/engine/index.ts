@@ -3,5 +3,5 @@ import parse from "./parser"
 
 export default function (ERML: string) {
   const tokens = tokenize(ERML)
-  return tokens.length ? parse(tokens) : {}
+  return parse(tokens)
 }
