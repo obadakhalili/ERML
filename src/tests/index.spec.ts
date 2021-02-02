@@ -19,7 +19,7 @@ REL Works_for {
   Department (20, N)
 }
 
-ID REL Dependents_of {
+IDEN REL Dependents_of {
   Employee <PARTIAL, 1>
   Dependent <TOTAL, N>
 }`
@@ -36,7 +36,7 @@ describe("Test for ERMLParser", () => {
       },
       { type: "rel", name: "Works_for", relBody: "MOCK RELATIONSHIP BODY" },
       {
-        type: "id rel",
+        type: "iden rel",
         name: "Dependents_of",
         relBody: "MOCK RELATIONSHIP BODY",
       },

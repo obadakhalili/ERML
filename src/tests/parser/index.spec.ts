@@ -106,7 +106,7 @@ const MOCK_TOKENS = [
       { value: "Works_for", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
-      { value: "ID", position: 1, line: 1 },
+      { value: "IDEN", position: 1, line: 1 },
       { value: "REL", position: 1, line: 1 },
       { value: "Dependents_of", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
@@ -232,7 +232,7 @@ describe("Tests for parseIdRel", () => {
     expect(parseIdRel(MOCK_TOKENS[3][3], 0)).toEqual([
       MOCK_TOKENS[3][3].length,
       {
-        type: "id rel",
+        type: "iden rel",
         name: "Dependents_of",
         relBody: "MOCK RELATIONSHIP BODY",
       },
@@ -268,7 +268,7 @@ describe("Tests for parser", () => {
       },
       { type: "rel", name: "Works_for", relBody: "MOCK RELATIONSHIP BODY" },
       {
-        type: "id rel",
+        type: "iden rel",
         name: "Dependents_of",
         relBody: "MOCK RELATIONSHIP BODY",
       },

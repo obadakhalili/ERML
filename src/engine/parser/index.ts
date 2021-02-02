@@ -1,29 +1,27 @@
 import { Tokens } from "../lexer"
 import {
   ParsingPipeline,
-  assertKeywordProcess,
-  parseIdentifierProcess,
-  parseBodyProcess,
+  assertToken,
+  processIdentifier,
+  processBody,
   walkPipeline,
 } from "./pipeline"
+
+export const enum Delimiters {
+  OPENING_BRACE = "{",
+  CLOSING_BRACE = "}",
+}
 
 const enum Keywords {
   ENTITY = "ENTITY",
   WEAK = "WEAK",
   OWNER = "OWNER",
   REL = "REL",
-  ID = "ID",
+  IDEN = "IDEN",
 }
 
-export type Keyword = `${Keywords}`
-
-type InitializerKeyword = Extract<
-  Keywords,
-  Keywords.ENTITY | Keywords.WEAK | Keywords.REL | Keywords.ID
->
-
 interface BaseNode {
-  type: "entity" | "weak entity" | "rel" | "id rel"
+  type: "entity" | "weak entity" | "rel" | "iden rel"
   name: string
 }
 
@@ -64,10 +62,9 @@ function parseEntity(
 ): [number, EntityNode] {
   const entityNode = { type: "entity" } as EntityNode
   const parsingPipeline: ParsingPipeline = [
-    (token) =>
-      parseIdentifierProcess(token, () => (entityNode.name = token.value)),
+    (token) => processIdentifier(token, () => (entityNode.name = token.value)),
     (_, tokenIndex) =>
-      parseBodyProcess(
+      processBody(
         tokens,
         tokenIndex,
         (bodyStart, bodyEnd) =>
@@ -89,14 +86,14 @@ function parseWeakEntity(
 ): [number, WeakEntityNode] {
   const weakEntityNode = { type: "weak entity" } as WeakEntityNode
   const parsingPipeline: ParsingPipeline = [
-    (token) => assertKeywordProcess(token, Keywords.ENTITY),
+    (token) => assertToken(token, Keywords.ENTITY),
     (token) =>
-      parseIdentifierProcess(token, () => (weakEntityNode.name = token.value)),
-    (token) => assertKeywordProcess(token, Keywords.OWNER),
+      processIdentifier(token, () => (weakEntityNode.name = token.value)),
+    (token) => assertToken(token, Keywords.OWNER),
     (token) =>
-      parseIdentifierProcess(token, () => (weakEntityNode.owner = token.value)),
+      processIdentifier(token, () => (weakEntityNode.owner = token.value)),
     (_, tokenIndex) =>
-      parseBodyProcess(
+      processBody(
         tokens,
         tokenIndex,
         (bodyStart: number, bodyEnd: number) =>
@@ -122,10 +119,9 @@ function parseRel(
 ): [number, RelNode] {
   const relNode = { type: "rel" } as RelNode
   const parsingPipeline: ParsingPipeline = [
-    (token) =>
-      parseIdentifierProcess(token, () => (relNode.name = token.value)),
+    (token) => processIdentifier(token, () => (relNode.name = token.value)),
     (_, tokenIndex) =>
-      parseBodyProcess(
+      processBody(
         tokens,
         tokenIndex,
         (bodyStart, bodyEnd) =>
@@ -145,13 +141,12 @@ function parseIdRel(
   tokens: Tokens,
   currentTokenIndex: number
 ): [number, RelNode] {
-  const idRelNode = { type: "id rel" } as RelNode
+  const idRelNode = { type: "iden rel" } as RelNode
   const parsingPipeline: ParsingPipeline = [
-    (token) => assertKeywordProcess(token, Keywords.REL),
-    (token) =>
-      parseIdentifierProcess(token, () => (idRelNode.name = token.value)),
+    (token) => assertToken(token, Keywords.REL),
+    (token) => processIdentifier(token, () => (idRelNode.name = token.value)),
     (_, tokenIndex) =>
-      parseBodyProcess(
+      processBody(
         tokens,
         tokenIndex,
         (bodyStart, bodyEnd) =>
@@ -169,32 +164,26 @@ function parseIdRel(
 
 export default function (tokens: Tokens) {
   const AST: Node[] = []
+  const parsers = {
+    [Keywords.ENTITY]: parseEntity,
+    [Keywords.WEAK]: parseWeakEntity,
+    [Keywords.REL]: parseRel,
+    [Keywords.IDEN]: parseIdRel,
+  }
 
-  for (
-    let currentTokenIndex = 0,
-      tokensCount = tokens.length,
-      parsers = {
-        [Keywords.ENTITY]: parseEntity,
-        [Keywords.WEAK]: parseWeakEntity,
-        [Keywords.REL]: parseRel,
-        [Keywords.ID]: parseIdRel,
-      },
-      currentParser =
-        parsers[tokens[currentTokenIndex]?.value as InitializerKeyword];
-    currentTokenIndex < tokensCount;
-    currentParser =
-      parsers[tokens[currentTokenIndex]?.value as InitializerKeyword]
-  ) {
+  for (let i = 0, l = tokens.length, currentParser; i < l; ) {
+    currentParser = parsers[tokens[i].value as keyof typeof parsers]
+
     if (currentParser === undefined) {
       throw new Error(
-        `Didn't recognize token "${tokens[currentTokenIndex].value}" at position ${tokens[currentTokenIndex].position}, line ${tokens[currentTokenIndex].line}`
+        `Didn't recognize token "${tokens[i].value}" at position ${tokens[i].position}, line ${tokens[i].line}`
       )
     }
 
-    const [nextTokenIndex, node] = currentParser(tokens, ++currentTokenIndex)
+    const [nextTokenIndex, node] = currentParser(tokens, ++i)
 
     AST.push(node)
-    currentTokenIndex = nextTokenIndex
+    i = nextTokenIndex
   }
 
   return AST
