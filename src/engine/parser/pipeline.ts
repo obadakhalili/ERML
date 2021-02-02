@@ -81,3 +81,5 @@ function bracesMatchAt(tokens: Tokens, currentPosition: number) {
 
   return null
 }
+
+export const testables = { bracesMatchAt }
