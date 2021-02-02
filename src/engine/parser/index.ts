@@ -28,11 +28,11 @@ interface BaseNode {
 }
 
 interface RelNode extends BaseNode {
-  partEntities: unknown[]
+  relBody: "MOCK RELATIONSHIP BODY"
 }
 
 interface EntityNode extends BaseNode {
-  attributes: unknown[]
+  attributes: "MOCK ATTRIBUTES"
 }
 
 interface WeakEntityNode extends EntityNode {
@@ -47,21 +47,15 @@ function parseEntityBody(
   bodyEndAt: number,
   allowMultipleValuedAttrs = true
 ): EntityNode["attributes"] {
-  return [{ type: "simple", value: "name" }]
+  return "MOCK ATTRIBUTES"
 }
 
 function parseRelBody(
   tokens: Tokens,
   bodyStartAt: number,
   bodyEndAt: number
-): unknown[] {
-  return [
-    {
-      name: "foo",
-      "participation constraint": "total",
-      "cardinality ratio": "N",
-    },
-  ]
+): RelNode["relBody"] {
+  return "MOCK RELATIONSHIP BODY"
 }
 
 function parseEntity(
@@ -135,7 +129,7 @@ function parseRel(
         tokens,
         tokenIndex,
         (bodyStart, bodyEnd) =>
-          (relNode.partEntities = parseRelBody(tokens, bodyStart, bodyEnd))
+          (relNode.relBody = parseRelBody(tokens, bodyStart, bodyEnd))
       ),
   ]
   const nextTokenIndex = walkPipeline(
@@ -161,7 +155,7 @@ function parseIdRel(
         tokens,
         tokenIndex,
         (bodyStart, bodyEnd) =>
-          (idRelNode.partEntities = parseRelBody(tokens, bodyStart, bodyEnd))
+          (idRelNode.relBody = parseRelBody(tokens, bodyStart, bodyEnd))
       ),
   ]
   const nextTokenIndex = walkPipeline(
@@ -204,4 +198,11 @@ export default function (tokens: Tokens) {
   }
 
   return AST
+}
+
+export const testables = {
+  parseEntity,
+  parseWeakEntity,
+  parseRel,
+  parseIdRel,
 }
