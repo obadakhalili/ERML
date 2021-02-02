@@ -49,13 +49,13 @@ describe("Tests for assertToken", () => {
 describe("Tests for processIdentifier", () => {
   it("Should throw an error for passing an invalid identifier name", () => {
     expect(() =>
-      processIdentifier(MOCK_TOKENS[1] as Token, () => undefined)
+      processIdentifier(MOCK_TOKENS[1] as Token, false, () => undefined)
     ).toThrow('"1employee" at position 1, line 1 is not a valid identifier')
   })
 
   it("Should not not throw an error", () => {
     expect(() =>
-      processIdentifier(MOCK_TOKENS[2] as Token, () => undefined)
+      processIdentifier(MOCK_TOKENS[2] as Token, false, () => undefined)
     ).not.toThrow()
   })
 })
@@ -118,6 +118,8 @@ describe("Tests for bracesMatchAt", () => {
   })
 
   it("Should return the correct next token index", () => {
-    expect(bracesMatchAt(MOCK_TOKENS[5] as Tokens, 0)).toBe((MOCK_TOKENS[5] as Tokens).length - 1)
+    expect(bracesMatchAt(MOCK_TOKENS[5] as Tokens, 0)).toBe(
+      (MOCK_TOKENS[5] as Tokens).length - 1
+    )
   })
 })

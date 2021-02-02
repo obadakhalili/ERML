@@ -6,11 +6,11 @@ const MOCK_TOKENS = [
   [
     [{ value: "1Employee", position: 1, line: 1 }],
     [
-      { value: "Employee", position: 1, line: 1 },
+      { value: "Employee_1", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
     ],
     [
-      { value: "Employee", position: 1, line: 1 },
+      { value: "Employee_2", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
       { value: "DUMP_TOKEN", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
@@ -24,27 +24,27 @@ const MOCK_TOKENS = [
     ],
     [
       { value: "ENTITY", position: 1, line: 1 },
-      { value: "Dependent", position: 1, line: 1 },
+      { value: "Dependent_1", position: 1, line: 1 },
       { value: "OWNE", position: 1, line: 1 },
     ],
     [
       { value: "ENTITY", position: 1, line: 1 },
-      { value: "Dependent", position: 1, line: 1 },
+      { value: "Dependent_2", position: 1, line: 1 },
       { value: "OWNER", position: 1, line: 1 },
       { value: "1Employee", position: 1, line: 1 },
     ],
     [
       { value: "ENTITY", position: 1, line: 1 },
-      { value: "Dependent", position: 1, line: 1 },
+      { value: "Dependent_3", position: 1, line: 1 },
       { value: "OWNER", position: 1, line: 1 },
-      { value: "Employee", position: 1, line: 1 },
+      { value: "Employee_1", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
     ],
     [
       { value: "ENTITY", position: 1, line: 1 },
-      { value: "Dependent", position: 1, line: 1 },
+      { value: "Dependent_4", position: 1, line: 1 },
       { value: "OWNER", position: 1, line: 1 },
-      { value: "Employee", position: 1, line: 1 },
+      { value: "Employee_1", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
       { value: "DUMP_TOKEN", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
@@ -53,11 +53,11 @@ const MOCK_TOKENS = [
   [
     [{ value: "1Works_for", position: 1, line: 1 }],
     [
-      { value: "Works_for", position: 1, line: 1 },
+      { value: "Works_for_1", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
     ],
     [
-      { value: "Works_for", position: 1, line: 1 },
+      { value: "Works_for_2", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
       { value: "DUMP_TOKEN", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
@@ -71,12 +71,12 @@ const MOCK_TOKENS = [
     ],
     [
       { value: "REL", position: 1, line: 1 },
-      { value: "Dependents_of", position: 1, line: 1 },
+      { value: "Dependents_of_1", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
     ],
     [
       { value: "REL", position: 1, line: 1 },
-      { value: "Dependents_of", position: 1, line: 1 },
+      { value: "Dependents_of_2", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
       { value: "DUMP_TOKEN", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
@@ -86,7 +86,7 @@ const MOCK_TOKENS = [
     [{ value: "FOO", position: 1, line: 1 }],
     [
       { value: "ENTITY", position: 1, line: 1 },
-      { value: "Employee", position: 1, line: 1 },
+      { value: "Employee_3", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
       { value: "DUMP_TOKEN", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
@@ -142,7 +142,7 @@ describe("Tests for parseEntity", () => {
       MOCK_TOKENS[0][2].length,
       {
         type: "entity",
-        name: "Employee",
+        name: "Employee_2",
         attributes: "MOCK ATTRIBUTES",
       },
     ])
@@ -185,8 +185,8 @@ describe("Tests for parseWeakEntity", () => {
       MOCK_TOKENS[1][5].length,
       {
         type: "weak entity",
-        name: "Dependent",
-        owner: "Employee",
+        name: "Dependent_4",
+        owner: "Employee_1",
         attributes: "MOCK ATTRIBUTES",
       },
     ])
@@ -211,7 +211,7 @@ describe("Tests for parseRel", () => {
       MOCK_TOKENS[2][2].length,
       {
         type: "rel",
-        name: "Works_for",
+        name: "Works_for_2",
         relBody: "MOCK RELATIONSHIP BODY",
       },
     ])
@@ -242,7 +242,7 @@ describe("Tests for parseIdRel", () => {
       MOCK_TOKENS[3][3].length,
       {
         type: "iden rel",
-        name: "Dependents_of",
+        name: "Dependents_of_2",
         relBody: "MOCK RELATIONSHIP BODY",
       },
     ])

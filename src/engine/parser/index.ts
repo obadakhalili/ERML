@@ -62,7 +62,8 @@ function parseEntity(
 ): [number, EntityNode] {
   const entityNode = { type: "entity" } as EntityNode
   const parsingPipeline: ParsingPipeline = [
-    (token) => processIdentifier(token, () => (entityNode.name = token.value)),
+    (token) =>
+      processIdentifier(token, false, () => (entityNode.name = token.value)),
     (_, tokenIndex) =>
       processBody(
         tokens,
@@ -88,10 +89,18 @@ function parseWeakEntity(
   const parsingPipeline: ParsingPipeline = [
     (token) => assertToken(token, Keywords.ENTITY),
     (token) =>
-      processIdentifier(token, () => (weakEntityNode.name = token.value)),
+      processIdentifier(
+        token,
+        false,
+        () => (weakEntityNode.name = token.value)
+      ),
     (token) => assertToken(token, Keywords.OWNER),
     (token) =>
-      processIdentifier(token, () => (weakEntityNode.owner = token.value)),
+      processIdentifier(
+        token,
+        true,
+        () => (weakEntityNode.owner = token.value)
+      ),
     (_, tokenIndex) =>
       processBody(
         tokens,
@@ -119,7 +128,8 @@ function parseRel(
 ): [number, RelNode] {
   const relNode = { type: "rel" } as RelNode
   const parsingPipeline: ParsingPipeline = [
-    (token) => processIdentifier(token, () => (relNode.name = token.value)),
+    (token) =>
+      processIdentifier(token, false, () => (relNode.name = token.value)),
     (_, tokenIndex) =>
       processBody(
         tokens,
@@ -144,7 +154,8 @@ function parseIdRel(
   const idRelNode = { type: "iden rel" } as RelNode
   const parsingPipeline: ParsingPipeline = [
     (token) => assertToken(token, Keywords.REL),
-    (token) => processIdentifier(token, () => (idRelNode.name = token.value)),
+    (token) =>
+      processIdentifier(token, false, () => (idRelNode.name = token.value)),
     (_, tokenIndex) =>
       processBody(
         tokens,

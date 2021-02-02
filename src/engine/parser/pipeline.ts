@@ -1,3 +1,8 @@
+import {
+  isValidIdentifier,
+  isValidReference,
+  isDuplicateIdentifier,
+} from "./identifiers"
 import { Token, Tokens } from "../lexer"
 import { Delimiters } from "./"
 
@@ -16,10 +21,22 @@ export function assertToken(token: Token, expectedValue: string) {
   }
 }
 
-export function processIdentifier(token: Token, callback: () => void) {
-  if (/^[a-zA-Z_]\w{0,29}$/.test(token.value) === false) {
+export function processIdentifier(
+  token: Token,
+  isReference: boolean,
+  callback: () => void
+) {
+  if (isValidIdentifier(token.value) === false) {
     throw new Error(
       `"${token.value}" at position ${token.position}, line ${token.line} is not a valid identifier`
+    )
+  } else if (isReference && isValidReference(token.value) === false) {
+    throw new Error(
+      `"${token.value}" at position ${token.position}, line ${token.line} is not defined before`
+    )
+  } else if (isReference === false && isDuplicateIdentifier(token.value)) {
+    throw new Error(
+      `"${token.value}" at position ${token.position}, line ${token.line} is already defined`
     )
   }
   callback()
@@ -39,10 +56,13 @@ export function processBody(
     )
   }
 
-  const bodyStart = tokenIndex + 1, bodyEnd = closingBracePosition - 1
+  const bodyStart = tokenIndex + 1,
+    bodyEnd = closingBracePosition - 1
 
   if (bodyStart > bodyEnd) {
-    throw new Error(`Body can't be empty at position ${tokens[tokenIndex].position}, line ${tokens[tokenIndex].line}`)
+    throw new Error(
+      `Body can't be empty at position ${tokens[tokenIndex].position}, line ${tokens[tokenIndex].line}`
+    )
   }
 
   callback(bodyStart, bodyEnd)
