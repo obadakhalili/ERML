@@ -25,6 +25,7 @@ const MOCK_TOKENS = [
   ],
   [
     { value: "{", position: 1, line: 1 },
+    { value: "DUMP_TOKEN", position: 1, line: 1 },
     { value: "}", position: 1, line: 1 },
   ],
   [

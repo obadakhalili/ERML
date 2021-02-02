@@ -39,7 +39,13 @@ export function processBody(
     )
   }
 
-  callback(tokenIndex + 1, closingBracePosition - 1)
+  const bodyStart = tokenIndex + 1, bodyEnd = closingBracePosition - 1
+
+  if (bodyStart > bodyEnd) {
+    throw new Error(`Body can't be empty at position ${tokens[tokenIndex].position}, line ${tokens[tokenIndex].line}`)
+  }
+
+  callback(bodyStart, bodyEnd)
   return closingBracePosition + 1
 }
 

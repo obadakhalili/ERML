@@ -12,6 +12,7 @@ const MOCK_TOKENS = [
     [
       { value: "Employee", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
+      { value: "DUMP_TOKEN", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
     ],
   ],
@@ -45,6 +46,7 @@ const MOCK_TOKENS = [
       { value: "OWNER", position: 1, line: 1 },
       { value: "Employee", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
+      { value: "DUMP_TOKEN", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
     ],
   ],
@@ -57,6 +59,7 @@ const MOCK_TOKENS = [
     [
       { value: "Works_for", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
+      { value: "DUMP_TOKEN", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
     ],
   ],
@@ -75,6 +78,7 @@ const MOCK_TOKENS = [
       { value: "REL", position: 1, line: 1 },
       { value: "Dependents_of", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
+      { value: "DUMP_TOKEN", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
     ],
   ],
@@ -84,6 +88,7 @@ const MOCK_TOKENS = [
       { value: "ENTITY", position: 1, line: 1 },
       { value: "Employee", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
+      { value: "DUMP_TOKEN", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
       { value: "WEAK", position: 1, line: 1 },
       { value: "ENTITYs", position: 1, line: 1 },
@@ -94,6 +99,7 @@ const MOCK_TOKENS = [
       { value: "ENTITY", position: 1, line: 1 },
       { value: "Employee", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
+      { value: "DUMP_TOKEN", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
       { value: "WEAK", position: 1, line: 1 },
       { value: "ENTITY", position: 1, line: 1 },
@@ -101,15 +107,18 @@ const MOCK_TOKENS = [
       { value: "OWNER", position: 1, line: 1 },
       { value: "Employee", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
+      { value: "DUMP_TOKEN", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
       { value: "REL", position: 1, line: 1 },
       { value: "Works_for", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
+      { value: "DUMP_TOKEN", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
       { value: "IDEN", position: 1, line: 1 },
       { value: "REL", position: 1, line: 1 },
       { value: "Dependents_of", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
+      { value: "DUMP_TOKEN", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
     ],
   ],
@@ -228,7 +237,7 @@ describe("Tests for parseIdRel", () => {
     )
   })
 
-  it("Should generate valid AST for weak entity tokens, and return the correct next token index", () => {
+  it("Should generate valid AST for identifying relationship tokens, and return the correct next token index", () => {
     expect(parseIdRel(MOCK_TOKENS[3][3], 0)).toEqual([
       MOCK_TOKENS[3][3].length,
       {
