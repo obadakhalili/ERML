@@ -2,9 +2,9 @@ import tokenize from "../engine/lexer"
 
 const MOCK_CODE = [
   "",
-  `WEEK ENTITY OWNER Employee
+  `WEEK ENTITY OWNER ?? Employee
     COMPOSITE "key" ["name" "DoB"],
-    SIMPLE "relationship,
+    SIMPLE "relationship",
     SIMPLE "gender"
   }`,
   `ENTITY Employee {
@@ -50,18 +50,22 @@ describe("Tests for lexer", () => {
       { value: "WEEK", position: 0, line: 1 },
       { value: "ENTITY", position: 5, line: 1 },
       { value: "OWNER", position: 12, line: 1 },
-      { value: "Employee", position: 18, line: 1 },
-      { value: "COMPOSITE", position: 31, line: 2 },
-      { value: '"key"', position: 41, line: 2 },
-      { value: "[", position: 47, line: 2 },
-      { value: '"name"', position: 48, line: 2 },
-      { value: '"DoB"', position: 55, line: 2 },
-      { value: "]", position: 60, line: 2 },
-      { value: ",", position: 61, line: 2 },
-      { value: "SIMPLE", position: 67, line: 3 },
-      { value: '"relationship,\n    SIMPLE "', position: 74, line: 3 },
-      { value: "gender", position: 101, line: 4 },
-      { value: "}", position: 111, line: 5 },
+      { value: "?", position: 18, line: 1 },
+      { value: "?", position: 19, line: 1 },
+      { value: "Employee", position: 21, line: 1 },
+      { value: "COMPOSITE", position: 34, line: 2 },
+      { value: '"key"', position: 44, line: 2 },
+      { value: "[", position: 50, line: 2 },
+      { value: '"name"', position: 51, line: 2 },
+      { value: '"DoB"', position: 58, line: 2 },
+      { value: "]", position: 63, line: 2 },
+      { value: ",", position: 64, line: 2 },
+      { value: "SIMPLE", position: 70, line: 3 },
+      { value: '"relationship"', position: 77, line: 3 },
+      { value: ",", position: 91, line: 3 },
+      { value: "SIMPLE", position: 97, line: 4 },
+      { value: '"gender"', position: 104, line: 4 },
+      { value: "}", position: 115, line: 5 },
     ])
   })
 
