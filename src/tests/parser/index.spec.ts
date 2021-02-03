@@ -1,6 +1,6 @@
 import parse, { testables } from "../../engine/parser"
 
-const { parseEntity, parseWeakEntity, parseRel, parseIdRel } = testables
+const { parseEntity, parseWeakEntity, parseRel, parseIdenRel } = testables
 
 const MOCK_TOKENS = [
   [
@@ -218,27 +218,27 @@ describe("Tests for parseRel", () => {
   })
 })
 
-describe("Tests for parseIdRel", () => {
+describe("Tests for parseIdenRel", () => {
   it("Should throw an error for trying to parse an unvalid keyword token (valid token is REL)", () => {
-    expect(() => parseIdRel(MOCK_TOKENS[3][0], 0)).toThrow(
+    expect(() => parseIdenRel(MOCK_TOKENS[3][0], 0)).toThrow(
       'Expected to find "REL" at position 1, line 1. Instead found "EL"'
     )
   })
 
   it("Should throw an error for trying to parse an unvalid identifier token", () => {
-    expect(() => parseIdRel(MOCK_TOKENS[3][1], 0)).toThrow(
+    expect(() => parseIdenRel(MOCK_TOKENS[3][1], 0)).toThrow(
       '"1Dependents_of" at position 1, line 1 is not a valid identifier'
     )
   })
 
   it("Should throw an error for having non-matching grouping braces", () => {
-    expect(() => parseIdRel(MOCK_TOKENS[3][2], 0)).toThrow(
+    expect(() => parseIdenRel(MOCK_TOKENS[3][2], 0)).toThrow(
       'Grouping symbols ("{" and "}") don\'t match after "{" at position 1, line 1'
     )
   })
 
   it("Should generate valid AST for identifying relationship tokens, and return the correct next token index", () => {
-    expect(parseIdRel(MOCK_TOKENS[3][3], 0)).toEqual([
+    expect(parseIdenRel(MOCK_TOKENS[3][3], 0)).toEqual([
       MOCK_TOKENS[3][3].length,
       {
         type: "iden rel",

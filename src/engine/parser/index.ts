@@ -147,7 +147,7 @@ function parseRel(
   return [nextTokenIndex, relNode]
 }
 
-function parseIdRel(
+function parseIdenRel(
   tokens: Tokens,
   currentTokenIndex: number
 ): [number, RelNode] {
@@ -183,7 +183,7 @@ export default function (tokens: Tokens) {
     [Keywords.ENTITY]: parseEntity,
     [Keywords.WEAK]: parseWeakEntity,
     [Keywords.REL]: parseRel,
-    [Keywords.IDEN]: parseIdRel,
+    [Keywords.IDEN]: parseIdenRel,
   } as const
 
   for (let i = 0, l = tokens.length, currentParser: ParseUtility; i < l; ) {
@@ -208,5 +208,5 @@ export const testables = {
   parseEntity,
   parseWeakEntity,
   parseRel,
-  parseIdRel,
+  parseIdenRel,
 }
