@@ -41,17 +41,17 @@ type Node = RelNode | EntityNode | WeakEntityNode
 
 function parseEntityBody(
   tokens: Tokens,
-  bodyStartAt: number,
-  bodyEndAt: number,
-  allowMultipleValuedAttrs = true
+  bodyStart: number,
+  bodyEnd: number,
+  allowMultivalued = true
 ): EntityNode["attributes"] {
   return "MOCK ATTRIBUTES"
 }
 
 function parseRelBody(
   tokens: Tokens,
-  bodyStartAt: number,
-  bodyEndAt: number
+  bodyStart: number,
+  bodyEnd: number
 ): RelNode["relBody"] {
   return "MOCK RELATIONSHIP BODY"
 }
@@ -105,7 +105,7 @@ function parseWeakEntity(
       processBody(
         tokens,
         tokenIndex,
-        (bodyStart: number, bodyEnd: number) =>
+        (bodyStart, bodyEnd) =>
           (weakEntityNode.attributes = parseEntityBody(
             tokens,
             bodyStart,
@@ -175,15 +175,19 @@ function parseIdRel(
 
 export default function (tokens: Tokens) {
   const AST: Node[] = []
+
+  type InitializerKeyword = keyof typeof parsers
+  type ParseUtility = typeof parsers[InitializerKeyword]
+
   const parsers = {
     [Keywords.ENTITY]: parseEntity,
     [Keywords.WEAK]: parseWeakEntity,
     [Keywords.REL]: parseRel,
     [Keywords.IDEN]: parseIdRel,
-  }
+  } as const
 
-  for (let i = 0, l = tokens.length, currentParser; i < l; ) {
-    currentParser = parsers[tokens[i].value as keyof typeof parsers]
+  for (let i = 0, l = tokens.length, currentParser: ParseUtility; i < l; ) {
+    currentParser = parsers[tokens[i].value as InitializerKeyword]
 
     if (currentParser === undefined) {
       throw new Error(

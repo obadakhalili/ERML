@@ -35,11 +35,11 @@ describe("Tests for isValidReference", () => {
 })
 
 describe("Tests for isNotDuplicate", () => {
-  it("Should return false", () => {
+  it("Should return true", () => {
     expect(isDuplicateIdentifier("User")).toBe(true)
   })
 
-  it("Should return true", () => {
+  it("Should return false", () => {
     expect(isDuplicateIdentifier("Translation")).toBe(false)
   })
 })

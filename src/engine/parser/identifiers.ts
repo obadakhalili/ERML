@@ -2,9 +2,9 @@ const identifiers: string[] = []
 
 export function isValidIdentifier(identifier: string) {
   /** Valid identifier requirements
-   * Maximum of 30 characters long
+   * Maximum of 30 characters
    * Starts with an uppercase/lowercase letter (a-z, A-Z)
-   * Every character after the first character should either be a number, an underscore, or an uppercase/lowercase letter (a-z, A-Z)
+   * Every character after the first should either be a number, an underscore, or an uppercase/lowercase letter (a-z, A-Z)
    */
   return /^[a-zA-Z_]\w{0,29}$/.test(identifier)
 }
