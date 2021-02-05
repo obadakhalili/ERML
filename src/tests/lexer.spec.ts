@@ -2,75 +2,43 @@ import tokenize from "../engine/lexer"
 
 const MOCK_CODE = [
   "",
-  `WEEK ENTITY OWNER ?? Employee
-    COMPOSITE "key" ["name" "DoB"],
-    SIMPLE "relationship",
-    SIMPLE "gender"
-  }`,
   `ENTITY Employee {
     PRIMARY "SSN",
     SIMPLE "salary",
     SIMPLE "DoB",
     DERIVED "age",
     COMPOSITE "full_name" ["first_name", "last_name"]
-  }`,
-  `WEAK ENTITY Dependent OWNER Employee {
-    COMPOSITE PARTIAL "key" ["name", "DoB"],
+  }
+  
+  WEAK ENTITY Dependent OWNER Employee {
+    # COMPOSITE PARTIAL "key" ["name", "DoB"],
     SIMPLE "relationship",
     SIMPLE "gender"
-  }`,
-  `REL Works_for {
+  }
+  
+  /* REL Works_for {
     Employee (1, 1),
     Department (20, N)
-  }`,
-  `ID REL Dependents_of {
-    Employee <PARTIAL, 1>
+  } */
+  
+  REL Supervision ? {
+    Employee <PARTIAL, 1>/,
+    Employee <PARTIAL, N>
+  }
+  
+  IDEN REL Dependents_of {
+    Employee <PARTIAL, 1>,
     Dependent <TOTAL, N>
-  }`,
-  `ID REL Dependents_of {
-    # Employee <PARTIAL, 1>
-    Dependent <TOTAL, N>
-  }`,
-  `ENTITY Employee {
-    PRIMARY "SSN",
-    /* SIMPLE "salary",
-    SIMPLE "DoB",
-    DERIVED "age", */
-    COMPOSITE "full_name" ["first_name", "last_name"]
   }`,
 ]
 
-describe("Tests for lexer", () => {
-  it("Should return empty array if code is empty string", () => {
+describe("Test for lexer", () => {
+  it("should return empty array for empty string code", () => {
     expect(tokenize(MOCK_CODE[0])).toEqual([])
   })
-
-  it("Should correctly generate tokens even if the code can't be parsed correctly", () => {
+  
+  it("should generate valid tokens. even if code isn't valid", () => {
     expect(tokenize(MOCK_CODE[1])).toEqual([
-      { value: "WEEK", position: 0, line: 1 },
-      { value: "ENTITY", position: 5, line: 1 },
-      { value: "OWNER", position: 12, line: 1 },
-      { value: "?", position: 18, line: 1 },
-      { value: "?", position: 19, line: 1 },
-      { value: "Employee", position: 21, line: 1 },
-      { value: "COMPOSITE", position: 34, line: 2 },
-      { value: '"key"', position: 44, line: 2 },
-      { value: "[", position: 50, line: 2 },
-      { value: '"name"', position: 51, line: 2 },
-      { value: '"DoB"', position: 58, line: 2 },
-      { value: "]", position: 63, line: 2 },
-      { value: ",", position: 64, line: 2 },
-      { value: "SIMPLE", position: 70, line: 3 },
-      { value: '"relationship"', position: 77, line: 3 },
-      { value: ",", position: 91, line: 3 },
-      { value: "SIMPLE", position: 97, line: 4 },
-      { value: '"gender"', position: 104, line: 4 },
-      { value: "}", position: 115, line: 5 },
-    ])
-  })
-
-  it("Should return valid tokens of entity", () => {
-    expect(tokenize(MOCK_CODE[2])).toEqual([
       { value: "ENTITY", position: 0, line: 1 },
       { value: "Employee", position: 7, line: 1 },
       { value: "{", position: 16, line: 1 },
@@ -94,111 +62,55 @@ describe("Tests for lexer", () => {
       { value: '"last_name"', position: 136, line: 6 },
       { value: "]", position: 147, line: 6 },
       { value: "}", position: 151, line: 7 },
-    ])
-  })
-
-  it("Should return valid tokens of weak entity", () => {
-    expect(tokenize(MOCK_CODE[3])).toEqual([
-      { value: "WEAK", position: 0, line: 1 },
-      { value: "ENTITY", position: 5, line: 1 },
-      { value: "Dependent", position: 12, line: 1 },
-      { value: "OWNER", position: 22, line: 1 },
-      { value: "Employee", position: 28, line: 1 },
-      { value: "{", position: 37, line: 1 },
-      { value: "COMPOSITE", position: 43, line: 2 },
-      { value: "PARTIAL", position: 53, line: 2 },
-      { value: '"key"', position: 61, line: 2 },
-      { value: "[", position: 67, line: 2 },
-      { value: '"name"', position: 68, line: 2 },
-      { value: ",", position: 74, line: 2 },
-      { value: '"DoB"', position: 76, line: 2 },
-      { value: "]", position: 81, line: 2 },
-      { value: ",", position: 82, line: 2 },
-      { value: "SIMPLE", position: 88, line: 3 },
-      { value: '"relationship"', position: 95, line: 3 },
-      { value: ",", position: 109, line: 3 },
-      { value: "SIMPLE", position: 115, line: 4 },
-      { value: '"gender"', position: 122, line: 4 },
-      { value: "}", position: 133, line: 5 },
-    ])
-  })
-
-  it("Should return valid tokens of relationship", () => {
-    expect(tokenize(MOCK_CODE[4])).toEqual([
-      { value: "REL", position: 0, line: 1 },
-      { value: "Works_for", position: 4, line: 1 },
-      { value: "{", position: 14, line: 1 },
-      { value: "Employee", position: 20, line: 2 },
-      { value: "(", position: 29, line: 2 },
-      { value: "1", position: 30, line: 2 },
-      { value: ",", position: 31, line: 2 },
-      { value: "1", position: 33, line: 2 },
-      { value: ")", position: 34, line: 2 },
-      { value: ",", position: 35, line: 2 },
-      { value: "Department", position: 41, line: 3 },
-      { value: "(", position: 52, line: 3 },
-      { value: "20", position: 53, line: 3 },
-      { value: ",", position: 55, line: 3 },
-      { value: "N", position: 57, line: 3 },
-      { value: ")", position: 58, line: 3 },
-      { value: "}", position: 62, line: 4 },
-    ])
-  })
-
-  it("Should return valid tokens of identifying relationship", () => {
-    expect(tokenize(MOCK_CODE[5])).toEqual([
-      { value: "ID", position: 0, line: 1 },
-      { value: "REL", position: 3, line: 1 },
-      { value: "Dependents_of", position: 7, line: 1 },
-      { value: "{", position: 21, line: 1 },
-      { value: "Employee", position: 27, line: 2 },
-      { value: "<", position: 36, line: 2 },
-      { value: "PARTIAL", position: 37, line: 2 },
-      { value: ",", position: 44, line: 2 },
-      { value: "1", position: 46, line: 2 },
-      { value: ">", position: 47, line: 2 },
-      { value: "Dependent", position: 53, line: 3 },
-      { value: "<", position: 63, line: 3 },
-      { value: "TOTAL", position: 64, line: 3 },
-      { value: ",", position: 69, line: 3 },
-      { value: "N", position: 71, line: 3 },
-      { value: ">", position: 72, line: 3 },
-      { value: "}", position: 76, line: 4 },
-    ])
-  })
-
-  it("Should skip one-line comments", () => {
-    expect(tokenize(MOCK_CODE[6])).toEqual([
-      { value: "ID", position: 0, line: 1 },
-      { value: "REL", position: 3, line: 1 },
-      { value: "Dependents_of", position: 7, line: 1 },
-      { value: "{", position: 21, line: 1 },
-      { value: "Dependent", position: 55, line: 3 },
-      { value: "<", position: 65, line: 3 },
-      { value: "TOTAL", position: 66, line: 3 },
-      { value: ",", position: 71, line: 3 },
-      { value: "N", position: 73, line: 3 },
-      { value: ">", position: 74, line: 3 },
-      { value: "}", position: 78, line: 4 },
-    ])
-  })
-
-  it("Should skip multi-lines comments", () => {
-    expect(tokenize(MOCK_CODE[7])).toEqual([
-      { value: "ENTITY", position: 0, line: 1 },
-      { value: "Employee", position: 7, line: 1 },
-      { value: "{", position: 16, line: 1 },
-      { value: "PRIMARY", position: 22, line: 2 },
-      { value: '"SSN"', position: 30, line: 2 },
-      { value: ",", position: 35, line: 2 },
-      { value: "COMPOSITE", position: 105, line: 6 },
-      { value: '"full_name"', position: 115, line: 6 },
-      { value: "[", position: 127, line: 6 },
-      { value: '"first_name"', position: 128, line: 6 },
-      { value: ",", position: 140, line: 6 },
-      { value: '"last_name"', position: 142, line: 6 },
-      { value: "]", position: 153, line: 6 },
-      { value: "}", position: 157, line: 7 },
+      { value: "WEAK", position: 158, line: 9 },
+      { value: "ENTITY", position: 163, line: 9 },
+      { value: "Dependent", position: 170, line: 9 },
+      { value: "OWNER", position: 180, line: 9 },
+      { value: "Employee", position: 186, line: 9 },
+      { value: "{", position: 195, line: 9 },
+      { value: "SIMPLE", position: 248, line: 11 },
+      { value: '"relationship"', position: 255, line: 11 },
+      { value: ",", position: 269, line: 11 },
+      { value: "SIMPLE", position: 275, line: 12 },
+      { value: '"gender"', position: 282, line: 12 },
+      { value: "}", position: 293, line: 13 },
+      { value: "REL", position: 375, line: 20 },
+      { value: "Supervision", position: 379, line: 20 },
+      { value: "?", position: 391, line: 20 },
+      { value: "{", position: 393, line: 20 },
+      { value: "Employee", position: 399, line: 21 },
+      { value: "<", position: 408, line: 21 },
+      { value: "PARTIAL", position: 409, line: 21 },
+      { value: ",", position: 416, line: 21 },
+      { value: "1", position: 418, line: 21 },
+      { value: ">", position: 419, line: 21 },
+      { value: "/", position: 420, line: 21 },
+      { value: ",", position: 421, line: 21 },
+      { value: "Employee", position: 427, line: 22 },
+      { value: "<", position: 436, line: 22 },
+      { value: "PARTIAL", position: 437, line: 22 },
+      { value: ",", position: 444, line: 22 },
+      { value: "N", position: 446, line: 22 },
+      { value: ">", position: 447, line: 22 },
+      { value: "}", position: 451, line: 23 },
+      { value: "IDEN", position: 458, line: 25 },
+      { value: "REL", position: 463, line: 25 },
+      { value: "Dependents_of", position: 467, line: 25 },
+      { value: "{", position: 481, line: 25 },
+      { value: "Employee", position: 487, line: 26 },
+      { value: "<", position: 496, line: 26 },
+      { value: "PARTIAL", position: 497, line: 26 },
+      { value: ",", position: 504, line: 26 },
+      { value: "1", position: 506, line: 26 },
+      { value: ">", position: 507, line: 26 },
+      { value: ",", position: 508, line: 26 },
+      { value: "Dependent", position: 514, line: 27 },
+      { value: "<", position: 524, line: 27 },
+      { value: "TOTAL", position: 525, line: 27 },
+      { value: ",", position: 530, line: 27 },
+      { value: "N", position: 532, line: 27 },
+      { value: ">", position: 533, line: 27 },
+      { value: "}", position: 537, line: 28 },
     ])
   })
 })
