@@ -119,6 +119,53 @@ function parseRelBody(
       ),
     common.optionalComma,
   ]
+  const structConstraintsPipelines: { [probName: string]: ParsingPipeline } = {
+    separate: [
+      (token) =>
+        assertToken(
+          token,
+          [Keywords.PARTIAL, Keywords.TOTAL],
+          (matchIndex) =>
+            (currentPartEntity.structConstraints.partConstraint = ([
+              API.PARTIAL,
+              API.TOTAL,
+            ] as const)[matchIndex])
+        ),
+      common.comma,
+      (token) => {
+        const allowedTokens = [API.ONE, API.N] as const
+        assertToken(
+          token,
+          allowedTokens,
+          (matchIndex) =>
+            (currentPartEntity.structConstraints.cardinalityRatio =
+              allowedTokens[matchIndex])
+        )
+      },
+      (token) => assertToken(token, [Delimiters.CLOSING_ANGLE]),
+    ],
+    minmax: [
+      (token) =>
+        processNumber(
+          token,
+          [0, Infinity],
+          (number) =>
+            (currentPartEntity.structConstraints.partConstraint = number)
+        ),
+      common.comma,
+      (token) =>
+        processNumber(
+          token,
+          [
+            currentPartEntity.structConstraints.partConstraint as number,
+            Infinity,
+          ],
+          (number) =>
+            (currentPartEntity.structConstraints.cardinalityRatio = number)
+        ),
+      (token) => assertToken(token, [Delimiters.CLOSING_PAREN]),
+    ],
+  }
   const partEntityPipeline: ParsingPipeline = [
     (token) =>
       processIdentifier(
@@ -139,54 +186,14 @@ function parseRelBody(
             partEntityPipeline.splice(
               2,
               pipelineFunctionsToRemoveCount,
-              (token) =>
-                assertToken(
-                  token,
-                  [Keywords.PARTIAL, Keywords.TOTAL],
-                  (matchIndex) =>
-                    (currentPartEntity.structConstraints.partConstraint = ([
-                      API.PARTIAL,
-                      API.TOTAL,
-                    ] as const)[matchIndex])
-                ),
-              common.comma,
-              (token) => {
-                const allowedTokens = [API.ONE, API.N] as const
-                assertToken(
-                  token,
-                  allowedTokens,
-                  (matchIndex) =>
-                    (currentPartEntity.structConstraints.cardinalityRatio =
-                      allowedTokens[matchIndex])
-                )
-              },
-              (token) => assertToken(token, [Delimiters.CLOSING_ANGLE])
+              ...structConstraintsPipelines.separate
             )
           } else {
             currentPartEntity.notation = API.MIN_MAX
             partEntityPipeline.splice(
               2,
               pipelineFunctionsToRemoveCount,
-              (token) =>
-                processNumber(
-                  token,
-                  [0, Infinity],
-                  (number) =>
-                    (currentPartEntity.structConstraints.partConstraint = number)
-                ),
-              common.comma,
-              (token) =>
-                processNumber(
-                  token,
-                  [
-                    currentPartEntity.structConstraints
-                      .partConstraint as number,
-                    Infinity,
-                  ],
-                  (number) =>
-                    (currentPartEntity.structConstraints.cardinalityRatio = number)
-                ),
-              (token) => assertToken(token, [Delimiters.CLOSING_PAREN])
+              ...structConstraintsPipelines.minmax
             )
           }
         }
@@ -216,7 +223,7 @@ function parseRelBody(
         currentTokenIndex
       )
     }
-  } while (currentTokenIndex <= bodyEnd)
+  } while (bodyEnd > currentTokenIndex)
 
   return {
     partEntities,
@@ -352,7 +359,7 @@ export default function (tokens: Tokens) {
     [Keywords.WEAK]: parseWeakEntity,
     [Keywords.REL]: parseRel,
     [Keywords.IDEN]: parseIdenRel,
-  } as const
+  }
 
   for (let i = 0, l = tokens.length, currentParser: ParseFunction; i < l; ) {
     currentParser = parsers[tokens[i].value as InitializerKeyword]
