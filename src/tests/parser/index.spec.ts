@@ -1,4 +1,5 @@
 import parse, { testables } from "../../engine/parser"
+import { isDuplicateIdentifier } from "../../engine/parser/identifiers"
 
 const { parseEntity, parseWeakEntity, parseRel, parseIdenRel } = testables
 
@@ -12,7 +13,9 @@ const MOCK_TOKENS = [
     [
       { value: "Employee_2", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
-      { value: "DUMP_TOKEN", position: 1, line: 1 },
+      { value: "PRIMARY", position: 1, line: 1 },
+      { value: '"SSN"', position: 1, line: 1 },
+      { value: ",", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
     ],
   ],
@@ -59,7 +62,13 @@ const MOCK_TOKENS = [
     [
       { value: "Works_for_2", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
-      { value: "DUMP_TOKEN", position: 1, line: 1 },
+      { value: "Employee", position: 24, line: 2 },
+      { value: "(", position: 1, line: 1 },
+      { value: "1", position: 1, line: 1 },
+      { value: ",", position: 1, line: 1 },
+      { value: "1", position: 1, line: 1 },
+      { value: ")", position: 1, line: 1 },
+      { value: ",", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
     ],
   ],
@@ -78,7 +87,13 @@ const MOCK_TOKENS = [
       { value: "REL", position: 1, line: 1 },
       { value: "Dependents_of_2", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
-      { value: "DUMP_TOKEN", position: 1, line: 1 },
+      { value: "Employee", position: 24, line: 2 },
+      { value: "(", position: 1, line: 1 },
+      { value: "1", position: 1, line: 1 },
+      { value: ",", position: 1, line: 1 },
+      { value: "1", position: 1, line: 1 },
+      { value: ")", position: 1, line: 1 },
+      { value: ",", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
     ],
   ],
@@ -88,7 +103,13 @@ const MOCK_TOKENS = [
       { value: "ENTITY", position: 1, line: 1 },
       { value: "Employee_3", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
-      { value: "DUMP_TOKEN", position: 1, line: 1 },
+      { value: "PRIMARY", position: 24, line: 2 },
+      { value: "(", position: 1, line: 1 },
+      { value: "1", position: 1, line: 1 },
+      { value: ",", position: 1, line: 1 },
+      { value: "1", position: 1, line: 1 },
+      { value: ")", position: 1, line: 1 },
+      { value: ",", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
       { value: "WEAK", position: 1, line: 1 },
       { value: "ENTITYs", position: 1, line: 1 },
@@ -97,7 +118,7 @@ const MOCK_TOKENS = [
     [],
     [
       { value: "ENTITY", position: 1, line: 1 },
-      { value: "Employee", position: 1, line: 1 },
+      { value: "Employee_4", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
       { value: "DUMP_TOKEN", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
@@ -112,17 +133,33 @@ const MOCK_TOKENS = [
       { value: "REL", position: 1, line: 1 },
       { value: "Works_for", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
-      { value: "DUMP_TOKEN", position: 1, line: 1 },
+      { value: "Employee", position: 24, line: 2 },
+      { value: "(", position: 1, line: 1 },
+      { value: "1", position: 1, line: 1 },
+      { value: ",", position: 1, line: 1 },
+      { value: "1", position: 1, line: 1 },
+      { value: ")", position: 1, line: 1 },
+      { value: ",", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
       { value: "IDEN", position: 1, line: 1 },
       { value: "REL", position: 1, line: 1 },
       { value: "Dependents_of", position: 1, line: 1 },
       { value: "{", position: 1, line: 1 },
-      { value: "DUMP_TOKEN", position: 1, line: 1 },
+      { value: "Employee", position: 24, line: 2 },
+      { value: "(", position: 1, line: 1 },
+      { value: "1", position: 32, line: 2 },
+      { value: ",", position: 1, line: 1 },
+      { value: "1", position: 1, line: 1 },
+      { value: ")", position: 1, line: 1 },
+      { value: ",", position: 1, line: 1 },
       { value: "}", position: 1, line: 1 },
     ],
   ],
 ]
+
+beforeAll(() => {
+  isDuplicateIdentifier("Employee")
+})
 
 describe("Tests for parseEntity", () => {
   it("Should throw an error for trying to parse an unvalid identifier token", () => {
@@ -212,7 +249,11 @@ describe("Tests for parseRel", () => {
       {
         type: "rel",
         name: "Works_for_2",
-        relBody: "MOCK RELATIONSHIP BODY",
+        body: {
+          partEntities: [
+            { constraints: [1, 1], name: "Employee", notation: "min-max" },
+          ],
+        },
       },
     ])
   })
@@ -243,7 +284,11 @@ describe("Tests for parseIdenRel", () => {
       {
         type: "iden rel",
         name: "Dependents_of_2",
-        relBody: "MOCK RELATIONSHIP BODY",
+        body: {
+          partEntities: [
+            { constraints: [1, 1], name: "Employee", notation: "min-max" },
+          ],
+        },
       },
     ])
   })
@@ -268,18 +313,30 @@ describe("Tests for parser", () => {
 
   it("Should parse tokens successfully", () => {
     expect(parse(MOCK_TOKENS[4][3])).toEqual([
-      { type: "entity", name: "Employee", attributes: "MOCK ATTRIBUTES" },
+      { type: "entity", name: "Employee_4", attributes: "MOCK ATTRIBUTES" },
       {
         type: "weak entity",
         name: "Dependent",
         owner: "Employee",
         attributes: "MOCK ATTRIBUTES",
       },
-      { type: "rel", name: "Works_for", relBody: "MOCK RELATIONSHIP BODY" },
+      {
+        type: "rel",
+        name: "Works_for",
+        body: {
+          partEntities: [
+            { constraints: [1, 1], name: "Employee", notation: "min-max" },
+          ],
+        },
+      },
       {
         type: "iden rel",
         name: "Dependents_of",
-        relBody: "MOCK RELATIONSHIP BODY",
+        body: {
+          partEntities: [
+            { constraints: [1, 1], name: "Employee", notation: "min-max" },
+          ],
+        },
       },
     ])
   })

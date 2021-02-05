@@ -13,12 +13,44 @@ export type ParsingPipeline = ((
   typeof assertToken | typeof processIdentifier | typeof processBody
 >)[]
 
-export function assertToken(token: Token, expectedValue: string) {
-  if (token.value !== expectedValue) {
+export function assertToken(
+  token: Token,
+  expectedValues: string[],
+  callback?: (matchIndex: number) => void
+) {
+  const matchIndex = expectedValues.indexOf(token.value)
+
+  if (matchIndex < 0) {
     throw new Error(
-      `Expected to find "${expectedValue}" at position ${token.position}, line ${token.line}. Instead found "${token.value}"`
+      `Expected to find ${expectedValues
+        .map((value) => `"${value}"`)
+        .join(", ")} at position ${token.position}, line ${
+        token.line
+      }. Instead found "${token.value}"`
     )
   }
+  if (callback) {
+    callback(matchIndex)
+  }
+}
+
+export function processNumber(
+  token: Token,
+  range: [number, number],
+  callback: (number: number) => void
+) {
+  const number = Number(token.value)
+
+  if (isNaN(number)) {
+    throw new Error(
+      `"${token.value}" at position ${token.position}, line ${token.line} is not a valid number`
+    )
+  } else if (number < range[0] || number > range[1]) {
+    throw new Error(
+      `"${token.value}" at position ${token.position}, line ${token.line} doesn't fall in the range of [${range[0]}, ${range[1]}]`
+    )
+  }
+  callback(number)
 }
 
 export function processIdentifier(
@@ -47,7 +79,7 @@ export function processBody(
   tokenIndex: number,
   callback: (bodyStart: number, bodyEnd: number) => void
 ) {
-  assertToken(tokens[tokenIndex], Delimiters.OPENING_BRACE)
+  assertToken(tokens[tokenIndex], [Delimiters.OPENING_BRACE])
   const closingBracePosition = bracesMatchAt(tokens, tokenIndex)
 
   if (closingBracePosition === null) {
@@ -70,9 +102,9 @@ export function processBody(
 }
 
 export function walkPipeline(
-  parsingPipeline: ParsingPipeline,
   tokens: Tokens,
-  currentTokenIndex: number
+  currentTokenIndex: number,
+  parsingPipeline: ParsingPipeline
 ): number {
   for (const process of parsingPipeline) {
     if (tokens[currentTokenIndex] === undefined) {

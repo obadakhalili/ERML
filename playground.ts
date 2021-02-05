@@ -34,7 +34,7 @@ try {
       
       REL Works_for {
         Employee (1, 1),
-        Department (20, N)
+        Department (20, Infinity)
       }
       
       REL Manages {
@@ -51,7 +51,7 @@ try {
       }
       
       IDEN REL Dependents_of {
-        Employee <PARTIAL, 1>
+        Employee <PARTIAL, 1>,
         Dependent <TOTAL, N>
       }
       
@@ -69,6 +69,6 @@ try {
       }`
     )
   )
-} catch ({ message }) {
-  console.log(message)
+} catch (e) {
+  console.log(e)
 }

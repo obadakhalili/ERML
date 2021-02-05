@@ -36,13 +36,13 @@ const MOCK_TOKENS = [
 
 describe("Tests for assertToken", () => {
   it("Should throw an error indicating that the passed token isn't the same as the expected value", () => {
-    expect(() => assertToken(MOCK_TOKENS[0] as Token, "owner")).toThrow(
+    expect(() => assertToken(MOCK_TOKENS[0] as Token, ["owner"])).toThrow(
       'Expected to find "owner" at position 1, line 1. Instead found "OWNER"'
     )
   })
 
   it("Should not throw an error", () => {
-    expect(() => assertToken(MOCK_TOKENS[0] as Token, "OWNER")).not.toThrow()
+    expect(() => assertToken(MOCK_TOKENS[0] as Token, ["OWNER"])).not.toThrow()
   })
 })
 
@@ -94,7 +94,7 @@ describe("Tests for walkPipeline", () => {
     ]
 
     expect(() =>
-      walkPipeline(parsingPipeline, MOCK_TOKENS[6] as Tokens, 0)
+      walkPipeline(MOCK_TOKENS[6] as Tokens, 0, parsingPipeline)
     ).toThrow(
       'Didn\'t expect to reach the end after token "ENTITY" at position 1, line 1'
     )
@@ -102,11 +102,11 @@ describe("Tests for walkPipeline", () => {
 
   it("Should walk through the parsing pipeline, and return the next token index correctly correctly ", () => {
     const parsingPipeline: ParsingPipeline = [
-      () => assertToken((MOCK_TOKENS[6] as Tokens)[0], "WEAK"),
-      () => assertToken((MOCK_TOKENS[6] as Tokens)[1], "ENTITY"),
+      () => assertToken((MOCK_TOKENS[6] as Tokens)[0], ["WEAK"]),
+      () => assertToken((MOCK_TOKENS[6] as Tokens)[1], ["ENTITY"]),
     ]
 
-    expect(walkPipeline(parsingPipeline, MOCK_TOKENS[6] as Tokens, 0)).toBe(
+    expect(walkPipeline(MOCK_TOKENS[6] as Tokens, 0, parsingPipeline)).toBe(
       (MOCK_TOKENS[6] as Tokens).length
     )
   })
