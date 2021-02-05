@@ -1,5 +1,6 @@
 import { Tokens } from "../lexer"
 import {
+  PipelineFunction,
   ParsingPipeline,
   assertToken,
   processNumber,
@@ -24,47 +25,57 @@ const enum Keywords {
   OWNER = "OWNER",
   REL = "REL",
   IDEN = "IDEN",
-  TOTAl = "TOTAL",
   PARTIAL = "PARTIAL",
-  N = "N",
+  TOTAL = "TOTAL",
   ATTRIBUTES = "ATTRIBUTES",
+}
+
+const enum API {
+  ENTITY = "entity",
+  WEAK_ENTITY = "weak entity",
+  REL = "rel",
+  IDEN_REL = "iden rel",
+  SEPARATE = "separate",
+  PARTIAL = "partial",
+  TOTAL = "total",
+  ONE = "1",
+  N = "N",
+  MIN_MAX = "min-max",
 }
 
 interface BaseNode {
   name: string
 }
 
+type Attributes = "MOCK ATTRIBUTES"
+
 interface EntityNode extends BaseNode {
-  type: "entity"
-  attributes: "MOCK ATTRIBUTES"
+  type: API.ENTITY
+  attributes: Attributes
 }
 
-type Attributes = EntityNode["attributes"]
-
 type WeakEntityNode = Omit<EntityNode, "type"> & {
-  type: "weak entity"
+  type: API.WEAK_ENTITY
   owner: string
 }
 
-interface RelNode extends BaseNode {
-  type: "rel" | "iden rel"
-  body: {
-    partEntities: ({ name: string } & (
-      | { notation: "min-max"; constraints: [number, number] }
-      | {
-          notation: "separate"
-          constraints: ["total" | "partial", "1" | "N"]
-        }
-    ))[]
-    attributes?: Attributes
-  }
+interface RelPartEntity {
+  name: string
+  notation: API.SEPARATE | API.MIN_MAX
+  constraints: [API.PARTIAL | API.TOTAL | number, API.ONE | API.N | number]
 }
 
-type RelNodeBody = RelNode["body"]
-type RelNodePartEntities = RelNodeBody["partEntities"]
-type RelNodePartEntity = RelNodePartEntities[0]
+type RelPartEntities = RelPartEntity[]
 
-type Node = EntityNode | WeakEntityNode | RelNode
+interface RelBody {
+  partEntities: RelPartEntities
+  attributes?: Attributes
+}
+
+interface RelNode extends BaseNode {
+  type: API.REL | API.IDEN_REL
+  body: RelBody
+}
 
 function parseAttributes(
   tokens: Tokens,
@@ -79,27 +90,31 @@ function parseRelBody(
   tokens: Tokens,
   bodyStart: number,
   bodyEnd: number
-): RelNodeBody {
-  const partEntities: RelNodePartEntities = []
-  let currentPartEntity: RelNodePartEntity
-  let relAttributes = "" as Attributes
+): RelBody {
+  const partEntities: RelPartEntities = []
+  let currentPartEntity: RelPartEntity
+  let attributes = "" as Attributes
   let currentTokenIndex = bodyStart
 
+  const common: { [probName: string]: PipelineFunction } = {
+    comma: (token) => assertToken(token, [Delimiters.COMMA]),
+    optionalComma: (token, tokenIndex) =>
+      tokenIndex > bodyEnd ? undefined : assertToken(token, [Delimiters.COMMA]),
+  }
   const attributesPipeline: ParsingPipeline = [
     (_, tokenIndex) =>
       processBody(
         tokens,
         tokenIndex,
         (attributesBodyStart, attributesBodyEnd) =>
-          (relAttributes = parseAttributes(
+          (attributes = parseAttributes(
             tokens,
             attributesBodyStart,
             attributesBodyEnd
             /* Allow multivalued? */
           ))
       ),
-    (token, tokenIndex) =>
-      tokenIndex > bodyEnd ? undefined : assertToken(token, [Delimiters.COMMA]),
+    common.optionalComma,
   ]
   const partEntityPipeline: ParsingPipeline = [
     (token) =>
@@ -113,86 +128,90 @@ function parseRelBody(
         token,
         [Delimiters.OPENING_ANGLE, Delimiters.OPENING_PAREN],
         (matchIndex: number) => {
+          const pipelineFunctionsToRemoveCount =
+            partEntityPipeline.length === 3 ? 0 : 4
+
           if (matchIndex === 0) {
-            currentPartEntity.notation = "separate"
+            currentPartEntity.notation = API.SEPARATE
             partEntityPipeline.splice(
               2,
-              partEntityPipeline.length === 3 ? 0 : 4,
+              pipelineFunctionsToRemoveCount,
               (token) =>
                 assertToken(
                   token,
-                  [Keywords.TOTAl, Keywords.PARTIAL],
-                  () =>
-                    (currentPartEntity.constraints[0] = token.value.toLowerCase() as
-                      | "total"
-                      | "partial")
+                  [Keywords.PARTIAL, Keywords.TOTAL],
+                  (matchIndex) =>
+                    (currentPartEntity.constraints[0] = ([
+                      API.PARTIAL,
+                      API.TOTAL,
+                    ] as const)[matchIndex])
                 ),
-              (token) => assertToken(token, [Delimiters.COMMA]),
-              (token) =>
+              common.comma,
+              (token) => {
+                const allowedTokens: [API.ONE, API.N] = [API.ONE, API.N]
                 assertToken(
                   token,
-                  ["1", "N"],
-                  () =>
-                    (currentPartEntity.constraints[1] = token.value as
-                      | "1"
-                      | "N")
-                ),
+                  allowedTokens,
+                  (matchIndex) =>
+                    (currentPartEntity.constraints[1] =
+                      allowedTokens[matchIndex])
+                )
+              },
               (token) => assertToken(token, [Delimiters.CLOSING_ANGLE])
             )
           } else {
-            currentPartEntity.notation = "min-max"
+            currentPartEntity.notation = API.MIN_MAX
             partEntityPipeline.splice(
               2,
-              partEntityPipeline.length === 3 ? 0 : 4,
+              pipelineFunctionsToRemoveCount,
               (token) =>
-                processNumber(token, [0, Infinity], (number) => {
-                  currentPartEntity.constraints[0] = number
-                }),
-              (token) => assertToken(token, [Delimiters.COMMA]),
+                processNumber(
+                  token,
+                  [0, Infinity],
+                  (number) => (currentPartEntity.constraints[0] = number)
+                ),
+              common.comma,
               (token) =>
                 processNumber(
                   token,
                   [currentPartEntity.constraints[0] as number, Infinity],
-                  (number) => {
-                    currentPartEntity.constraints[1] = number
-                  }
+                  (number) => (currentPartEntity.constraints[1] = number)
                 ),
               (token) => assertToken(token, [Delimiters.CLOSING_PAREN])
             )
           }
         }
       ),
-    (token, tokenIndex) =>
-      tokenIndex > bodyEnd ? undefined : assertToken(token, [Delimiters.COMMA]),
+    common.optionalComma,
   ]
 
   do {
     if (tokens[currentTokenIndex].value === Keywords.ATTRIBUTES) {
-      if (relAttributes) {
+      if (attributes) {
         throw new Error(
           `Cannot redefine relationship attributes at position ${tokens[currentTokenIndex].position}, line ${tokens[currentTokenIndex].line}. All relationship attributes should be defined within the same body`
         )
       }
       currentTokenIndex = walkPipeline(
+        attributesPipeline,
         tokens,
-        ++currentTokenIndex,
-        attributesPipeline
+        ++currentTokenIndex
       )
     } else {
       partEntities.push(
-        (currentPartEntity = { constraints: [-1, -1] } as RelNodePartEntity)
+        (currentPartEntity = { constraints: [-1, -1] } as RelPartEntity)
       )
       currentTokenIndex = walkPipeline(
+        partEntityPipeline,
         tokens,
-        currentTokenIndex,
-        partEntityPipeline
+        currentTokenIndex
       )
     }
-  } while (currentTokenIndex < bodyEnd)
+  } while (currentTokenIndex <= bodyEnd)
 
   return {
     partEntities,
-    ...(relAttributes ? { relAttributes } : {}),
+    ...(attributes ? { attributes } : {}),
   }
 }
 
@@ -200,7 +219,7 @@ function parseEntity(
   tokens: Tokens,
   currentTokenIndex: number
 ): [number, EntityNode] {
-  const entityNode = { type: "entity" } as EntityNode
+  const entityNode = { type: API.ENTITY } as EntityNode
   const parsingPipeline: ParsingPipeline = [
     (token) =>
       processIdentifier(token, false, () => (entityNode.name = token.value)),
@@ -213,9 +232,9 @@ function parseEntity(
       ),
   ]
   const nextTokenIndex = walkPipeline(
+    parsingPipeline,
     tokens,
-    currentTokenIndex,
-    parsingPipeline
+    currentTokenIndex
   )
 
   return [nextTokenIndex, entityNode]
@@ -225,7 +244,7 @@ function parseWeakEntity(
   tokens: Tokens,
   currentTokenIndex: number
 ): [number, WeakEntityNode] {
-  const weakEntityNode = { type: "weak entity" } as WeakEntityNode
+  const weakEntityNode = { type: API.WEAK_ENTITY } as WeakEntityNode
   const parsingPipeline: ParsingPipeline = [
     (token) => assertToken(token, [Keywords.ENTITY]),
     (token) =>
@@ -254,9 +273,9 @@ function parseWeakEntity(
       ),
   ]
   const nextTokenIndex = walkPipeline(
+    parsingPipeline,
     tokens,
-    currentTokenIndex,
-    parsingPipeline
+    currentTokenIndex
   )
 
   return [nextTokenIndex, weakEntityNode]
@@ -266,7 +285,7 @@ function parseRel(
   tokens: Tokens,
   currentTokenIndex: number
 ): [number, RelNode] {
-  const relNode = { type: "rel" } as RelNode
+  const relNode = { type: API.REL } as RelNode
   const parsingPipeline: ParsingPipeline = [
     (token) =>
       processIdentifier(token, false, () => (relNode.name = token.value)),
@@ -279,9 +298,9 @@ function parseRel(
       ),
   ]
   const nextTokenIndex = walkPipeline(
+    parsingPipeline,
     tokens,
-    currentTokenIndex,
-    parsingPipeline
+    currentTokenIndex
   )
 
   return [nextTokenIndex, relNode]
@@ -291,34 +310,34 @@ function parseIdenRel(
   tokens: Tokens,
   currentTokenIndex: number
 ): [number, RelNode] {
-  const idRelNode = { type: "iden rel" } as RelNode
+  const idenRelNode = { type: API.IDEN_REL } as RelNode
   const parsingPipeline: ParsingPipeline = [
     (token) => assertToken(token, [Keywords.REL]),
     (token) =>
-      processIdentifier(token, false, () => (idRelNode.name = token.value)),
+      processIdentifier(token, false, () => (idenRelNode.name = token.value)),
     (_, tokenIndex) =>
       processBody(
         tokens,
         tokenIndex,
         (bodyStart, bodyEnd) =>
-          (idRelNode.body = parseRelBody(tokens, bodyStart, bodyEnd))
+          (idenRelNode.body = parseRelBody(tokens, bodyStart, bodyEnd))
       ),
   ]
   const nextTokenIndex = walkPipeline(
+    parsingPipeline,
     tokens,
-    currentTokenIndex,
-    parsingPipeline
+    currentTokenIndex
   )
 
-  return [nextTokenIndex, idRelNode]
+  return [nextTokenIndex, idenRelNode]
 }
 
 export default function (tokens: Tokens) {
-  const AST: Node[] = []
-
+  type Node = EntityNode | WeakEntityNode | RelNode
   type InitializerKeyword = keyof typeof parsers
   type ParseFunction = typeof parsers[InitializerKeyword]
 
+  const AST: Node[] = []
   const parsers = {
     [Keywords.ENTITY]: parseEntity,
     [Keywords.WEAK]: parseWeakEntity,

@@ -6,12 +6,14 @@ import {
 import { Token, Tokens } from "../lexer"
 import { Delimiters } from "./"
 
-export type ParsingPipeline = ((
+export type PipelineFunction = (
   token: Token,
   tokenIndex: number
 ) => ReturnType<
   typeof assertToken | typeof processIdentifier | typeof processBody
->)[]
+>
+
+export type ParsingPipeline = PipelineFunction[]
 
 export function assertToken(
   token: Token,
@@ -102,9 +104,9 @@ export function processBody(
 }
 
 export function walkPipeline(
+  parsingPipeline: ParsingPipeline,
   tokens: Tokens,
-  currentTokenIndex: number,
-  parsingPipeline: ParsingPipeline
+  currentTokenIndex: number
 ): number {
   for (const process of parsingPipeline) {
     if (tokens[currentTokenIndex] === undefined) {

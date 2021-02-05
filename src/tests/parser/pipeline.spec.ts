@@ -94,7 +94,7 @@ describe("Tests for walkPipeline", () => {
     ]
 
     expect(() =>
-      walkPipeline(MOCK_TOKENS[6] as Tokens, 0, parsingPipeline)
+      walkPipeline(parsingPipeline, MOCK_TOKENS[6] as Tokens, 0)
     ).toThrow(
       'Didn\'t expect to reach the end after token "ENTITY" at position 1, line 1'
     )
@@ -106,7 +106,7 @@ describe("Tests for walkPipeline", () => {
       () => assertToken((MOCK_TOKENS[6] as Tokens)[1], ["ENTITY"]),
     ]
 
-    expect(walkPipeline(MOCK_TOKENS[6] as Tokens, 0, parsingPipeline)).toBe(
+    expect(walkPipeline(parsingPipeline, MOCK_TOKENS[6] as Tokens, 0)).toBe(
       (MOCK_TOKENS[6] as Tokens).length
     )
   })

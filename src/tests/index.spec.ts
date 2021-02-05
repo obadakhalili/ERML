@@ -105,7 +105,7 @@ describe("Test for ERMLParser", () => {
               notation: "separate",
             },
           ],
-          relAttributes: "MOCK ATTRIBUTES",
+          attributes: "MOCK ATTRIBUTES",
         },
       },
       {
@@ -160,7 +160,7 @@ describe("Test for ERMLParser", () => {
               notation: "separate",
             },
           ],
-          relAttributes: "MOCK ATTRIBUTES",
+          attributes: "MOCK ATTRIBUTES",
         },
       },
       {
