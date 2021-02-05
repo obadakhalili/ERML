@@ -119,7 +119,7 @@ function parseRelBody(
       ),
     common.optionalComma,
   ]
-  const structConstraintsPipelines: { [probName: string]: ParsingPipeline } = {
+  const structConstraintsPipeline: { [probName: string]: ParsingPipeline } = {
     separate: [
       (token) =>
         assertToken(
@@ -177,25 +177,16 @@ function parseRelBody(
       assertToken(
         token,
         [Delimiters.OPENING_ANGLE, Delimiters.OPENING_PAREN],
-        (matchIndex: number) => {
-          const pipelineFunctionsToRemoveCount =
-            partEntityPipeline.length === 3 ? 0 : 4
-
-          if (matchIndex === 0) {
-            currentPartEntity.notation = API.SEPARATE
-            partEntityPipeline.splice(
-              2,
-              pipelineFunctionsToRemoveCount,
-              ...structConstraintsPipelines.separate
-            )
-          } else {
-            currentPartEntity.notation = API.MIN_MAX
-            partEntityPipeline.splice(
-              2,
-              pipelineFunctionsToRemoveCount,
-              ...structConstraintsPipelines.minmax
-            )
-          }
+        (matchIndex) => {
+          currentPartEntity.notation =
+            matchIndex === 0 ? API.SEPARATE : API.MIN_MAX
+          partEntityPipeline.splice(
+            2,
+            partEntityPipeline.length === 3 ? 0 : 4,
+            ...structConstraintsPipeline[
+              matchIndex === 0 ? "separate" : "minmax"
+            ]
+          )
         }
       ),
     common.optionalComma,
