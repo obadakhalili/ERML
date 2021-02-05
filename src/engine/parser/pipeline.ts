@@ -9,15 +9,13 @@ import { Delimiters } from "./"
 export type PipelineFunction = (
   token: Token,
   tokenIndex: number
-) => ReturnType<
-  typeof assertToken | typeof processIdentifier | typeof processBody
->
+) => number | void
 
 export type ParsingPipeline = PipelineFunction[]
 
 export function assertToken(
   token: Token,
-  expectedValues: string[],
+  expectedValues: readonly string[],
   callback?: (matchIndex: number) => void
 ) {
   const matchIndex = expectedValues.indexOf(token.value)
@@ -25,10 +23,10 @@ export function assertToken(
   if (matchIndex < 0) {
     throw new Error(
       `Expected to find ${expectedValues
-        .map((value) => `"${value}"`)
+        .map((value) => `'${value}'`)
         .join(", ")} at position ${token.position}, line ${
         token.line
-      }. Instead found "${token.value}"`
+      }. Instead found '${token.value}'`
     )
   }
   if (callback) {
@@ -45,11 +43,11 @@ export function processNumber(
 
   if (isNaN(number)) {
     throw new Error(
-      `"${token.value}" at position ${token.position}, line ${token.line} is not a valid number`
+      `'${token.value}' at position ${token.position}, line ${token.line} is not a valid number`
     )
   } else if (number < range[0] || number > range[1]) {
     throw new Error(
-      `"${token.value}" at position ${token.position}, line ${token.line} doesn't fall in the range of [${range[0]}, ${range[1]}]`
+      `'${token.value}' at position ${token.position}, line ${token.line} doesn't fall in the range of [${range[0]}, ${range[1]}]`
     )
   }
   callback(number)
@@ -62,15 +60,15 @@ export function processIdentifier(
 ) {
   if (isValidIdentifier(token.value) === false) {
     throw new Error(
-      `"${token.value}" at position ${token.position}, line ${token.line} is not a valid identifier`
+      `'${token.value}' at position ${token.position}, line ${token.line} is not a valid identifier`
     )
   } else if (isReference && isValidReference(token.value) === false) {
     throw new Error(
-      `"${token.value}" at position ${token.position}, line ${token.line} is not defined before`
+      `'${token.value}' at position ${token.position}, line ${token.line} is not defined before`
     )
   } else if (isReference === false && isDuplicateIdentifier(token.value)) {
     throw new Error(
-      `"${token.value}" at position ${token.position}, line ${token.line} is already defined`
+      `'${token.value}' at position ${token.position}, line ${token.line} is already defined`
     )
   }
   callback()
@@ -112,7 +110,7 @@ export function walkPipeline(
     if (tokens[currentTokenIndex] === undefined) {
       const previousToken = tokens[currentTokenIndex - 1]
       throw new Error(
-        `Didn't expect to reach the end after token "${previousToken.value}" at position ${previousToken.position}, line ${previousToken.line}`
+        `Didn't expect to reach the end after token '${previousToken.value}' at position ${previousToken.position}, line ${previousToken.line}`
       )
     }
 

@@ -62,7 +62,10 @@ type WeakEntityNode = Omit<EntityNode, "type"> & {
 interface RelPartEntity {
   name: string
   notation: API.SEPARATE | API.MIN_MAX
-  constraints: [API.PARTIAL | API.TOTAL | number, API.ONE | API.N | number]
+  structConstraints: {
+    partConstraint: API.PARTIAL | API.TOTAL | number
+    cardinalityRatio: API.ONE | API.N | number
+  }
 }
 
 type RelPartEntities = RelPartEntity[]
@@ -141,19 +144,19 @@ function parseRelBody(
                   token,
                   [Keywords.PARTIAL, Keywords.TOTAL],
                   (matchIndex) =>
-                    (currentPartEntity.constraints[0] = ([
+                    (currentPartEntity.structConstraints.partConstraint = ([
                       API.PARTIAL,
                       API.TOTAL,
                     ] as const)[matchIndex])
                 ),
               common.comma,
               (token) => {
-                const allowedTokens: [API.ONE, API.N] = [API.ONE, API.N]
+                const allowedTokens = [API.ONE, API.N] as const
                 assertToken(
                   token,
                   allowedTokens,
                   (matchIndex) =>
-                    (currentPartEntity.constraints[1] =
+                    (currentPartEntity.structConstraints.cardinalityRatio =
                       allowedTokens[matchIndex])
                 )
               },
@@ -168,14 +171,20 @@ function parseRelBody(
                 processNumber(
                   token,
                   [0, Infinity],
-                  (number) => (currentPartEntity.constraints[0] = number)
+                  (number) =>
+                    (currentPartEntity.structConstraints.partConstraint = number)
                 ),
               common.comma,
               (token) =>
                 processNumber(
                   token,
-                  [currentPartEntity.constraints[0] as number, Infinity],
-                  (number) => (currentPartEntity.constraints[1] = number)
+                  [
+                    currentPartEntity.structConstraints
+                      .partConstraint as number,
+                    Infinity,
+                  ],
+                  (number) =>
+                    (currentPartEntity.structConstraints.cardinalityRatio = number)
                 ),
               (token) => assertToken(token, [Delimiters.CLOSING_PAREN])
             )
@@ -199,7 +208,7 @@ function parseRelBody(
       )
     } else {
       partEntities.push(
-        (currentPartEntity = { constraints: [-1, -1] } as RelPartEntity)
+        (currentPartEntity = { structConstraints: {} } as RelPartEntity)
       )
       currentTokenIndex = walkPipeline(
         partEntityPipeline,
@@ -350,7 +359,7 @@ export default function (tokens: Tokens) {
 
     if (currentParser === undefined) {
       throw new Error(
-        `Didn't recognize token "${tokens[i].value}" at position ${tokens[i].position}, line ${tokens[i].line}`
+        `Didn't recognize token '${tokens[i].value}' at position ${tokens[i].position}, line ${tokens[i].line}`
       )
     }
 
