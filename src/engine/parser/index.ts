@@ -195,7 +195,7 @@ function parseRelBody(
   do {
     if (tokens[currentTokenIndex].value === Keywords.ATTRIBUTES) {
       if (attributes) {
-        throw new Error(
+        throw new SyntaxError(
           `Cannot redefine relationship attributes at position ${tokens[currentTokenIndex].position}, line ${tokens[currentTokenIndex].line}. All relationship attributes should be defined within the same body`
         )
       }
@@ -356,7 +356,7 @@ export default function (tokens: Tokens) {
     currentParser = parsers[tokens[i].value as InitializerKeyword]
 
     if (currentParser === undefined) {
-      throw new Error(
+      throw new SyntaxError(
         `Didn't recognize token '${tokens[i].value}' at position ${tokens[i].position}, line ${tokens[i].line}`
       )
     }
@@ -371,6 +371,7 @@ export default function (tokens: Tokens) {
 }
 
 export const testables = {
+  parseRelBody,
   parseEntity,
   parseWeakEntity,
   parseRel,
