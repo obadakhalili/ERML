@@ -1,7 +1,5 @@
 import tokenize from "../engine/lexer"
 
-const MOCK_CODE = ["", ``]
-
 describe("tests for lexer", () => {
   it("should return empty array for empty string code", () => {
     expect(tokenize("")).toEqual([])
