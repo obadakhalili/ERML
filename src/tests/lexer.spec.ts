@@ -37,7 +37,7 @@ describe("tests for lexer", () => {
     expect(tokenize(MOCK_CODE[0])).toEqual([])
   })
 
-  it("should generate valid tokens. even if code isn't valid", () => {
+  it("should generate correct tokens. even if code isn't valid", () => {
     expect(tokenize(MOCK_CODE[1])).toMatchSnapshot()
   })
 })
