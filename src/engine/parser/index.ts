@@ -101,7 +101,7 @@ function parseRelBody(
 
   const common: { [probName: string]: PipelineFunction } = {
     comma: (token) => assertToken(token, [Delimiters.COMMA]),
-    optionalComma: (token, tokenIndex) =>
+    possibleComma: (token, tokenIndex) =>
       tokenIndex > bodyEnd ? undefined : assertToken(token, [Delimiters.COMMA]),
   }
   const attributesPipeline: ParsingPipeline = [
@@ -117,7 +117,7 @@ function parseRelBody(
             /* Allow multivalued? */
           ))
       ),
-    common.optionalComma,
+    common.possibleComma,
   ]
   const structConstraintsPipeline: { [probName: string]: ParsingPipeline } = {
     separate: [
@@ -189,7 +189,7 @@ function parseRelBody(
           )
         }
       ),
-    common.optionalComma,
+    common.possibleComma,
   ]
 
   do {
