@@ -214,7 +214,7 @@ function parseRelBody(
         currentTokenIndex
       )
     }
-  } while (bodyEnd > currentTokenIndex)
+  } while (currentTokenIndex <= bodyEnd)
 
   return {
     partEntities,

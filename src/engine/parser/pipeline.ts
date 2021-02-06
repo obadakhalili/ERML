@@ -1,9 +1,9 @@
+import { Token, Tokens } from "../lexer"
 import {
   isValidIdentifier,
   isValidReference,
   isDuplicateIdentifier,
 } from "./identifiers"
-import { Token, Tokens } from "../lexer"
 import { Delimiters } from "./"
 
 export type PipelineFunction = (
