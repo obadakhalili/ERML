@@ -5,121 +5,173 @@ import {
   processBody,
   walkPipeline,
   testables,
+  processNumber,
 } from "../../engine/parser/pipeline"
-import { Token, Tokens } from "../../engine/lexer"
+import { isDuplicateIdentifier } from "../../engine/parser/identifiers"
 
 const { bracesMatchAt } = testables
 
-const MOCK_TOKENS = [
-  { value: "OWNER", position: 1, line: 1 },
-  { value: "1employee", position: 1, line: 1 },
-  { value: "employee", position: 1, line: 1 },
-  [
-    { value: "[", position: 1, line: 1 },
-    { value: "}", position: 1, line: 1 },
-  ],
-  [
-    { value: "{", position: 1, line: 1 },
-    { value: "{", position: 1, line: 1 },
-    { value: "}", position: 1, line: 1 },
-  ],
-  [
-    { value: "{", position: 1, line: 1 },
-    { value: "DUMP_TOKEN", position: 1, line: 1 },
-    { value: "}", position: 1, line: 1 },
-  ],
-  [
-    { value: "WEAK", position: 1, line: 1 },
-    { value: "ENTITY", position: 1, line: 1 },
-  ],
-]
-
-describe("Tests for assertToken", () => {
-  it("Should throw an error indicating that the passed token isn't the same as the expected value", () => {
-    expect(() => assertToken(MOCK_TOKENS[0] as Token, ["owner"])).toThrow(
-      'Expected to find "owner" at position 1, line 1. Instead found "OWNER"'
-    )
+describe("tests for assertToken", () => {
+  it("should throw a syntax error", () => {
+    expect(() =>
+      assertToken({ value: "foo", position: -1, line: -1 }, ["bar"])
+    ).toThrow(SyntaxError)
   })
 
-  it("Should not throw an error", () => {
-    expect(() => assertToken(MOCK_TOKENS[0] as Token, ["OWNER"])).not.toThrow()
+  it("should invoke callback and pass in the correct matched index", () => {
+    const token = { value: "bar", position: -1, line: -1 }
+    const expectedValues = ["foo", token.value]
+    const callback = jest.fn()
+    assertToken(token, expectedValues, callback)
+    expect(callback).toHaveBeenCalledWith(expectedValues.indexOf(token.value))
   })
 })
 
-describe("Tests for processIdentifier", () => {
-  it("Should throw an error for passing an invalid identifier name", () => {
+describe("tests for processNumber", () => {
+  const token = { value: "5", position: -1, line: -1 }
+  const numericValue = Number(token.value)
+
+  it("should throw a type error", () => {
     expect(() =>
-      processIdentifier(MOCK_TOKENS[1] as Token, false, () => undefined)
-    ).toThrow('"1employee" at position 1, line 1 is not a valid identifier')
+      processNumber(
+        { value: "foo", position: -1, line: -1 },
+        [0, 10],
+        () => undefined
+      )
+    ).toThrow(TypeError)
   })
 
-  it("Should not not throw an error", () => {
+  it("should throw a range error. value below the range", () => {
     expect(() =>
-      processIdentifier(MOCK_TOKENS[2] as Token, false, () => undefined)
-    ).not.toThrow()
+      processNumber(
+        token,
+        [numericValue + 1, numericValue + 2],
+        () => undefined
+      )
+    ).toThrow(RangeError)
+  })
+
+  it("should throw a range error. value above the range", () => {
+    expect(() =>
+      processNumber(
+        token,
+        [numericValue - 2, numericValue - 1],
+        () => undefined
+      )
+    ).toThrow(RangeError)
+  })
+
+  it("should invoke callback and pass in the correct numerical value", () => {
+    const callback = jest.fn()
+    processNumber(token, [numericValue - 1, numericValue + 1], callback)
+    expect(callback).toHaveBeenCalledWith(numericValue)
   })
 })
 
-describe("Tests for processBody", () => {
-  it("Should throw an error for passing a non-opening-brace token", () => {
+describe("tests for processIdentifier", () => {
+  it("should throw a syntax error. not a valid identifier", () => {
     expect(() =>
-      processBody(MOCK_TOKENS[3] as Tokens, 0, () => undefined)
-    ).toThrow('Expected to find "{" at position 1, line 1. Instead found "["')
+      processIdentifier(
+        { value: "1foo", position: -1, line: -1 },
+        false,
+        () => undefined
+      )
+    ).toThrow(SyntaxError)
   })
 
-  it("Should throw an error for having non-matching grouping braces", () => {
+  it("should throw a reference error", () => {
     expect(() =>
-      processBody(MOCK_TOKENS[4] as Tokens, 0, () => undefined)
-    ).toThrow(
-      'Grouping symbols ("{" and "}") don\'t match after "{" at position 1, line 1'
-    )
+      processIdentifier(
+        { value: "foo", position: -1, line: -1 },
+        true,
+        () => undefined
+      )
+    ).toThrow(ReferenceError)
   })
 
-  it("Should process body successfully", () => {
-    expect(
-      processBody(MOCK_TOKENS[5] as Tokens, 0, (bodyStart, bodyEnd) => {
-        expect(bodyStart).toBe(1)
-        expect(bodyEnd).toBe((MOCK_TOKENS[5] as Tokens).length - 2)
-      })
-    ).toBe((MOCK_TOKENS[5] as Tokens).length)
+  it("should throw a syntax error. identifier already defined", () => {
+    isDuplicateIdentifier("foo")
+    expect(() =>
+      processIdentifier(
+        { value: "foo", position: -1, line: -1 },
+        false,
+        () => undefined
+      )
+    ).toThrow(SyntaxError)
+  })
+
+  it("should invoke callback", () => {
+    const callback = jest.fn()
+    processIdentifier({ value: "bar", position: -1, line: -1 }, false, callback)
+    expect(callback).toHaveBeenCalled()
   })
 })
 
-describe("Tests for walkPipeline", () => {
-  it("Should throw en error for ending tokens abruptly", () => {
-    const parsingPipeline: ParsingPipeline = [
-      () => undefined,
-      () => undefined,
-      () => undefined,
+describe("tests for processBody", () => {
+  it('should throw a syntax error. value is not "{"', () => {
+    const tokens = [{ value: "<", position: -1, line: -1 }]
+    expect(() => processBody(tokens, 0, () => undefined)).toThrow(SyntaxError)
+  })
+
+  it("should throw a syntax error. grouping braces don't match", () => {
+    const tokens = [{ value: "{", position: -1, line: -1 }]
+    expect(() => processBody(tokens, 0, () => undefined)).toThrow(SyntaxError)
+  })
+
+  it("should throw a syntax error. body is empty", () => {
+    const tokens = [
+      { value: "{", position: -1, line: -1 },
+      { value: "}", position: -1, line: -1 },
     ]
-
-    expect(() =>
-      walkPipeline(parsingPipeline, MOCK_TOKENS[6] as Tokens, 0)
-    ).toThrow(
-      'Didn\'t expect to reach the end after token "ENTITY" at position 1, line 1'
-    )
+    expect(() => processBody(tokens, 0, () => undefined)).toThrow(SyntaxError)
   })
 
-  it("Should walk through the parsing pipeline, and return the next token index correctly correctly ", () => {
-    const parsingPipeline: ParsingPipeline = [
-      () => assertToken((MOCK_TOKENS[6] as Tokens)[0], ["WEAK"]),
-      () => assertToken((MOCK_TOKENS[6] as Tokens)[1], ["ENTITY"]),
+  it("should invoke callback and pass in the correct the bodyStart and bodyEnd indexes", () => {
+    const tokens = [
+      { value: "{", position: -1, line: -1 },
+      { value: "foo", position: -1, line: -1 },
+      { value: "}", position: -1, line: -1 },
     ]
-
-    expect(walkPipeline(parsingPipeline, MOCK_TOKENS[6] as Tokens, 0)).toBe(
-      (MOCK_TOKENS[6] as Tokens).length
-    )
+    const callback = jest.fn()
+    processBody(tokens, 0, callback)
+    expect(callback).toHaveBeenCalledWith(1, tokens.length - 2)
   })
 })
 
-describe("Tests for bracesMatchAt", () => {
-  it("Should return null for non-matching grouping braces", () => {
-    expect(bracesMatchAt(MOCK_TOKENS[4] as Tokens, 0)).toBe(null)
+describe("tests for walkPipeline", () => {
+  const tokens = [
+    { value: "foo", position: -1, line: -1 },
+    { value: "bar", position: -1, line: -1 },
+  ]
+  const parsingPipeline: ParsingPipeline = [
+    () => undefined,
+    () => undefined,
+    () => undefined,
+  ]
+
+  it("should throw a syntax error. unexpected reach of end", () => {
+    expect(() => walkPipeline(parsingPipeline, tokens, 0)).toThrow(SyntaxError)
   })
 
-  it("Should return the correct next token index", () => {
-    expect(bracesMatchAt(MOCK_TOKENS[5] as Tokens, 0)).toBe(
-      (MOCK_TOKENS[5] as Tokens).length - 1
-    )
+  it("should walk through the parsing pipeline, and return the next token index correctly ", () => {
+    parsingPipeline.pop()
+    expect(walkPipeline(parsingPipeline, tokens, 0)).toBe(tokens.length)
+  })
+})
+
+describe("tests for bracesMatchAt", () => {
+  const tokens = [
+    { value: "{", position: -1, line: -1 },
+    { value: "{", position: -1, line: -1 },
+    { value: "}", position: -1, line: -1 },
+  ]
+
+  it("should return null for non-matching grouping braces", () => {
+    expect(bracesMatchAt(tokens, 0)).toBe(null)
+  })
+
+  it("Should return the correct index in which braces matched at", () => {
+    tokens.shift()
+    expect(bracesMatchAt(tokens, 0)).toBe(tokens.length - 1)
   })
 })

@@ -36,7 +36,7 @@ describe("Test for lexer", () => {
   it("should return empty array for empty string code", () => {
     expect(tokenize(MOCK_CODE[0])).toEqual([])
   })
-  
+
   it("should generate valid tokens. even if code isn't valid", () => {
     expect(tokenize(MOCK_CODE[1])).toEqual([
       { value: "ENTITY", position: 0, line: 1 },
