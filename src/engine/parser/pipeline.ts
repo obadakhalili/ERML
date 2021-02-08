@@ -57,7 +57,8 @@ export function processStringLiteral(
   token: Token,
   callback: (stringValue: string) => void
 ) {
-  const [_, matched] = stringLiteralRegexp.exec(token.value) || []
+  let [_, matched] = stringLiteralRegexp.exec(token.value) || []
+  matched = matched?.replace(/\\\\|\\/g, (match) => match === "\\\\" ? "\\" : "")
 
   if (matched === undefined) {
     throw new TypeError(

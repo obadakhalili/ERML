@@ -104,7 +104,7 @@ describe("tests for parseAttributes", () => {
       SyntaxError
     )
   })
-  
+
   it("should parse valid tokens", () => {
     const tokens = tokenize(`ENTITY Bar {
       PRIMARY "SSN",
