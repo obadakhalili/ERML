@@ -468,6 +468,7 @@ export default function (tokens: Tokens) {
 }
 
 export const testables = {
+  parseAttributes,
   parseRelBody,
   parseEntity,
   parseWeakEntity,

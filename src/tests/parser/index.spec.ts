@@ -3,6 +3,7 @@ import tokenize from "../../engine/lexer"
 import { isDuplicateIdentifier } from "../../engine/parser/identifiers"
 
 const {
+  parseAttributes,
   parseRelBody,
   parseEntity,
   parseWeakEntity,
@@ -89,6 +90,33 @@ describe("tests for parser", () => {
       Project <TOTAL, 1>
     }`)
     expect(parse(tokens)).toMatchSnapshot()
+  })
+})
+
+describe("tests for parseAttributes", () => {
+  it("should throw a syntax error", () => {
+    const tokens = tokenize(`ENTITY Foo {
+      COMPOSITE "full_name" {
+        MULTIVALUED "first_name"
+      }
+    }`)
+    expect(() => parseAttributes(tokens, 3, tokens.length - 2)).toThrow(
+      SyntaxError
+    )
+  })
+  
+  it("should parse valid tokens", () => {
+    const tokens = tokenize(`ENTITY Bar {
+      PRIMARY "SSN",
+      SIMPLE "salary",
+      SIMPLE "DoB",
+      DERIVED "age",
+      COMPOSITE "full_name" {
+        SIMPLE "first_name",
+        SIMPLE "last_name"
+      }
+    }`)
+    expect(parseAttributes(tokens, 3, tokens.length - 3)).toMatchSnapshot()
   })
 })
 
