@@ -115,16 +115,7 @@ function parseAttributes(
   const attributes: Attributes = []
   let currentAttribute: Attribute
 
-  const typesInAPI = [
-    API.COMPOSITE,
-    API.SIMPLE,
-    API.ATOMIC,
-    API.PRIMARY,
-    API.PARTIAL,
-    API.DERIVED,
-    API.MULTIVALUED,
-  ] as const
-  const allowedTypesKeywords = [
+  const allowedTypes = [
     Keywords.COMPOSITE,
     Keywords.SIMPLE,
     Keywords.ATOMIC,
@@ -133,7 +124,7 @@ function parseAttributes(
     Keywords.DERIVED,
   ]
   if (allowMultivalued) {
-    allowedTypesKeywords.push(Keywords.MULTIVALUED)
+    allowedTypes.push(Keywords.MULTIVALUED)
   }
 
   const compositeTypePipeline: ParsingPipeline = [
@@ -156,8 +147,17 @@ function parseAttributes(
     (token) =>
       assertToken(
         token,
-        allowedTypesKeywords,
-        (matchedIndex) => (currentAttribute.type = typesInAPI[matchedIndex])
+        allowedTypes,
+        (matchedIndex) =>
+          (currentAttribute.type = ([
+            API.COMPOSITE,
+            API.SIMPLE,
+            API.ATOMIC,
+            API.PRIMARY,
+            API.PARTIAL,
+            API.DERIVED,
+            API.MULTIVALUED,
+          ] as const)[matchedIndex])
       ),
     (token) =>
       processStringLiteral(
