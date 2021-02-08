@@ -16,14 +16,15 @@ const tokensRegexs = [
   "\\(",
   "\\)",
   ",",
-  '"(?:[^"\\\\]|\\\\.)*"', // Literal strings (allows escaping of quotes)
   "(\\+|-)?(\\d+|Infinity)", // Numbers
+  '"((?:[^"\\\\]|\\\\.)*)"', // Literal strings (allows escaping of quotes)
   "#.*|\\/\\*[^]*?\\*\\/|\\s", // Comments and whitespaces
   "[^]", // Everything else
 ]
 const tokenizerRegex = new RegExp(tokensRegexs.join("|"), "g")
 const newLineRegexp = /\n/g
-const ignorablesRegex = new RegExp(tokensRegexs[12])
+const ignorablesRegex = /^#.*|\/\*[^]*?\*\/|\s$/
+export const stringLiteralRegexp = new RegExp(tokensRegexs[11])
 
 export default function (ERML: string): Tokens {
   const matches = ERML.matchAll(tokenizerRegex)
