@@ -25,7 +25,10 @@ describe("tests for parser", () => {
       SIMPLE "salary",
       SIMPLE "DoB",
       DERIVED "age",
-      COMPOSITE "full_name" ["first_name", "last_name"]
+      COMPOSITE "full_name" {
+        SIMPLE "first_name",
+        SIMPLE "last_name"
+      }
     }
     
     ENTITY Department {
@@ -42,7 +45,10 @@ describe("tests for parser", () => {
     }
     
     WEAK ENTITY Dependent OWNER Employee {
-      COMPOSITE PARTIAL "key" ["name", "DoB"],
+      COMPOSITE "key" {
+        SIMPLE "name",
+        SIMPLE "DoB"
+      },
       SIMPLE "relationship",
       SIMPLE "gender"
     }
@@ -126,7 +132,10 @@ describe("test for parseEntity", () => {
       SIMPLE "salary",
       SIMPLE "DoB",
       DERIVED "age",
-      COMPOSITE "full_name" ["first_name", "last_name"]
+      COMPOSITE "full_name" {
+        SIMPLE "first_name",
+        SIMPLE "last_name"
+      }
     }`)
     expect(parseEntity(tokens, 1)).toMatchSnapshot()
   })
@@ -136,7 +145,10 @@ describe("test for parseWeakEntity", () => {
   it("should parse valid tokens", () => {
     isDuplicateIdentifier("Father")
     const tokens = tokenize(`WEAK ENTITY Son OWNER Father {
-      COMPOSITE PARTIAL "key" ["name", "DoB"],
+      COMPOSITE "key" {
+        SIMPLE "name",
+        SIMPLE "DoB"
+      },
       SIMPLE "relationship",
       SIMPLE "gender"
     }`)

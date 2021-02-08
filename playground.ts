@@ -10,7 +10,10 @@ try {
         SIMPLE "salary",
         SIMPLE "DoB",
         DERIVED "age",
-        COMPOSITE "full_name" ["first_name", "last_name"]
+        COMPOSITE "full_name" {
+          SIMPLE "first_name",
+          SIMPLE "last_name"
+        }
       }
       
       ENTITY Department {
@@ -27,7 +30,10 @@ try {
       }
       
       WEAK ENTITY Dependent OWNER Employee {
-        COMPOSITE PARTIAL "key" ["name", "DoB"],
+        COMPOSITE "key" {
+          PARTIAL "name",
+          PARTIAL "DoB"
+        },
         SIMPLE "relationship",
         SIMPLE "gender"
       }
@@ -70,5 +76,5 @@ try {
     )
   )
 } catch (e) {
-  console.log(e)
+  console.log(e.message)
 }

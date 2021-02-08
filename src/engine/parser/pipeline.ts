@@ -1,4 +1,4 @@
-import { Token, Tokens } from "../lexer"
+import { Token, Tokens, stringLiteralRegexp } from "../lexer"
 import {
   isValidIdentifier,
   isValidReference,
@@ -51,6 +51,20 @@ export function processNumber(
     )
   }
   callback(number)
+}
+
+export function processStringLiteral(
+  token: Token,
+  callback: (stringValue: string) => void
+) {
+  const [_, matched] = stringLiteralRegexp.exec(token.value) || []
+
+  if (matched === undefined) {
+    throw new TypeError(
+      `'${token.value}' at position ${token.position}, line ${token.line} is not a valid string`
+    )
+  }
+  callback(matched)
 }
 
 export function processIdentifier(

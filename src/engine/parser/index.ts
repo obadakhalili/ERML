@@ -4,6 +4,7 @@ import {
   ParsingPipeline,
   assertToken,
   processNumber,
+  processStringLiteral,
   processIdentifier,
   processBody,
   walkPipeline,
@@ -28,6 +29,12 @@ const enum Keywords {
   PARTIAL = "PARTIAL",
   TOTAL = "TOTAL",
   ATTRIBUTES = "ATTRIBUTES",
+  SIMPLE = "SIMPLE",
+  ATOMIC = "ATOMIC",
+  PRIMARY = "PRIMARY",
+  DERIVED = "DERIVED",
+  MULTIVALUED = "MULTIVALUED",
+  COMPOSITE = "COMPOSITE",
 }
 
 const enum API {
@@ -41,13 +48,32 @@ const enum API {
   ONE = "1",
   N = "N",
   MIN_MAX = "min-max",
+  SIMPLE = "simple",
+  ATOMIC = "atomic",
+  PRIMARY = "primary",
+  DERIVED = "derived",
+  MULTIVALUED = "multivalued",
+  COMPOSITE = "composite",
 }
 
 interface BaseNode {
   name: string
 }
 
-type Attributes = "MOCK ATTRIBUTES"
+type Attributes = Attribute[]
+
+interface Attribute {
+  name: string
+  type:
+    | API.SIMPLE
+    | API.ATOMIC
+    | API.PRIMARY
+    | API.PARTIAL
+    | API.DERIVED
+    | API.MULTIVALUED
+    | API.COMPOSITE
+  nestedAttributs?: Attributes
+}
 
 interface EntityNode extends BaseNode {
   type: API.ENTITY
@@ -86,7 +112,81 @@ function parseAttributes(
   bodyEnd: number,
   allowMultivalued = true
 ): Attributes {
-  return "MOCK ATTRIBUTES"
+  const attributes: Attributes = []
+  let currentAttribute: Attribute
+
+  const types = [
+    API.COMPOSITE,
+    API.SIMPLE,
+    API.ATOMIC,
+    API.PRIMARY,
+    API.PARTIAL,
+    API.DERIVED,
+    API.MULTIVALUED,
+  ] as const
+  const allowedTypesKeywords = [
+    Keywords.COMPOSITE,
+    Keywords.SIMPLE,
+    Keywords.ATOMIC,
+    Keywords.PRIMARY,
+    Keywords.PARTIAL,
+    Keywords.DERIVED,
+  ]
+  if (allowMultivalued) {
+    allowedTypesKeywords.push(Keywords.MULTIVALUED)
+  }
+
+  const compositeTypePipeline: ParsingPipeline = [
+    (token, tokenIndex) =>
+      processBody(
+        tokens,
+        tokenIndex,
+        (bodyStart, bodyEnd) =>
+          (currentAttribute.nestedAttributs = parseAttributes(
+            tokens,
+            bodyStart,
+            bodyEnd,
+            false
+          ))
+      ),
+    (token, tokenIndex) => {
+      tokenIndex > bodyEnd ? undefined : assertToken(token, [Delimiters.COMMA])
+    },
+  ]
+  const commonPipeline: ParsingPipeline = [
+    (token) =>
+      assertToken(
+        token,
+        allowedTypesKeywords,
+        (matchIndex) => (currentAttribute.type = types[matchIndex])
+      ),
+    (token) =>
+      processStringLiteral(
+        token,
+        (stringValue) => (currentAttribute.name = stringValue)
+      ),
+    (token, tokenIndex) => {
+      if (tokenIndex > bodyEnd || currentAttribute.type === API.COMPOSITE) {
+        return
+      }
+      assertToken(token, [Delimiters.COMMA])
+    },
+  ]
+
+  for (let currentTokenIndex = bodyStart; currentTokenIndex <= bodyEnd; ) {
+    attributes.push((currentAttribute = {} as Attribute))
+    currentTokenIndex = walkPipeline(commonPipeline, tokens, currentTokenIndex)
+
+    if (currentAttribute.type === API.COMPOSITE) {
+      currentTokenIndex = walkPipeline(
+        compositeTypePipeline,
+        tokens,
+        currentTokenIndex - 1
+      )
+    }
+  }
+
+  return attributes
 }
 
 function parseRelBody(
@@ -96,7 +196,7 @@ function parseRelBody(
 ): RelBody {
   const partEntities: RelPartEntities = []
   let currentPartEntity: RelPartEntity
-  let attributes = "" as Attributes
+  let attributes = [] as Attributes
   let currentTokenIndex = bodyStart
 
   const common: { [probName: string]: PipelineFunction } = {
@@ -192,7 +292,7 @@ function parseRelBody(
 
   do {
     if (tokens[currentTokenIndex].value === Keywords.ATTRIBUTES) {
-      if (attributes) {
+      if (attributes.length) {
         throw new SyntaxError(
           `Cannot redefine relationship attributes at position ${tokens[currentTokenIndex].position}, line ${tokens[currentTokenIndex].line}. All relationship attributes should be defined within the same body`
         )
@@ -213,7 +313,7 @@ function parseRelBody(
 
   return {
     partEntities,
-    ...(attributes ? { attributes } : {}),
+    ...(attributes.length ? { attributes } : {}),
   }
 }
 
