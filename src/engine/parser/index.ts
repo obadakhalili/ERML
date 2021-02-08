@@ -1,4 +1,3 @@
-import { Tokens } from "../lexer"
 import {
   PipelineFunction,
   ParsingPipeline,
@@ -9,6 +8,7 @@ import {
   processBody,
   walkPipeline,
 } from "./pipeline"
+import { Tokens } from "../lexer"
 
 export const enum Delimiters {
   OPENING_BRACE = "{",
@@ -115,7 +115,7 @@ function parseAttributes(
   const attributes: Attributes = []
   let currentAttribute: Attribute
 
-  const types = [
+  const typesInAPI = [
     API.COMPOSITE,
     API.SIMPLE,
     API.ATOMIC,
@@ -137,7 +137,7 @@ function parseAttributes(
   }
 
   const compositeTypePipeline: ParsingPipeline = [
-    (token, tokenIndex) =>
+    (_, tokenIndex) =>
       processBody(
         tokens,
         tokenIndex,
@@ -149,16 +149,15 @@ function parseAttributes(
             false
           ))
       ),
-    (token, tokenIndex) => {
-      tokenIndex > bodyEnd ? undefined : assertToken(token, [Delimiters.COMMA])
-    },
+    (token, tokenIndex) =>
+      tokenIndex > bodyEnd ? undefined : assertToken(token, [Delimiters.COMMA]),
   ]
   const commonPipeline: ParsingPipeline = [
     (token) =>
       assertToken(
         token,
         allowedTypesKeywords,
-        (matchIndex) => (currentAttribute.type = types[matchIndex])
+        (matchedIndex) => (currentAttribute.type = typesInAPI[matchedIndex])
       ),
     (token) =>
       processStringLiteral(
@@ -197,9 +196,8 @@ function parseRelBody(
   const partEntities: RelPartEntities = []
   let currentPartEntity: RelPartEntity
   let attributes = [] as Attributes
-  let currentTokenIndex = bodyStart
 
-  const common: { [probName: string]: PipelineFunction } = {
+  const common: { comma: PipelineFunction; possibleComma: PipelineFunction } = {
     comma: (token) => assertToken(token, [Delimiters.COMMA]),
     possibleComma: (token, tokenIndex) =>
       tokenIndex > bodyEnd ? undefined : assertToken(token, [Delimiters.COMMA]),
@@ -224,11 +222,11 @@ function parseRelBody(
       assertToken(
         token,
         [Keywords.PARTIAL, Keywords.TOTAL],
-        (matchIndex) =>
+        (matchedIndex) =>
           (currentPartEntity.structConstraints.partConstraint = ([
             API.PARTIAL,
             API.TOTAL,
-          ] as const)[matchIndex])
+          ] as const)[matchedIndex])
       ),
     common.comma,
     (token) => {
@@ -236,9 +234,9 @@ function parseRelBody(
       assertToken(
         token,
         allowedTokens,
-        (matchIndex) =>
+        (matchedIndex) =>
           (currentPartEntity.structConstraints.cardinalityRatio =
-            allowedTokens[matchIndex])
+            allowedTokens[matchedIndex])
       )
     },
     (token) => assertToken(token, [Delimiters.CLOSING_ANGLE]),
@@ -249,8 +247,8 @@ function parseRelBody(
       processNumber(
         token,
         [0, Infinity],
-        (number) =>
-          (currentPartEntity.structConstraints.partConstraint = number)
+        (numberValue) =>
+          (currentPartEntity.structConstraints.partConstraint = numberValue)
       ),
     common.comma,
     (token) =>
@@ -260,8 +258,8 @@ function parseRelBody(
           currentPartEntity.structConstraints.partConstraint as number,
           Infinity,
         ],
-        (number) =>
-          (currentPartEntity.structConstraints.cardinalityRatio = number)
+        (numberValue) =>
+          (currentPartEntity.structConstraints.cardinalityRatio = numberValue)
       ),
     (token) => assertToken(token, [Delimiters.CLOSING_PAREN]),
     common.possibleComma,
@@ -278,8 +276,8 @@ function parseRelBody(
       assertToken(
         token,
         [Delimiters.OPENING_ANGLE, Delimiters.OPENING_PAREN],
-        (matchIndex) => {
-          if (matchIndex === 0) {
+        (matchedIndex) => {
+          if (matchedIndex === 0) {
             currentPartEntity.notation = API.SEPARATE
             nextPipeline = separateNotationPipeline
           } else {
@@ -290,7 +288,7 @@ function parseRelBody(
       ),
   ]
 
-  do {
+  for (let currentTokenIndex = bodyStart; currentTokenIndex <= bodyEnd; ) {
     if (tokens[currentTokenIndex].value === Keywords.ATTRIBUTES) {
       if (attributes.length) {
         throw new SyntaxError(
@@ -306,10 +304,14 @@ function parseRelBody(
       partEntities.push(
         (currentPartEntity = { structConstraints: {} } as RelPartEntity)
       )
-      currentTokenIndex = walkPipeline(initialPipeline, tokens, currentTokenIndex)
+      currentTokenIndex = walkPipeline(
+        initialPipeline,
+        tokens,
+        currentTokenIndex
+      )
       currentTokenIndex = walkPipeline(nextPipeline, tokens, currentTokenIndex)
     }
-  } while (currentTokenIndex <= bodyEnd)
+  }
 
   return {
     partEntities,

@@ -1,10 +1,10 @@
-import { Token, Tokens, stringLiteralRegexp } from "../lexer"
 import {
   isValidIdentifier,
   isValidReference,
   isDuplicateIdentifier,
 } from "./identifiers"
 import { Delimiters } from "./"
+import { Token, Tokens, stringLiteralRegexp } from "../lexer"
 
 export type PipelineFunction = (
   token: Token,
@@ -16,11 +16,11 @@ export type ParsingPipeline = PipelineFunction[]
 export function assertToken(
   token: Token,
   expectedValues: readonly string[],
-  callback?: (matchIndex: number) => void
+  callback?: (matchedIndex: number) => void
 ) {
-  const matchIndex = expectedValues.indexOf(token.value)
+  const matchedIndex = expectedValues.indexOf(token.value)
 
-  if (matchIndex < 0) {
+  if (matchedIndex < 0) {
     throw new SyntaxError(
       `Expected to find ${expectedValues
         .map((value) => `'${value}'`)
@@ -30,27 +30,27 @@ export function assertToken(
     )
   }
   if (callback) {
-    callback(matchIndex)
+    callback(matchedIndex)
   }
 }
 
 export function processNumber(
   token: Token,
   range: [number, number],
-  callback: (number: number) => void
+  callback: (numberValue: number) => void
 ) {
-  const number = Number(token.value)
+  const numberValue = Number(token.value)
 
-  if (isNaN(number)) {
+  if (isNaN(numberValue)) {
     throw new TypeError(
       `'${token.value}' at position ${token.position}, line ${token.line} is not a valid number`
     )
-  } else if (number < range[0] || number > range[1]) {
+  } else if (numberValue < range[0] || numberValue > range[1]) {
     throw new RangeError(
       `'${token.value}' at position ${token.position}, line ${token.line} doesn't fall in the range of [${range[0]}, ${range[1]}]`
     )
   }
-  callback(number)
+  callback(numberValue)
 }
 
 export function processStringLiteral(
@@ -102,8 +102,8 @@ export function processBody(
     )
   }
 
-  const bodyStart = tokenIndex + 1,
-    bodyEnd = closingBracePosition - 1
+  const bodyStart = tokenIndex + 1
+  const bodyEnd = closingBracePosition - 1
 
   if (bodyStart > bodyEnd) {
     throw new SyntaxError(
@@ -112,7 +112,7 @@ export function processBody(
   }
 
   callback(bodyStart, bodyEnd)
-  return closingBracePosition + 1
+  return closingBracePosition
 }
 
 export function walkPipeline(
@@ -128,8 +128,8 @@ export function walkPipeline(
       )
     }
 
-    const nextTokenIndex = process(tokens[currentTokenIndex], currentTokenIndex)
-    currentTokenIndex = nextTokenIndex ? nextTokenIndex : currentTokenIndex + 1
+    const bodyEnd = process(tokens[currentTokenIndex], currentTokenIndex)
+    currentTokenIndex = (bodyEnd ? bodyEnd : currentTokenIndex) + 1
   }
 
   return currentTokenIndex
