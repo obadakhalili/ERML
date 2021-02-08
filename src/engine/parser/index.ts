@@ -119,54 +119,55 @@ function parseRelBody(
       ),
     common.possibleComma,
   ]
-  const structConstraintsPipeline: { [probName: string]: ParsingPipeline } = {
-    separate: [
-      (token) =>
-        assertToken(
-          token,
-          [Keywords.PARTIAL, Keywords.TOTAL],
-          (matchIndex) =>
-            (currentPartEntity.structConstraints.partConstraint = ([
-              API.PARTIAL,
-              API.TOTAL,
-            ] as const)[matchIndex])
-        ),
-      common.comma,
-      (token) => {
-        const allowedTokens = [API.ONE, API.N] as const
-        assertToken(
-          token,
-          allowedTokens,
-          (matchIndex) =>
-            (currentPartEntity.structConstraints.cardinalityRatio =
-              allowedTokens[matchIndex])
-        )
-      },
-      (token) => assertToken(token, [Delimiters.CLOSING_ANGLE]),
-    ],
-    minmax: [
-      (token) =>
-        processNumber(
-          token,
-          [0, Infinity],
-          (number) =>
-            (currentPartEntity.structConstraints.partConstraint = number)
-        ),
-      common.comma,
-      (token) =>
-        processNumber(
-          token,
-          [
-            currentPartEntity.structConstraints.partConstraint as number,
-            Infinity,
-          ],
-          (number) =>
-            (currentPartEntity.structConstraints.cardinalityRatio = number)
-        ),
-      (token) => assertToken(token, [Delimiters.CLOSING_PAREN]),
-    ],
-  }
-  const partEntityPipeline: ParsingPipeline = [
+  const separateNotationPipeline: ParsingPipeline = [
+    (token) =>
+      assertToken(
+        token,
+        [Keywords.PARTIAL, Keywords.TOTAL],
+        (matchIndex) =>
+          (currentPartEntity.structConstraints.partConstraint = ([
+            API.PARTIAL,
+            API.TOTAL,
+          ] as const)[matchIndex])
+      ),
+    common.comma,
+    (token) => {
+      const allowedTokens = [API.ONE, API.N] as const
+      assertToken(
+        token,
+        allowedTokens,
+        (matchIndex) =>
+          (currentPartEntity.structConstraints.cardinalityRatio =
+            allowedTokens[matchIndex])
+      )
+    },
+    (token) => assertToken(token, [Delimiters.CLOSING_ANGLE]),
+    common.possibleComma,
+  ]
+  const minmaxNotationPipeline: ParsingPipeline = [
+    (token) =>
+      processNumber(
+        token,
+        [0, Infinity],
+        (number) =>
+          (currentPartEntity.structConstraints.partConstraint = number)
+      ),
+    common.comma,
+    (token) =>
+      processNumber(
+        token,
+        [
+          currentPartEntity.structConstraints.partConstraint as number,
+          Infinity,
+        ],
+        (number) =>
+          (currentPartEntity.structConstraints.cardinalityRatio = number)
+      ),
+    (token) => assertToken(token, [Delimiters.CLOSING_PAREN]),
+    common.possibleComma,
+  ]
+  let nextPipeline: ParsingPipeline = []
+  const initialPipeline: ParsingPipeline = [
     (token) =>
       processIdentifier(
         token,
@@ -178,18 +179,15 @@ function parseRelBody(
         token,
         [Delimiters.OPENING_ANGLE, Delimiters.OPENING_PAREN],
         (matchIndex) => {
-          currentPartEntity.notation =
-            matchIndex === 0 ? API.SEPARATE : API.MIN_MAX
-          partEntityPipeline.splice(
-            2,
-            partEntityPipeline.length === 3 ? 0 : 4,
-            ...structConstraintsPipeline[
-              matchIndex === 0 ? "separate" : "minmax"
-            ]
-          )
+          if (matchIndex === 0) {
+            currentPartEntity.notation = API.SEPARATE
+            nextPipeline = separateNotationPipeline
+          } else {
+            currentPartEntity.notation = API.MIN_MAX
+            nextPipeline = minmaxNotationPipeline
+          }
         }
       ),
-    common.possibleComma,
   ]
 
   do {
@@ -208,11 +206,8 @@ function parseRelBody(
       partEntities.push(
         (currentPartEntity = { structConstraints: {} } as RelPartEntity)
       )
-      currentTokenIndex = walkPipeline(
-        partEntityPipeline,
-        tokens,
-        currentTokenIndex
-      )
+      currentTokenIndex = walkPipeline(initialPipeline, tokens, currentTokenIndex)
+      currentTokenIndex = walkPipeline(nextPipeline, tokens, currentTokenIndex)
     }
   } while (currentTokenIndex <= bodyEnd)
 
