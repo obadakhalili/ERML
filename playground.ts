@@ -39,16 +39,14 @@ try {
       }
       
       REL Works_for {
-        Employee (1, 1),
+        Employee (1, Infinity),
         Department (20, Infinity)
       }
       
       REL Manages {
         Employee <PARTIAL, 1>,
         Department <TOTAL, 1>,
-        ATTRIBUTES {
-          SIMPLE "start_date"
-        }
+        ATTRIBUTES { SIMPLE "start_date" }
       }
       
       REL Supervision {
@@ -64,9 +62,7 @@ try {
       REL Works_on {
         Employee <PARTIAL, N>,
         Project <TOTAL, N>,
-        ATTRIBUTES {
-          SIMPLE "hours"
-        }
+        ATTRIBUTES { SIMPLE "hours" }
       }
       
       REL Controls {
