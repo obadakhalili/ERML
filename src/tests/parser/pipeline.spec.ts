@@ -1,11 +1,12 @@
 import {
   ParsingPipeline,
   assertToken,
+  processNumber,
+  processStringLiteral,
   processIdentifier,
   processBody,
   walkPipeline,
   testables,
-  processNumber,
 } from "../../engine/parser/pipeline"
 import { isDuplicateIdentifier } from "../../engine/parser/identifiers"
 
@@ -65,6 +66,26 @@ describe("tests for processNumber", () => {
     const callback = jest.fn()
     processNumber(token, [numericValue - 1, numericValue + 1], callback)
     expect(callback).toHaveBeenCalledWith(numericValue)
+  })
+})
+
+describe("tests for processStringLiteral", () => {
+  it("should throw a type error", () => {
+    expect(() =>
+      processStringLiteral(
+        { value: "foo", position: -1, line: -1 },
+        () => undefined
+      )
+    ).toThrow(TypeError)
+  })
+
+  it("should invoke callback and pass in the correct string value", () => {
+    const callback = jest.fn()
+    processStringLiteral(
+      { value: `"\\\\\\\\a\\\\\\a b\\\\b \\" "`, position: -1, line: -1 },
+      callback
+    )
+    expect(callback).toHaveBeenCalledWith(`\\\\a\\a b\\b " `)
   })
 })
 
