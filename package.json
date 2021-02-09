@@ -1,7 +1,7 @@
 {
   "name": "erml",
   "version": "1.0.0",
-  "description": "Parser for representing conceptual data models using the Entity-Relationship (ER) model",
+  "description": "Parser for representing conceptual data models using the Entity-Relationship (ER) modeling concepts",
   "scripts": {
     "test": "jest --watch",
     "lint": "eslint '*/**/*.ts' --quiet --fix",
