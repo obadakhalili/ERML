@@ -212,7 +212,6 @@ function parseRelBody(
             tokens,
             attributesBodyStart,
             attributesBodyEnd
-            /* Allow multivalued? */
           ))
       ),
     common.possibleComma,
