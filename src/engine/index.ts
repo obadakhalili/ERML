@@ -1,7 +1,7 @@
 import tokenize from "./lexer"
 import parse from "./parser"
 
-export default function (ERML: string) {
+export = function (ERML: string) {
   if (typeof ERML !== "string") {
     throw new TypeError("Argument passed to parser must be of type string")
   }
