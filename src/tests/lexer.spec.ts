@@ -11,7 +11,7 @@ describe("tests for lexer", () => {
       SIMPLE "salary",
       SIMPLE "DoB",
       DERIVED "age",
-      COMPOSITE "full_name" ["first_name", "last_name"]
+      COMPOSITE "full_name" ["first_name", "last_name"] // Invalid
     }
     
     WEAK ENTITY Dependent OWNER Employee {

@@ -9,8 +9,6 @@ const tokensRegexs = [
   "\\w+",
   "{",
   "}",
-  "\\[",
-  "\\]",
   "<",
   ">",
   "\\(",
@@ -24,7 +22,7 @@ const tokensRegexs = [
 const tokenizerRegex = new RegExp(tokensRegexs.join("|"), "g")
 const newLineRegexp = /\n/g
 const ignorablesRegex = /^\/\/.*|\/\*[^]*?\*\/|\s$/
-export const stringLiteralRegexp = new RegExp(tokensRegexs[11])
+export const stringLiteralRegexp = new RegExp(tokensRegexs[9])
 
 export default function (ERML: string): Tokens {
   const matches = ERML.matchAll(tokenizerRegex)
