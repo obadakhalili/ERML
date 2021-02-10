@@ -1,8 +1,10 @@
 {
   "name": "erml",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Parser for representing conceptual data models using the Entity-Relationship (ER) modeling concepts",
-  "files": ["lib/src/engine/**/*"],
+  "files": [
+    "lib/src/engine/**/*"
+  ],
   "main": "lib/src/engine/index.js",
   "types": "lib/src/engine/index.d.ts",
   "scripts": {
@@ -11,12 +13,16 @@
     "dev": "tsc --watch",
     "playground": "nodemon lib/playground.js",
     "version": "npm run lint && git add src",
-    "postversion" : "git push origin main && git push origin main --tags"
+    "postversion": "git push origin main && git push origin main --tags"
   },
   "author": "Obada Khalili",
   "homepage": "https://erml.netlify.app/",
   "license": "ISC",
-  "keywords": ["entity-relationship-diagram", "parser", "erml"],
+  "keywords": [
+    "entity-relationship-diagram",
+    "parser",
+    "erml"
+  ],
   "devDependencies": {
     "@types/jest": "^26.0.20",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
