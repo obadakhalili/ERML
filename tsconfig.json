@@ -10,7 +10,7 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "alwaysStrict": true,
-    "outDir": "dist",
+    "outDir": "lib",
     "sourceMap": false
   },
   "include": ["src", "playground.ts"]

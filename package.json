@@ -6,7 +6,7 @@
     "test": "jest --watch",
     "lint": "eslint '*/**/*.ts' --quiet --fix",
     "dev": "tsc --watch",
-    "playground": "nodemon dist/playground.js"
+    "playground": "nodemon lib/playground.js"
   },
   "author": "Obada Khalili",
   "license": "ISC",
