@@ -75,7 +75,7 @@ describe("tests for parseRelBody", () => {
       Part_entity_2 <TOTAL, N>,
       ATTRIBUTES {
         SIMPLE "hours"
-      }, # Trailing comma is allowed
+      }, // Trailing comma is allowed
     }`)
     expect(parseRelBody(tokens, 3, tokens.length - 3)).toMatchSnapshot()
   })

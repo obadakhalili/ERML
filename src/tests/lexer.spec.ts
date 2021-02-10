@@ -15,7 +15,7 @@ describe("tests for lexer", () => {
     }
     
     WEAK ENTITY Dependent OWNER Employee {
-      # COMPOSITE PARTIAL "key" ["name", "DoB"],
+      // COMPOSITE PARTIAL "key" ["name", "DoB"],
       SIMPLE "relationship",
       SIMPLE "gender"
     }
