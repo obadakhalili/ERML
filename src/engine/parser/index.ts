@@ -106,6 +106,8 @@ interface RelNode extends BaseNode {
   body: RelBody
 }
 
+export type Node = EntityNode | WeakEntityNode | RelNode
+
 function parseAttributes(
   tokens: Tokens,
   bodyStart: number,
@@ -436,7 +438,6 @@ function parseIdenRel(
 }
 
 export default function (tokens: Tokens) {
-  type Node = EntityNode | WeakEntityNode | RelNode
   type InitializerKeyword = keyof typeof parsers
   type ParseFunction = typeof parsers[InitializerKeyword]
 

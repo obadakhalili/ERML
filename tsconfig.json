@@ -11,7 +11,8 @@
     "noImplicitThis": true,
     "alwaysStrict": true,
     "outDir": "lib",
-    "sourceMap": false
+    "sourceMap": false,
+    "declaration": true
   },
   "include": ["src", "playground.ts"]
 }
