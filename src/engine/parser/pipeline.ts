@@ -57,17 +57,19 @@ export function processStringLiteral(
   token: Token,
   callback: (stringValue: string) => void
 ) {
-  let [_, matched] = stringLiteralRegexp.exec(token.value) || []
-  matched = matched?.replace(/\\\\|\\/g, (match) =>
-    match === "\\\\" ? "\\" : ""
-  )
+  const match = stringLiteralRegexp.exec(token.value)
 
-  if (matched === undefined) {
+  if (match === null) {
     throw new TypeError(
       `'${token.value}' at position ${token.position}, line ${token.line} is not a valid string`
     )
   }
-  callback(matched)
+
+  const stringValue = match[1].replace(/\\\\|\\/g, (match) =>
+    match === "\\\\" ? "\\" : ""
+  )
+
+  callback(stringValue)
 }
 
 export function processIdentifier(
