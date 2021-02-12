@@ -58,6 +58,8 @@ const enum API {
 
 interface BaseNode {
   name: string
+  start: number // Inclusive
+  end: number // Inclusive
 }
 
 type Attributes = Attribute[]
@@ -324,22 +326,23 @@ function parseEntity(
   tokens: Tokens,
   currentTokenIndex: number
 ): [number, EntityNode] {
-  const entityNode = { type: API.ENTITY } as EntityNode
+  const entityNode = {
+    type: API.ENTITY,
+    start: tokens[currentTokenIndex].position,
+  } as EntityNode
   const parsingPipeline: ParsingPipeline = [
     (token) =>
       processIdentifier(token, false, () => (entityNode.name = token.value)),
     (_, tokenIndex) =>
-      processBody(
-        tokens,
-        tokenIndex,
-        (bodyStart, bodyEnd) =>
-          (entityNode.attributes = parseAttributes(tokens, bodyStart, bodyEnd))
-      ),
+      processBody(tokens, tokenIndex, (bodyStart, bodyEnd) => {
+        entityNode.attributes = parseAttributes(tokens, bodyStart, bodyEnd)
+        entityNode.end = tokens[bodyEnd + 1].position
+      }),
   ]
   const nextTokenIndex = walkPipeline(
     parsingPipeline,
     tokens,
-    currentTokenIndex
+    ++currentTokenIndex
   )
 
   return [nextTokenIndex, entityNode]
@@ -349,7 +352,10 @@ function parseWeakEntity(
   tokens: Tokens,
   currentTokenIndex: number
 ): [number, WeakEntityNode] {
-  const weakEntityNode = { type: API.WEAK_ENTITY } as WeakEntityNode
+  const weakEntityNode = {
+    type: API.WEAK_ENTITY,
+    start: tokens[currentTokenIndex].position,
+  } as WeakEntityNode
   const parsingPipeline: ParsingPipeline = [
     (token) => assertToken(token, [Keywords.ENTITY]),
     (token) =>
@@ -366,21 +372,15 @@ function parseWeakEntity(
         () => (weakEntityNode.owner = token.value)
       ),
     (_, tokenIndex) =>
-      processBody(
-        tokens,
-        tokenIndex,
-        (bodyStart, bodyEnd) =>
-          (weakEntityNode.attributes = parseAttributes(
-            tokens,
-            bodyStart,
-            bodyEnd
-          ))
-      ),
+      processBody(tokens, tokenIndex, (bodyStart, bodyEnd) => {
+        weakEntityNode.attributes = parseAttributes(tokens, bodyStart, bodyEnd)
+        weakEntityNode.end = tokens[bodyEnd + 1].position
+      }),
   ]
   const nextTokenIndex = walkPipeline(
     parsingPipeline,
     tokens,
-    currentTokenIndex
+    ++currentTokenIndex
   )
 
   return [nextTokenIndex, weakEntityNode]
@@ -390,22 +390,23 @@ function parseRel(
   tokens: Tokens,
   currentTokenIndex: number
 ): [number, RelNode] {
-  const relNode = { type: API.REL } as RelNode
+  const relNode = {
+    type: API.REL,
+    start: tokens[currentTokenIndex].position,
+  } as RelNode
   const parsingPipeline: ParsingPipeline = [
     (token) =>
       processIdentifier(token, false, () => (relNode.name = token.value)),
     (_, tokenIndex) =>
-      processBody(
-        tokens,
-        tokenIndex,
-        (bodyStart, bodyEnd) =>
-          (relNode.body = parseRelBody(tokens, bodyStart, bodyEnd))
-      ),
+      processBody(tokens, tokenIndex, (bodyStart, bodyEnd) => {
+        relNode.body = parseRelBody(tokens, bodyStart, bodyEnd)
+        relNode.end = tokens[bodyEnd + 1].position
+      }),
   ]
   const nextTokenIndex = walkPipeline(
     parsingPipeline,
     tokens,
-    currentTokenIndex
+    ++currentTokenIndex
   )
 
   return [nextTokenIndex, relNode]
@@ -415,23 +416,24 @@ function parseIdenRel(
   tokens: Tokens,
   currentTokenIndex: number
 ): [number, RelNode] {
-  const idenRelNode = { type: API.IDEN_REL } as RelNode
+  const idenRelNode = {
+    type: API.IDEN_REL,
+    start: tokens[currentTokenIndex].position,
+  } as RelNode
   const parsingPipeline: ParsingPipeline = [
     (token) => assertToken(token, [Keywords.REL]),
     (token) =>
       processIdentifier(token, false, () => (idenRelNode.name = token.value)),
     (_, tokenIndex) =>
-      processBody(
-        tokens,
-        tokenIndex,
-        (bodyStart, bodyEnd) =>
-          (idenRelNode.body = parseRelBody(tokens, bodyStart, bodyEnd))
-      ),
+      processBody(tokens, tokenIndex, (bodyStart, bodyEnd) => {
+        idenRelNode.body = parseRelBody(tokens, bodyStart, bodyEnd)
+        idenRelNode.end = tokens[bodyEnd + 1].position
+      }),
   ]
   const nextTokenIndex = walkPipeline(
     parsingPipeline,
     tokens,
-    currentTokenIndex
+    ++currentTokenIndex
   )
 
   return [nextTokenIndex, idenRelNode]
@@ -458,7 +460,7 @@ export default function (tokens: Tokens) {
       )
     }
 
-    const [nextTokenIndex, node] = currentParser(tokens, ++i)
+    const [nextTokenIndex, node] = currentParser(tokens, i)
 
     AST.push(node)
     i = nextTokenIndex

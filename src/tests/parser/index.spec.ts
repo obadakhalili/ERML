@@ -93,7 +93,7 @@ describe("test for parseEntity", () => {
         SIMPLE "last_name"
       }
     }`)
-    expect(parseEntity(tokens, 1)).toMatchSnapshot()
+    expect(parseEntity(tokens, 0)).toMatchSnapshot()
   })
 })
 
@@ -108,7 +108,7 @@ describe("test for parseWeakEntity", () => {
       SIMPLE "relationship",
       SIMPLE "gender"
     }`)
-    expect(parseWeakEntity(tokens, 1)).toMatchSnapshot()
+    expect(parseWeakEntity(tokens, 0)).toMatchSnapshot()
   })
 })
 
@@ -123,7 +123,7 @@ describe("test for parseRel", () => {
         SIMPLE "start_date"
       }
     }`)
-    expect(parseRel(tokens, 1)).toMatchSnapshot()
+    expect(parseRel(tokens, 0)).toMatchSnapshot()
   })
 })
 
@@ -135,6 +135,6 @@ describe("test for parseIdenRel", () => {
       Fizz <PARTIAL, 1>,
       Buzz <TOTAL, N>
     }`)
-    expect(parseIdenRel(tokens, 1)).toMatchSnapshot()
+    expect(parseIdenRel(tokens, 0)).toMatchSnapshot()
   })
 })
