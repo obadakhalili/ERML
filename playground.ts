@@ -69,7 +69,16 @@ try {
         Department <PARTIAL, N>,
         Project <TOTAL, 1>
       }`
-    )
+    ), ERMLParser(`ENTITY Employee {
+      PRIMARY "SSN",
+      SIMPLE "salary",
+      SIMPLE "DoB",
+      DERIVED "age",
+      COMPOSITE "full_name" {
+        SIMPLE "first_name",
+        SIMPLE "last_name"
+      }
+    }`)
   )
 } catch (e) {
   console.log(e.message)
