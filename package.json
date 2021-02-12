@@ -17,7 +17,7 @@
   },
   "author": "Obada Khalili",
   "homepage": "https://erml.netlify.app/",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "keywords": [
     "entity-relationship-diagram",
     "parser",
