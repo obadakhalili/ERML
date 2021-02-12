@@ -1,4 +1,4 @@
-const identifiers: string[] = []
+let identifiers: string[] = []
 
 export function isValidIdentifier(identifier: string) {
   /** Valid identifier requirements
@@ -22,4 +22,8 @@ export function isDuplicateIdentifier(identifier: string) {
 
   identifiers.push(identifier)
   return false
+}
+
+export function clearIdentifiers() {
+  identifiers = []
 }

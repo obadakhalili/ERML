@@ -2,6 +2,7 @@ import {
   isValidIdentifier,
   isValidReference,
   isDuplicateIdentifier,
+  clearIdentifiers,
 } from "../../engine/parser/identifiers"
 
 beforeAll(() => {
@@ -41,5 +42,13 @@ describe("tests for isNotDuplicate", () => {
 
   it("should return false", () => {
     expect(isDuplicateIdentifier("Translation")).toBe(false)
+  })
+})
+
+describe("tests for clearIdentifiers", () => {
+  isDuplicateIdentifier("Foo")
+  clearIdentifiers()
+  it("should remove defined identifiers", () => {
+    expect(isDuplicateIdentifier("Foo")).toBe(false)
   })
 })
