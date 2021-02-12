@@ -72,7 +72,7 @@ interface Attribute {
     | API.DERIVED
     | API.MULTIVALUED
     | API.COMPOSITE
-  nestedAttributs?: Attributes
+  componentAttributes?: Attributes
 }
 
 interface EntityNode extends BaseNode {
@@ -135,7 +135,7 @@ function parseAttributes(
         tokens,
         tokenIndex,
         (bodyStart, bodyEnd) =>
-          (currentAttribute.nestedAttributs = parseAttributes(
+          (currentAttribute.componentAttributes = parseAttributes(
             tokens,
             bodyStart,
             bodyEnd,
