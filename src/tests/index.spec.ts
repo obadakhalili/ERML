@@ -43,7 +43,7 @@ describe("tests for ERMLParser", () => {
     
     REL Works_for {
       Employee (1, 1),
-      Department (20, Infinity)
+      Department (20, N)
     }
     
     REL Manages {

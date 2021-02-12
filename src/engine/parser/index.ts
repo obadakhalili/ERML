@@ -254,16 +254,25 @@ function parseRelBody(
           (currentPartEntity.structConstraints.partConstraint = numberValue)
       ),
     common.comma,
-    (token) =>
-      processNumber(
-        token,
-        [
-          currentPartEntity.structConstraints.partConstraint as number,
-          Infinity,
-        ],
-        (numberValue) =>
-          (currentPartEntity.structConstraints.cardinalityRatio = numberValue)
-      ),
+    (token) => {
+      try {
+        assertToken(
+          token,
+          [API.N],
+          () => (currentPartEntity.structConstraints.cardinalityRatio = API.N)
+        )
+      } catch {
+        processNumber(
+          token,
+          [
+            currentPartEntity.structConstraints.partConstraint as number,
+            Infinity,
+          ],
+          (numberValue) =>
+            (currentPartEntity.structConstraints.cardinalityRatio = numberValue)
+        )
+      }
+    },
     (token) => assertToken(token, [Delimiters.CLOSING_PAREN]),
     common.possibleComma,
   ]
