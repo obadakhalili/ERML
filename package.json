@@ -17,6 +17,10 @@
   },
   "author": "Obada Khalili",
   "homepage": "https://erml.netlify.app/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/obadakhalili/ERML.git"
+  },
   "license": "Apache-2.0",
   "keywords": [
     "entity-relationship-diagram",
