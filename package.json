@@ -28,8 +28,8 @@
     "test:watch": "jest --watch",
     "format": "yarn run prettier --ignore-path .gitignore --write .",
     "version": "npm run format && git add .",
-    "prepare": "npm run build",
-    "postversion": "git push origin main && git push origin main --tags"
+    "postversion": "git push origin main && git push origin main --tags",
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "@types/jest": "26.0.23",
