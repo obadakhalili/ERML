@@ -2,19 +2,6 @@
   "name": "erml",
   "version": "1.2.0",
   "description": "Parser for representing conceptual data models using the Entity-Relationship (ER) modeling concepts",
-  "files": [
-    "lib/src/engine/**/*"
-  ],
-  "main": "lib/src/engine/index.js",
-  "types": "lib/src/engine/index.d.ts",
-  "scripts": {
-    "test": "jest --watch",
-    "format": "yarn run prettier --ignore-path .gitignore --write .",
-    "dev": "tsc --watch",
-    "playground": "nodemon lib/playground.js",
-    "version": "npm run lint && git add src",
-    "postversion": "git push origin main && git push origin main --tags"
-  },
   "author": "Obada Khalili",
   "homepage": "https://erml.netlify.app/",
   "repository": {
@@ -27,10 +14,27 @@
     "parser",
     "erml"
   ],
+  "files": [
+    "dist/engine/**/*"
+  ],
+  "main": "dist/engine/index.js",
+  "types": "dist/engine/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:rm": "rimraf dist",
+    "watch": "tsc --watch",
+    "dev": "nodemon dist/playground.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "format": "yarn run prettier --ignore-path .gitignore --write .",
+    "version": "npm run format && git add .",
+    "postversion": "git push origin main && git push origin main --tags"
+  },
   "devDependencies": {
     "@types/jest": "^26.0.20",
     "jest": "^26.6.3",
     "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
     "typescript": "^4.1.3"
   }
 }

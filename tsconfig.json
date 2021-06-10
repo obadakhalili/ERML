@@ -5,15 +5,9 @@
     "module": "CommonJS",
     "esModuleInterop": true,
     "baseUrl": "./",
-    "allowJs": false,
     "strict": true,
-    "strictNullChecks": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-    "outDir": "lib",
-    "sourceMap": false,
+    "outDir": "dist",
     "declaration": true
   },
-  "include": ["src", "playground.ts"]
+  "include": ["src/engine", "src/playground.ts"]
 }
