@@ -1,0 +1,287 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tests for ERMLParser should parse code correctly 1`] = `
+Array [
+  Object {
+    "attributes": Array [
+      Object {
+        "name": "SSN",
+        "type": "primary",
+      },
+      Object {
+        "name": "salary",
+        "type": "simple",
+      },
+      Object {
+        "name": "DoB",
+        "type": "simple",
+      },
+      Object {
+        "name": "age",
+        "type": "derived",
+      },
+      Object {
+        "componentAttributes": Array [
+          Object {
+            "name": "first_name",
+            "type": "simple",
+          },
+          Object {
+            "name": "last_name",
+            "type": "simple",
+          },
+        ],
+        "name": "full_name",
+        "type": "composite",
+      },
+    ],
+    "end": 201,
+    "name": "Employee",
+    "start": 0,
+    "type": "entity",
+  },
+  Object {
+    "attributes": Array [
+      Object {
+        "name": "name",
+        "type": "primary",
+      },
+      Object {
+        "name": "number",
+        "type": "primary",
+      },
+      Object {
+        "name": "employees_number",
+        "type": "derived",
+      },
+      Object {
+        "name": "locations",
+        "type": "multivalued",
+      },
+    ],
+    "end": 346,
+    "name": "Department",
+    "start": 212,
+    "type": "entity",
+  },
+  Object {
+    "attributes": Array [
+      Object {
+        "name": "number",
+        "type": "primary",
+      },
+      Object {
+        "name": "name",
+        "type": "primary",
+      },
+      Object {
+        "name": "location",
+        "type": "simple",
+      },
+    ],
+    "end": 448,
+    "name": "Project",
+    "start": 357,
+    "type": "entity",
+  },
+  Object {
+    "attributes": Array [
+      Object {
+        "componentAttributes": Array [
+          Object {
+            "name": "name",
+            "type": "simple",
+          },
+          Object {
+            "name": "DoB",
+            "type": "simple",
+          },
+        ],
+        "name": "key",
+        "type": "composite",
+      },
+      Object {
+        "name": "relationship",
+        "type": "simple",
+      },
+      Object {
+        "name": "gender",
+        "type": "simple",
+      },
+    ],
+    "end": 630,
+    "name": "Dependent",
+    "owner": "Employee",
+    "start": 459,
+    "type": "weak entity",
+  },
+  Object {
+    "body": Object {
+      "partEntities": Array [
+        Object {
+          "name": "Employee",
+          "notation": "min-max",
+          "structConstraints": Object {
+            "cardinalityRatio": 1,
+            "partConstraint": 1,
+          },
+        },
+        Object {
+          "name": "Department",
+          "notation": "min-max",
+          "structConstraints": Object {
+            "cardinalityRatio": "N",
+            "partConstraint": 20,
+          },
+        },
+      ],
+    },
+    "end": 709,
+    "name": "Works_for",
+    "start": 641,
+    "type": "rel",
+  },
+  Object {
+    "body": Object {
+      "attributes": Array [
+        Object {
+          "name": "start_date",
+          "type": "simple",
+        },
+      ],
+      "partEntities": Array [
+        Object {
+          "name": "Employee",
+          "notation": "separate",
+          "structConstraints": Object {
+            "cardinalityRatio": "1",
+            "partConstraint": "partial",
+          },
+        },
+        Object {
+          "name": "Department",
+          "notation": "separate",
+          "structConstraints": Object {
+            "cardinalityRatio": "1",
+            "partConstraint": "total",
+          },
+        },
+      ],
+    },
+    "end": 851,
+    "name": "Manages",
+    "start": 720,
+    "type": "rel",
+  },
+  Object {
+    "body": Object {
+      "partEntities": Array [
+        Object {
+          "name": "Employee",
+          "notation": "separate",
+          "structConstraints": Object {
+            "cardinalityRatio": "1",
+            "partConstraint": "partial",
+          },
+        },
+        Object {
+          "name": "Employee",
+          "notation": "separate",
+          "structConstraints": Object {
+            "cardinalityRatio": "N",
+            "partConstraint": "partial",
+          },
+        },
+      ],
+    },
+    "end": 941,
+    "name": "Supervision",
+    "start": 862,
+    "type": "rel",
+  },
+  Object {
+    "body": Object {
+      "partEntities": Array [
+        Object {
+          "name": "Employee",
+          "notation": "separate",
+          "structConstraints": Object {
+            "cardinalityRatio": "1",
+            "partConstraint": "partial",
+          },
+        },
+        Object {
+          "name": "Dependent",
+          "notation": "separate",
+          "structConstraints": Object {
+            "cardinalityRatio": "N",
+            "partConstraint": "total",
+          },
+        },
+      ],
+    },
+    "end": 1037,
+    "name": "Dependents_of",
+    "start": 952,
+    "type": "iden rel",
+  },
+  Object {
+    "body": Object {
+      "attributes": Array [
+        Object {
+          "name": "hours",
+          "type": "simple",
+        },
+      ],
+      "partEntities": Array [
+        Object {
+          "name": "Employee",
+          "notation": "separate",
+          "structConstraints": Object {
+            "cardinalityRatio": "N",
+            "partConstraint": "partial",
+          },
+        },
+        Object {
+          "name": "Project",
+          "notation": "separate",
+          "structConstraints": Object {
+            "cardinalityRatio": "N",
+            "partConstraint": "total",
+          },
+        },
+      ],
+    },
+    "end": 1172,
+    "name": "Works_on",
+    "start": 1048,
+    "type": "rel",
+  },
+  Object {
+    "body": Object {
+      "partEntities": Array [
+        Object {
+          "name": "Department",
+          "notation": "separate",
+          "structConstraints": Object {
+            "cardinalityRatio": "N",
+            "partConstraint": "partial",
+          },
+        },
+        Object {
+          "name": "Project",
+          "notation": "separate",
+          "structConstraints": Object {
+            "cardinalityRatio": "1",
+            "partConstraint": "total",
+          },
+        },
+      ],
+    },
+    "end": 1258,
+    "name": "Controls",
+    "start": 1183,
+    "type": "rel",
+  },
+]
+`;

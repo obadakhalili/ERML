@@ -1,0 +1,366 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tests for lexer should generate correct tokens. even if code isn't valid 1`] = `
+Array [
+  Object {
+    "line": 1,
+    "position": 0,
+    "value": "ENTITY",
+  },
+  Object {
+    "line": 1,
+    "position": 7,
+    "value": "Employee",
+  },
+  Object {
+    "line": 1,
+    "position": 16,
+    "value": "{",
+  },
+  Object {
+    "line": 2,
+    "position": 24,
+    "value": "PRIMARY",
+  },
+  Object {
+    "line": 2,
+    "position": 32,
+    "value": "\\"SSN\\"",
+  },
+  Object {
+    "line": 2,
+    "position": 37,
+    "value": ",",
+  },
+  Object {
+    "line": 3,
+    "position": 45,
+    "value": "SIMPLE",
+  },
+  Object {
+    "line": 3,
+    "position": 52,
+    "value": "\\"salary\\"",
+  },
+  Object {
+    "line": 3,
+    "position": 60,
+    "value": ",",
+  },
+  Object {
+    "line": 4,
+    "position": 68,
+    "value": "SIMPLE",
+  },
+  Object {
+    "line": 4,
+    "position": 75,
+    "value": "\\"DoB\\"",
+  },
+  Object {
+    "line": 4,
+    "position": 80,
+    "value": ",",
+  },
+  Object {
+    "line": 5,
+    "position": 88,
+    "value": "DERIVED",
+  },
+  Object {
+    "line": 5,
+    "position": 96,
+    "value": "\\"age\\"",
+  },
+  Object {
+    "line": 5,
+    "position": 101,
+    "value": ",",
+  },
+  Object {
+    "line": 6,
+    "position": 109,
+    "value": "COMPOSITE",
+  },
+  Object {
+    "line": 6,
+    "position": 119,
+    "value": "\\"full_name\\"",
+  },
+  Object {
+    "line": 6,
+    "position": 131,
+    "value": "[",
+  },
+  Object {
+    "line": 6,
+    "position": 132,
+    "value": "\\"first_name\\"",
+  },
+  Object {
+    "line": 6,
+    "position": 144,
+    "value": ",",
+  },
+  Object {
+    "line": 6,
+    "position": 146,
+    "value": "\\"last_name\\"",
+  },
+  Object {
+    "line": 6,
+    "position": 157,
+    "value": "]",
+  },
+  Object {
+    "line": 7,
+    "position": 174,
+    "value": "}",
+  },
+  Object {
+    "line": 9,
+    "position": 185,
+    "value": "WEAK",
+  },
+  Object {
+    "line": 9,
+    "position": 190,
+    "value": "ENTITY",
+  },
+  Object {
+    "line": 9,
+    "position": 197,
+    "value": "Dependent",
+  },
+  Object {
+    "line": 9,
+    "position": 207,
+    "value": "OWNER",
+  },
+  Object {
+    "line": 9,
+    "position": 213,
+    "value": "Employee",
+  },
+  Object {
+    "line": 9,
+    "position": 222,
+    "value": "{",
+  },
+  Object {
+    "line": 11,
+    "position": 280,
+    "value": "SIMPLE",
+  },
+  Object {
+    "line": 11,
+    "position": 287,
+    "value": "\\"relationship\\"",
+  },
+  Object {
+    "line": 11,
+    "position": 301,
+    "value": ",",
+  },
+  Object {
+    "line": 12,
+    "position": 309,
+    "value": "SIMPLE",
+  },
+  Object {
+    "line": 12,
+    "position": 316,
+    "value": "\\"gender\\"",
+  },
+  Object {
+    "line": 13,
+    "position": 329,
+    "value": "}",
+  },
+  Object {
+    "line": 20,
+    "position": 425,
+    "value": "REL",
+  },
+  Object {
+    "line": 20,
+    "position": 429,
+    "value": "Supervision",
+  },
+  Object {
+    "line": 20,
+    "position": 441,
+    "value": "?",
+  },
+  Object {
+    "line": 20,
+    "position": 443,
+    "value": "{",
+  },
+  Object {
+    "line": 21,
+    "position": 451,
+    "value": "Employee",
+  },
+  Object {
+    "line": 21,
+    "position": 460,
+    "value": "<",
+  },
+  Object {
+    "line": 21,
+    "position": 461,
+    "value": "PARTIAL",
+  },
+  Object {
+    "line": 21,
+    "position": 468,
+    "value": ",",
+  },
+  Object {
+    "line": 21,
+    "position": 470,
+    "value": "1",
+  },
+  Object {
+    "line": 21,
+    "position": 471,
+    "value": ">",
+  },
+  Object {
+    "line": 21,
+    "position": 472,
+    "value": "/",
+  },
+  Object {
+    "line": 21,
+    "position": 473,
+    "value": ",",
+  },
+  Object {
+    "line": 22,
+    "position": 481,
+    "value": "Employee",
+  },
+  Object {
+    "line": 22,
+    "position": 490,
+    "value": "<",
+  },
+  Object {
+    "line": 22,
+    "position": 491,
+    "value": "PARTIAL",
+  },
+  Object {
+    "line": 22,
+    "position": 498,
+    "value": ",",
+  },
+  Object {
+    "line": 22,
+    "position": 500,
+    "value": "N",
+  },
+  Object {
+    "line": 22,
+    "position": 501,
+    "value": ">",
+  },
+  Object {
+    "line": 23,
+    "position": 507,
+    "value": "}",
+  },
+  Object {
+    "line": 25,
+    "position": 518,
+    "value": "IDEN",
+  },
+  Object {
+    "line": 25,
+    "position": 523,
+    "value": "REL",
+  },
+  Object {
+    "line": 25,
+    "position": 527,
+    "value": "Dependents_of",
+  },
+  Object {
+    "line": 25,
+    "position": 541,
+    "value": "{",
+  },
+  Object {
+    "line": 26,
+    "position": 549,
+    "value": "Employee",
+  },
+  Object {
+    "line": 26,
+    "position": 558,
+    "value": "<",
+  },
+  Object {
+    "line": 26,
+    "position": 559,
+    "value": "PARTIAL",
+  },
+  Object {
+    "line": 26,
+    "position": 566,
+    "value": ",",
+  },
+  Object {
+    "line": 26,
+    "position": 568,
+    "value": "1",
+  },
+  Object {
+    "line": 26,
+    "position": 569,
+    "value": ">",
+  },
+  Object {
+    "line": 26,
+    "position": 570,
+    "value": ",",
+  },
+  Object {
+    "line": 27,
+    "position": 578,
+    "value": "Dependent",
+  },
+  Object {
+    "line": 27,
+    "position": 588,
+    "value": "<",
+  },
+  Object {
+    "line": 27,
+    "position": 589,
+    "value": "TOTAL",
+  },
+  Object {
+    "line": 27,
+    "position": 594,
+    "value": ",",
+  },
+  Object {
+    "line": 27,
+    "position": 596,
+    "value": "N",
+  },
+  Object {
+    "line": 27,
+    "position": 597,
+    "value": ">",
+  },
+  Object {
+    "line": 28,
+    "position": 603,
+    "value": "}",
+  },
+]
+`;
