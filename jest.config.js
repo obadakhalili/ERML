@@ -1,7 +1,7 @@
 module.exports = {
-  "modulePathIgnorePatterns": ["<rootDir>/src", "<rootDir>/lib/engine"],
-  "testMatch": [
-    "**/__tests__/**/*.+(js)",
-    "**/?(*.)+(spec).+(js)"
-  ]
-};
+  testMatch: ["**/tests/**/*.+(ts)"],
+  transform: {
+    "\\.ts$": "ts-jest",
+    "\\.js$": "babel-jest",
+  },
+}

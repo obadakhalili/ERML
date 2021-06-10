@@ -1,0 +1,216 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test for parseEntity should parse valid tokens 1`] = `
+Array [
+  25,
+  Object {
+    "attributes": Array [
+      Object {
+        "name": "SSN",
+        "type": "primary",
+      },
+      Object {
+        "name": "salary",
+        "type": "simple",
+      },
+      Object {
+        "name": "DoB",
+        "type": "simple",
+      },
+      Object {
+        "name": "age",
+        "type": "derived",
+      },
+      Object {
+        "componentAttributes": Array [
+          Object {
+            "name": "first_name",
+            "type": "simple",
+          },
+          Object {
+            "name": "last_name",
+            "type": "simple",
+          },
+        ],
+        "name": "full_name",
+        "type": "composite",
+      },
+    ],
+    "end": 197,
+    "name": "User",
+    "start": 0,
+    "type": "entity",
+  },
+]
+`;
+
+exports[`test for parseIdenRel should parse valid tokens 1`] = `
+Array [
+  18,
+  Object {
+    "body": Object {
+      "partEntities": Array [
+        Object {
+          "name": "Fizz",
+          "notation": "separate",
+          "structConstraints": Object {
+            "cardinalityRatio": "1",
+            "partConstraint": "partial",
+          },
+        },
+        Object {
+          "name": "Buzz",
+          "notation": "separate",
+          "structConstraints": Object {
+            "cardinalityRatio": "N",
+            "partConstraint": "total",
+          },
+        },
+      ],
+    },
+    "end": 76,
+    "name": "Iden_rel_name",
+    "start": 0,
+    "type": "iden rel",
+  },
+]
+`;
+
+exports[`test for parseRel should parse valid tokens 1`] = `
+Array [
+  23,
+  Object {
+    "body": Object {
+      "attributes": Array [
+        Object {
+          "name": "start_date",
+          "type": "simple",
+        },
+      ],
+      "partEntities": Array [
+        Object {
+          "name": "Foo",
+          "notation": "separate",
+          "structConstraints": Object {
+            "cardinalityRatio": "1",
+            "partConstraint": "partial",
+          },
+        },
+        Object {
+          "name": "Bar",
+          "notation": "separate",
+          "structConstraints": Object {
+            "cardinalityRatio": "1",
+            "partConstraint": "total",
+          },
+        },
+      ],
+    },
+    "end": 120,
+    "name": "Rel_name",
+    "start": 0,
+    "type": "rel",
+  },
+]
+`;
+
+exports[`test for parseWeakEntity should parse valid tokens 1`] = `
+Array [
+  22,
+  Object {
+    "attributes": Array [
+      Object {
+        "componentAttributes": Array [
+          Object {
+            "name": "name",
+            "type": "simple",
+          },
+          Object {
+            "name": "DoB",
+            "type": "simple",
+          },
+        ],
+        "name": "key",
+        "type": "composite",
+      },
+      Object {
+        "name": "relationship",
+        "type": "simple",
+      },
+      Object {
+        "name": "gender",
+        "type": "simple",
+      },
+    ],
+    "end": 163,
+    "name": "Son",
+    "owner": "Father",
+    "start": 0,
+    "type": "weak entity",
+  },
+]
+`;
+
+exports[`tests for parseAttributes should parse valid tokens 1`] = `
+Array [
+  Object {
+    "name": "SSN",
+    "type": "primary",
+  },
+  Object {
+    "name": "salary",
+    "type": "simple",
+  },
+  Object {
+    "name": "DoB",
+    "type": "simple",
+  },
+  Object {
+    "name": "age",
+    "type": "derived",
+  },
+  Object {
+    "componentAttributes": Array [
+      Object {
+        "name": "first_name",
+        "type": "simple",
+      },
+      Object {
+        "name": "last_name",
+        "type": "simple",
+      },
+    ],
+    "name": "full_name",
+    "type": "composite",
+  },
+]
+`;
+
+exports[`tests for parseRelBody should parse valid tokens 1`] = `
+Object {
+  "attributes": Array [
+    Object {
+      "name": "hours",
+      "type": "simple",
+    },
+  ],
+  "partEntities": Array [
+    Object {
+      "name": "Part_entity_1",
+      "notation": "separate",
+      "structConstraints": Object {
+        "cardinalityRatio": "N",
+        "partConstraint": "partial",
+      },
+    },
+    Object {
+      "name": "Part_entity_2",
+      "notation": "separate",
+      "structConstraints": Object {
+        "cardinalityRatio": "N",
+        "partConstraint": "total",
+      },
+    },
+  ],
+}
+`;
