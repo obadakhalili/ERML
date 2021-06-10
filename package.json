@@ -1,6 +1,6 @@
 {
   "name": "erml",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Parser for representing conceptual data models using the Entity-Relationship (ER) modeling concepts",
   "author": "Obada Khalili",
   "homepage": "https://erml.netlify.app/",
