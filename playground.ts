@@ -68,10 +68,8 @@ REL Controls {
 
 try {
   // console.log(
-    // tokenize(
-    const ast = ERMLParser(
-      ERMLCode
-    )
+  // tokenize(
+  const ast = ERMLParser(ERMLCode)
   // )
 
   console.log(ast)

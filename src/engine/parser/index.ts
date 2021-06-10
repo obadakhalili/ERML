@@ -153,15 +153,17 @@ function parseAttributes(
         token,
         allowedTypes,
         (matchedIndex) =>
-          (currentAttribute.type = ([
-            API.COMPOSITE,
-            API.SIMPLE,
-            API.ATOMIC,
-            API.PRIMARY,
-            API.PARTIAL,
-            API.DERIVED,
-            API.MULTIVALUED,
-          ] as const)[matchedIndex])
+          (currentAttribute.type = (
+            [
+              API.COMPOSITE,
+              API.SIMPLE,
+              API.ATOMIC,
+              API.PRIMARY,
+              API.PARTIAL,
+              API.DERIVED,
+              API.MULTIVALUED,
+            ] as const
+          )[matchedIndex])
       ),
     (token) =>
       processStringLiteral(
@@ -226,10 +228,9 @@ function parseRelBody(
         token,
         [Keywords.PARTIAL, Keywords.TOTAL],
         (matchedIndex) =>
-          (currentPartEntity.structConstraints.partConstraint = ([
-            API.PARTIAL,
-            API.TOTAL,
-          ] as const)[matchedIndex])
+          (currentPartEntity.structConstraints.partConstraint = (
+            [API.PARTIAL, API.TOTAL] as const
+          )[matchedIndex])
       ),
     common.comma,
     (token) => {
