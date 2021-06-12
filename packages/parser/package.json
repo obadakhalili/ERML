@@ -1,9 +1,9 @@
 {
   "name": "erml-parser",
   "version": "1.2.3",
-  "description": "ERML Parser for representing conceptual data models using the Entity-Relationship (ER) modeling concepts",
   "author": "Obada Khalili",
-  "homepage": "https://erml.netlify.app/",
+  "license": "MIT",
+  "description": "ERML Parser for representing conceptual data models using the Entity-Relationship (ER) modeling concepts",
   "repository": {
     "type": "git",
     "url": "https://github.com/obadakhalili/ERML.git"
@@ -13,24 +13,27 @@
     "parser",
     "erml"
   ],
+  "homepage": "https://erml.netlify.app/",
   "files": [
     "dist/engine/**/*"
   ],
   "main": "dist/engine/index.js",
   "types": "dist/engine/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "build:rm": "rimraf dist",
     "watch": "tsc --watch",
     "dev": "nodemon dist/playground.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "format": "yarn run prettier --ignore-path ../../.gitignore --write .",
-    "version": "npm run format",
+    "build": "tsc",
+    "build:rm": "rimraf dist",
     "prepublish": "npm run build"
   },
   "devDependencies": {
-    "jest": "27.0.4",
-    "prettier": "2.3.1"
+    "@types/jest": "^26.0.23",
+    "babel-jest": "^27.0.2",
+    "jest": "^27.0.4",
+    "ts-jest": "^27.0.3",
+    "prettier": "^2.3.1"
   }
 }
