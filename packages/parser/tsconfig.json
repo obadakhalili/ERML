@@ -1,11 +1,7 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "ES5",
-    "lib": ["ESNext"],
-    "module": "CommonJS",
-    "esModuleInterop": true,
     "baseUrl": "./",
-    "strict": true,
     "outDir": "dist",
     "declaration": true
   },
