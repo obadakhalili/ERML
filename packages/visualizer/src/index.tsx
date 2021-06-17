@@ -1,9 +1,11 @@
 import React from "react"
 import ReactDOM from "react-dom"
 
+import Visualizer from "./Visualizer"
+
 ReactDOM.render(
   <React.StrictMode>
-    <h1>ERML Visualizer</h1>
+    <Visualizer />
   </React.StrictMode>,
   document.getElementById("root")
 )
