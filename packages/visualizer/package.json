@@ -13,8 +13,7 @@
     "dev": "cross-env BROWSER=none PORT=8080 react-scripts start",
     "format": "yarn run prettier --ignore-path ../../.gitignore --write .",
     "build": "cross-env BUILD_PATH=dist react-scripts build",
-    "build:rm": "rimraf dist",
-    "prepublish": "npm run build"
+    "build:rm": "rimraf dist"
   },
   "dependencies": {
     "react": "^17.0.2",
