@@ -1,14 +1,14 @@
 import { lazy, Suspense } from "react"
 import { Router } from "@reach/router"
 
-import LoadingComponent from "./components/LoadingComponent"
+import LoadingSpinner from "./components/LoadingSpinner"
 import LandingPage from "./views/LandingPage"
 
 const Workspace = lazy(() => import("./views/Workspace"))
 
 export default function Visualizer() {
   return (
-    <Suspense fallback={<LoadingComponent />}>
+    <Suspense fallback={<LoadingSpinner />}>
       <Router>
         <LandingPage path="/" />
         <Workspace path="/workspace" />
