@@ -14,7 +14,7 @@ IDEN REL Borrow {
   ATTRIBUTES { SIMPLE "Borrowing_date" }
 
   /*
-  * Multi-line
+  * multi-line
   * comment
   */
 }

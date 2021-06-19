@@ -2,8 +2,7 @@ import { useEffect, useRef } from "react"
 import CodeMirror from "codemirror"
 import "codemirror/lib/codemirror.css"
 
-import "./erml"
-import placeholderPath from "./placeholder.erml"
+import "./erml-mode"
 
 export default function Editor() {
   const editorElRef = useRef<HTMLDivElement>(null)
@@ -12,7 +11,7 @@ export default function Editor() {
     const $editorEl = editorElRef.current!
 
     if (!$editorEl.hasChildNodes()) {
-      fetch(placeholderPath)
+      fetch("./code-placeholder.erml")
         .then((res) => res.text())
         .then((ERML) =>
           CodeMirror($editorEl, {
@@ -23,5 +22,5 @@ export default function Editor() {
     }
   })
 
-  return <div ref={editorElRef}></div>
+  return <div ref={editorElRef} className="codemirror-container"></div>
 }

@@ -1,12 +1,12 @@
-import React from "react"
+import { StrictMode } from "react"
 import ReactDOM from "react-dom"
 
+import Modules from "./Modules"
 import "./index.css"
-import Visualizer from "./Visualizer"
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Visualizer />
-  </React.StrictMode>,
+  <StrictMode>
+    <Modules />
+  </StrictMode>,
   document.getElementById("root")
 )
