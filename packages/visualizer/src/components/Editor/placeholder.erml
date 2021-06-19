@@ -1,0 +1,20 @@
+ENTITY User {
+  PRIMARY "ID", // one-liner comment
+  SIMPLE "DoB",
+  DERIVED "Age"
+}
+
+WEAK ENTITY Book OWNER User {
+  PARTIAL "Name"
+}
+
+IDEN REL Borrow {
+  User <PARTIAL, 1>,
+  User <TOTAL, N>,
+  ATTRIBUTES { SIMPLE "Borrowing_date" }
+
+  /*
+  * Multi-line
+  * comment
+  */
+}
