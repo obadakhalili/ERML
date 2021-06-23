@@ -1,182 +1,64 @@
-import { useEffect, useState, MouseEventHandler, SyntheticEvent } from "react"
+import { useState } from "react"
 import { RouteComponentProps } from "@reach/router"
 import SplitPane from "react-split-pane"
-import { useLocalStorage } from "react-use"
-import { IItemRendererProps, Select } from "@blueprintjs/select"
-import { Button, MenuItem, Spinner, Icon } from "@blueprintjs/core"
 
+import SnippetExplorer from "./SnippetExplorer"
 import Editor from "./Editor"
+import Viewer from "./Viewer"
+import { isSnippets } from "../../utils"
 import "./styles.css"
 
 export interface Snippet {
   name: string
   value: string
+  active: boolean
 }
 
-type Snippets = Snippet[]
+export type Snippets = Snippet[]
+
+export interface AgnosticOps {
+  read(): Promise<Snippets>
+  update(snippets: Snippets): void
+}
 
 export default function Workspace(_: RouteComponentProps) {
+  const [activeSnippet, setActiveSnippet] = useState<Snippet>()
+
   return (
     <SplitPane defaultSize={350} minSize={350} maxSize={750}>
-      <LeftPane />
-      <RightPane />
+      <>
+        <SnippetExplorer
+          agnosticOps={agnosticOps}
+          onActiveSnippetChange={setActiveSnippet}
+        />
+        {activeSnippet && <Editor value={activeSnippet.value} />}
+      </>
+      <Viewer />
     </SplitPane>
   )
 }
 
-const SnippetSelect = Select.ofType<Snippet>()
-
-function SnippetItem(
-  { name }: Snippet,
-  { handleClick, modifiers }: IItemRendererProps
-) {
-  const ItemContent = (
-    <>
-      <div onClick={handleClick}>
-        {name}
-        <Icon
-          icon="cross"
-          onClick={(e) => {
-            const event = e as typeof e & { intent: string }
-            event.stopPropagation()
-            event.intent = "remove"
-            handleClick(event)
-          }}
-          style={{ float: "right", marginTop: 2.5 }}
-        />
-      </div>
-    </>
-  )
-
-  return <MenuItem key={name} text={ItemContent} active={modifiers.active} />
-}
-
-function CreateNewSnippetItem(
-  query: string,
-  active: boolean,
-  handleClick: MouseEventHandler<HTMLElement>
-) {
-  return (
-    <MenuItem
-      icon="add"
-      text={`Create "${query}"`}
-      active={active}
-      onClick={handleClick}
-    />
-  )
-}
-
-function LeftPane() {
-  const [snippets, setSnippets] = useLocalStorage("snippets", null, {
-    raw: false,
-    serializer: JSON.stringify,
-    deserializer(serializedSnippets) {
-      const parsedSnippets: Snippets = JSON.parse(serializedSnippets)
-      return parsedSnippets.constructor !== Array ||
-        parsedSnippets.some(
-          (snippet) =>
-            snippet.name?.length > 25 ||
-            snippet.name?.length < 1 ||
-            typeof snippet.name !== "string" ||
-            typeof snippet.value !== "string"
-        ) ||
-        parsedSnippets
-          .map(({ name }) => name)
-          .some((name, idx, names) => names.indexOf(name, idx + 1) > 0)
-        ? null
-        : parsedSnippets
-    },
-  })
-
-  const [activeSnippet, setActiveSnippet] = useState<Snippet | null>(
-    snippets?.[0] || null
-  )
-
-  useEffect(() => {
-    if (!snippets) {
-      fetch("./code-placeholder.erml")
-        .then((res) => res.text())
-        .then((placeholder) => {
-          const defaultSnippet = {
-            name: "Library Database ERD",
-            value: placeholder,
-          }
-          setActiveSnippet(defaultSnippet)
-          setSnippets([defaultSnippet])
-        })
-    }
-  })
-
-  return snippets == null ? (
-    <Spinner />
-  ) : (
-    <>
-      <SnippetSelect
-        resetOnSelect
-        activeItem={activeSnippet}
-        items={snippets}
-        itemRenderer={SnippetItem}
-        createNewItemRenderer={CreateNewSnippetItem}
-        onItemSelect={handleSnippetSelect}
-        itemPredicate={snippetPredicate}
-        createNewItemFromQuery={createNewSnippetFromQuery}
-        itemsEqual={snippetsEqual}
-      >
-        <Button rightIcon="double-caret-vertical">
-          {activeSnippet?.name || "Create New Snippet"}
-        </Button>
-      </SnippetSelect>
-      {activeSnippet ? (
-        <Editor snippet={activeSnippet} />
-      ) : (
-        <h1>Add Snippets</h1>
-      )}
-    </>
-  )
-
-  function handleSnippetSelect(
-    snippet: Snippet,
-    e?: SyntheticEvent<HTMLElement> & { intent?: string }
-  ) {
-    if (e!.intent === "remove") {
-      const newSnippets = snippets!.filter(({ name }) => name !== snippet.name)
-      setSnippets(newSnippets)
-      if (
-        snippet.name === activeSnippet!.name &&
-        snippet.value === activeSnippet!.value
-      ) {
-        setActiveSnippet(newSnippets[0])
+const agnosticOps: AgnosticOps = {
+  async read() {
+    try {
+      const snippets = JSON.parse(localStorage.getItem("snippets")!)
+      if (!isSnippets(snippets)) {
+        throw new Error()
       }
-    } else {
-      const isNew = !snippets!.some(({ name }) => name === snippet.name)
-
-      if (isNew) {
-        if (snippet.name.length > 25) {
-          return
-        }
-        setSnippets(snippets!.concat(snippet))
+      return snippets
+    } catch {
+      const response = await fetch("./editor-placeholder.erml")
+      const defaultSnippet = {
+        name: "Library ERD",
+        value: await response.text(),
+        active: true,
       }
-
-      setActiveSnippet(snippet)
+      const snippets = [defaultSnippet]
+      this.update(snippets)
+      return snippets
     }
-  }
-
-  function snippetPredicate(query: string, { name }: Snippet) {
-    return name.toLowerCase().includes(query.toLowerCase())
-  }
-
-  function createNewSnippetFromQuery(name: string): Snippet {
-    return {
-      name,
-      value: "// ERML code",
-    }
-  }
-
-  function snippetsEqual(firstSnippet: Snippet, secondSnippet: Snippet) {
-    return firstSnippet.name === secondSnippet.name
-  }
-}
-
-function RightPane() {
-  return <h1>Viewer</h1>
+  },
+  update(snippets) {
+    localStorage.setItem("snippets", JSON.stringify(snippets))
+  },
 }
