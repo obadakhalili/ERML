@@ -1,11 +1,13 @@
-import { useState } from "react"
+import { createContext, useState, useMemo, useEffect, FC } from "react"
 import { RouteComponentProps } from "@reach/router"
 import SplitPane from "react-split-pane"
 
-import SnippetExplorer from "./SnippetExplorer"
-import Editor from "./Editor"
-import Viewer from "./Viewer"
-import { isSnippets } from "../../utils"
+import EditorPane from "./EditorPane"
+import ViewerPane from "./ViewerPane"
+import {
+  getSnippetsFromLocalStorage,
+  saveSnippetsToLocalStorage,
+} from "../../utils"
 import "./styles.css"
 
 export interface Snippet {
@@ -16,49 +18,48 @@ export interface Snippet {
 
 export type Snippets = Snippet[]
 
-export interface AgnosticOps {
-  read(): Promise<Snippets>
-  update(snippets: Snippets): void
-}
+export type ActiveViewer = "Diagram" | "AST"
 
-export default function Workspace(_: RouteComponentProps) {
-  const [activeSnippet, setActiveSnippet] = useState<Snippet>()
+export const WorkspaceContext = createContext<{
+  activeSnippet: Snippet | undefined
+  activeViewer: ActiveViewer
+  setActiveViewer: (activeViewer: ActiveViewer) => void
+  snippets: Snippets
+  setSnippets: (snippets: Snippets) => void
+}>(undefined!)
+
+const Workspace: FC<RouteComponentProps> = () => {
+  const [snippets, setSnippets] = useState<Snippets>([])
+  const [activeViewer, setActiveViewer] = useState<ActiveViewer>("Diagram")
+
+  const activeSnippet = useMemo(
+    () => snippets.find(({ active }) => active) || snippets[0],
+    [snippets]
+  )
+
+  useEffect(() => {
+    getSnippetsFromLocalStorage().then(setSnippets)
+  }, [])
 
   return (
-    <SplitPane defaultSize={350} minSize={350} maxSize={750}>
-      <>
-        <SnippetExplorer
-          agnosticOps={agnosticOps}
-          onActiveSnippetChange={setActiveSnippet}
-        />
-        {activeSnippet && <Editor value={activeSnippet.value} />}
-      </>
-      <Viewer />
-    </SplitPane>
+    <WorkspaceContext.Provider
+      value={{
+        activeSnippet,
+        activeViewer,
+        setActiveViewer,
+        snippets,
+        setSnippets: (snippets) => {
+          setSnippets(snippets)
+          saveSnippetsToLocalStorage(snippets)
+        },
+      }}
+    >
+      <SplitPane defaultSize={350} minSize={350} maxSize={750}>
+        <EditorPane />
+        <ViewerPane activeViewer={activeViewer} />
+      </SplitPane>
+    </WorkspaceContext.Provider>
   )
 }
 
-const agnosticOps: AgnosticOps = {
-  async read() {
-    try {
-      const snippets = JSON.parse(localStorage.getItem("snippets")!)
-      if (!isSnippets(snippets)) {
-        throw new Error()
-      }
-      return snippets
-    } catch {
-      const response = await fetch("./editor-placeholder.erml")
-      const defaultSnippet = {
-        name: "Library ERD",
-        value: await response.text(),
-        active: true,
-      }
-      const snippets = [defaultSnippet]
-      this.update(snippets)
-      return snippets
-    }
-  },
-  update(snippets) {
-    localStorage.setItem("snippets", JSON.stringify(snippets))
-  },
-}
+export default Workspace

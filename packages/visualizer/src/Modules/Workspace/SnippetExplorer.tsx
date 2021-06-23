@@ -1,13 +1,13 @@
-import { useState, useEffect, useMemo, SyntheticEvent } from "react"
+import { useContext, SyntheticEvent } from "react"
 import {
+  Select,
   ItemPredicate,
   ItemRenderer,
   ItemsEqualComparator,
-  Select,
 } from "@blueprintjs/select"
 import { Button, MenuItem, Icon } from "@blueprintjs/core"
 
-import { Snippet, Snippets, AgnosticOps } from "."
+import { WorkspaceContext, Snippet } from "."
 
 const SnippetSelect = Select.ofType<Snippet>()
 
@@ -54,29 +54,8 @@ const composeSnippetFromQuery = (query: string) => ({
   value: `ENTITY Example { SIMPLE "attribute" }`,
 })
 
-export default function SnippetExplorer({
-  agnosticOps,
-  onActiveSnippetChange,
-}: {
-  agnosticOps: AgnosticOps
-  onActiveSnippetChange(snippet: Snippet | undefined): void
-}) {
-  const [snippets, setSnippets] = useState<Snippets>([])
-
-  const activeSnippet = useMemo(
-    () => snippets.find(({ active }) => active) || snippets[0],
-    [snippets]
-  )
-
-  useEffect(() => {
-    onActiveSnippetChange(activeSnippet)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [snippets])
-
-  useEffect(() => {
-    agnosticOps.read().then(setSnippets)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+export default function SnippetExplorer() {
+  const { activeSnippet, snippets, setSnippets } = useContext(WorkspaceContext)
 
   return (
     <SnippetSelect
@@ -126,6 +105,5 @@ export default function SnippetExplorer({
                 : snippet.active,
           }))
     setSnippets(newSnippets)
-    agnosticOps.update(newSnippets)
   }
 }

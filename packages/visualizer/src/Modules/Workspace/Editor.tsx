@@ -1,17 +1,20 @@
-import { useEffect, useRef } from "react"
+import { useContext, useEffect, useRef } from "react"
 import CodeMirror, { defineMode, Editor as IEditor } from "codemirror"
 import "codemirror/lib/codemirror.css"
 
-export default function Editor({ value }: { value: string }) {
-  const editorElRef = useRef<HTMLDivElement>(null)
+import { WorkspaceContext } from "."
+
+export default function Editor() {
+  const { activeSnippet } = useContext(WorkspaceContext)
   const editorRef = useRef<IEditor>()
+  const editorElRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!editorRef.current) {
       editorRef.current = CodeMirror(editorElRef.current!, { tabSize: 2 })
     }
-    editorRef.current.setValue(value)
-  }, [value])
+    editorRef.current.setValue(activeSnippet?.value || "// ...")
+  }, [activeSnippet])
 
   return <div ref={editorElRef} className="codemirror-container"></div>
 }
