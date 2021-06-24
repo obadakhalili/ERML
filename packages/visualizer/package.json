@@ -22,7 +22,8 @@
     "codemirror": "^5.61.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-split-pane": "^0.1.92"
+    "react-split-pane": "^0.1.92",
+    "recoil": "^0.3.1"
   },
   "devDependencies": {
     "@types/codemirror": "^5.60.0",

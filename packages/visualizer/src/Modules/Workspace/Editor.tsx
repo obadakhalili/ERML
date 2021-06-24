@@ -1,12 +1,13 @@
-import { useContext, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
+import { useRecoilValue } from "recoil"
 import CodeMirror, { defineMode, Editor as IEditor } from "codemirror"
 import "codemirror/addon/display/autorefresh.js"
 import "codemirror/lib/codemirror.css"
 
-import { WorkspaceContext } from "."
+import { activeSnippetState } from "../../state"
 
 export default function Editor() {
-  const { activeSnippet } = useContext(WorkspaceContext)
+  const activeSnippet = useRecoilValue(activeSnippetState)
   const editorRef = useRef<IEditor>()
   const editorElRef = useRef<HTMLDivElement>(null)
 

@@ -1,4 +1,5 @@
-import { useContext, SyntheticEvent } from "react"
+import { SyntheticEvent } from "react"
+import { useRecoilState, useRecoilValue } from "recoil"
 import {
   Select,
   ItemPredicate,
@@ -7,7 +8,7 @@ import {
 } from "@blueprintjs/select"
 import { Button, MenuItem, Icon } from "@blueprintjs/core"
 
-import { WorkspaceContext, Snippet } from "."
+import { snippetsState, activeSnippetState, Snippet } from "../../state"
 
 const SnippetSelect = Select.ofType<Snippet>()
 
@@ -55,7 +56,8 @@ const composeSnippetFromQuery = (query: string) => ({
 })
 
 export default function SnippetExplorer() {
-  const { activeSnippet, snippets, setSnippets } = useContext(WorkspaceContext)
+  const [snippets, setSnippets] = useRecoilState(snippetsState)
+  const activeSnippet = useRecoilValue(activeSnippetState)
 
   return (
     <SnippetSelect

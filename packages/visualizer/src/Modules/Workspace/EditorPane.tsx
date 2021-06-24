@@ -1,10 +1,10 @@
-import { useContext } from "react"
-import SnippetExplorer from "./SnippetExplorer"
+import { useRecoilState } from "recoil"
 import { Select, ItemRenderer } from "@blueprintjs/select"
 import { MenuItem, Button } from "@blueprintjs/core"
 
+import SnippetExplorer from "./SnippetExplorer"
 import Editor from "./Editor"
-import { WorkspaceContext, ActiveViewer } from "."
+import { activeViewerState, ActiveViewer } from "../../state"
 
 const ViewerSelect = Select.ofType<ActiveViewer>()
 
@@ -21,15 +21,14 @@ const ViewerItem: ItemRenderer<ActiveViewer> = (
 )
 
 export default function EditorPane() {
-  const { activeViewer, setActiveViewer } = useContext(WorkspaceContext)
-  const viewers: ActiveViewer[] = ["Diagram", "AST"]
+  const [activeViewer, setActiveViewer] = useRecoilState(activeViewerState)
 
   return (
     <>
       <SnippetExplorer />
       <ViewerSelect
         filterable={false}
-        items={viewers}
+        items={["Diagram", "AST"]}
         activeItem={activeViewer}
         onItemSelect={setActiveViewer}
         itemRenderer={ViewerItem}

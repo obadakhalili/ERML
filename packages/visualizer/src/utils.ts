@@ -1,4 +1,4 @@
-import { Snippets } from "./Modules/Workspace"
+import { Snippets } from "./state"
 
 export async function getSnippetsFromLocalStorage(): Promise<Snippets> {
   try {
@@ -16,7 +16,6 @@ export async function getSnippetsFromLocalStorage(): Promise<Snippets> {
         active: true,
       },
     ]
-    saveSnippetsToLocalStorage(snippets)
     return snippets
   }
 
