@@ -48,9 +48,9 @@ const Workspace: FC<RouteComponentProps> = () => {
         activeViewer,
         setActiveViewer,
         snippets,
-        setSnippets: (snippets) => {
-          setSnippets(snippets)
-          saveSnippetsToLocalStorage(snippets)
+        setSnippets: (newSnippets) => {
+          setSnippets(newSnippets)
+          saveSnippetsToLocalStorage(newSnippets)
         },
       }}
     >

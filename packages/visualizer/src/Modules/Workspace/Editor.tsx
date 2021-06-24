@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef } from "react"
 import CodeMirror, { defineMode, Editor as IEditor } from "codemirror"
+import "codemirror/addon/display/autorefresh.js"
 import "codemirror/lib/codemirror.css"
 
 import { WorkspaceContext } from "."
@@ -10,10 +11,14 @@ export default function Editor() {
   const editorElRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!editorRef.current) {
-      editorRef.current = CodeMirror(editorElRef.current!, { tabSize: 2 })
-    }
-    editorRef.current.setValue(activeSnippet?.value || "// ...")
+    editorRef.current = CodeMirror(editorElRef.current!, {
+      tabSize: 2,
+      autoRefresh: { delay: 25 },
+    })
+  }, [])
+
+  useEffect(() => {
+    editorRef.current!.setValue(activeSnippet?.value || "// ...")
   }, [activeSnippet])
 
   return <div ref={editorElRef} className="codemirror-container"></div>
