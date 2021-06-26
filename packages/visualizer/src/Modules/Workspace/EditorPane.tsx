@@ -7,7 +7,7 @@ import CodeMirror from "./CodeMirror"
 import {
   activeViewerState,
   activeSnippetState,
-  newSnippetValueState,
+  firstSnippetValueState,
   ActiveViewer,
 } from "../../state"
 
@@ -28,8 +28,9 @@ const ViewerItem: ItemRenderer<ActiveViewer> = (
 export default function EditorPane() {
   const [activeViewer, setActiveViewer] = useRecoilState(activeViewerState)
   const [activeSnippet, setActiveSnippet] = useRecoilState(activeSnippetState)
-  const [newSnippetValue, setNewSnippetValue] =
-    useRecoilState(newSnippetValueState)
+  const [firstSnippetValue, setFirstSnippetValue] = useRecoilState(
+    firstSnippetValueState
+  )
 
   return (
     <>
@@ -46,14 +47,14 @@ export default function EditorPane() {
       <CodeMirror
         value={
           activeSnippet?.value ||
-          newSnippetValue ||
+          firstSnippetValue ||
           "// Code written here will be saved to newly created snippets"
         }
         options={{ lineWrapping: true, autoRefresh: { delay: 50 } }}
         onBeforeChange={(editor, change, value) =>
           activeSnippet
             ? setActiveSnippet({ ...activeSnippet, value })
-            : setNewSnippetValue(value)
+            : setFirstSnippetValue(value)
         }
         className="codemirror-container"
       />

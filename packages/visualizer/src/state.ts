@@ -47,8 +47,8 @@ export const activeSnippetState = selector<Snippet | undefined>({
   },
 })
 
-export const newSnippetValueState = atom<string | undefined>({
-  key: "newSnippetValueState",
+export const firstSnippetValueState = atom<string | undefined>({
+  key: "firstSnippetValueState",
   default: undefined,
 })
 

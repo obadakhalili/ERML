@@ -11,7 +11,7 @@ import { Button, MenuItem, Icon } from "@blueprintjs/core"
 import {
   snippetsState,
   activeSnippetState,
-  newSnippetValueState,
+  firstSnippetValueState,
   Snippet,
 } from "../../state"
 
@@ -57,7 +57,9 @@ const snippetsEqual: ItemsEqualComparator<Snippet> = (
 export default function SnippetExplorer() {
   const [snippets, setSnippets] = useRecoilState(snippetsState)
   const activeSnippet = useRecoilValue(activeSnippetState)
-  const newSnippetValue = useRecoilValue(newSnippetValueState)
+  const [firstSnippetValue, setFirstSnippetValue] = useRecoilState(
+    firstSnippetValueState
+  )
 
   return (
     <SnippetSelect
@@ -92,9 +94,9 @@ export default function SnippetExplorer() {
       name: query,
       active: false,
       value:
-        activeSnippet || !newSnippetValue
+        activeSnippet || !firstSnippetValue
           ? `ENTITY Example { SIMPLE "attribute" }`
-          : newSnippetValue,
+          : firstSnippetValue,
     }
   }
 
@@ -117,6 +119,7 @@ export default function SnippetExplorer() {
                 ? false
                 : snippet.active,
           }))
+    !newSnippets.length && setFirstSnippetValue(undefined)
     setSnippets(newSnippets)
   }
 }
