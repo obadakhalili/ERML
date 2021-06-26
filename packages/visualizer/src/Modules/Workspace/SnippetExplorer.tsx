@@ -91,7 +91,10 @@ export default function SnippetExplorer() {
     return {
       name: query,
       active: false,
-      value: newSnippetValue,
+      value:
+        activeSnippet || !newSnippetValue
+          ? `ENTITY Example { SIMPLE "attribute" }`
+          : newSnippetValue,
     }
   }
 

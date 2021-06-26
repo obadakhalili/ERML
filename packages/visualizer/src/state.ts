@@ -47,9 +47,9 @@ export const activeSnippetState = selector<Snippet | undefined>({
   },
 })
 
-export const newSnippetValueState = atom({
+export const newSnippetValueState = atom<string | undefined>({
   key: "newSnippetValueState",
-  default: "// Code written here will be saved to newly created snippets",
+  default: undefined,
 })
 
 export const activeViewerState = atom<ActiveViewer>({

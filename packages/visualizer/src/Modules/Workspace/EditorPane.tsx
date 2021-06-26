@@ -44,7 +44,11 @@ export default function EditorPane() {
         <Button text={activeViewer} rightIcon="double-caret-vertical" />
       </ViewerSelect>
       <CodeMirror
-        value={activeSnippet?.value || newSnippetValue}
+        value={
+          activeSnippet?.value ||
+          newSnippetValue ||
+          "// Code written here will be saved to newly created snippets"
+        }
         options={{ lineWrapping: true, autoRefresh: { delay: 50 } }}
         onBeforeChange={(editor, change, value) =>
           activeSnippet
