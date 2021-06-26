@@ -3,8 +3,13 @@ import { Select, ItemRenderer } from "@blueprintjs/select"
 import { MenuItem, Button } from "@blueprintjs/core"
 
 import SnippetExplorer from "./SnippetExplorer"
-import Editor from "./Editor"
-import { activeViewerState, ActiveViewer } from "../../state"
+import CodeMirror from "./CodeMirror"
+import {
+  activeViewerState,
+  activeSnippetState,
+  newSnippetValueState,
+  ActiveViewer,
+} from "../../state"
 
 const ViewerSelect = Select.ofType<ActiveViewer>()
 
@@ -22,6 +27,9 @@ const ViewerItem: ItemRenderer<ActiveViewer> = (
 
 export default function EditorPane() {
   const [activeViewer, setActiveViewer] = useRecoilState(activeViewerState)
+  const [activeSnippet, setActiveSnippet] = useRecoilState(activeSnippetState)
+  const [newSnippetValue, setNewSnippetValue] =
+    useRecoilState(newSnippetValueState)
 
   return (
     <>
@@ -35,7 +43,16 @@ export default function EditorPane() {
       >
         <Button text={activeViewer} rightIcon="double-caret-vertical" />
       </ViewerSelect>
-      <Editor />
+      <CodeMirror
+        value={activeSnippet?.value || newSnippetValue}
+        options={{ lineWrapping: true, autoRefresh: { delay: 50 } }}
+        onBeforeChange={(editor, change, value) =>
+          activeSnippet
+            ? setActiveSnippet({ ...activeSnippet, value })
+            : setNewSnippetValue(value)
+        }
+        className="codemirror-container"
+      />
     </>
   )
 }

@@ -1,29 +1,6 @@
-import { useEffect, useRef } from "react"
-import { useRecoilValue } from "recoil"
-import CodeMirror, { defineMode, Editor as IEditor } from "codemirror"
 import "codemirror/addon/display/autorefresh.js"
 import "codemirror/lib/codemirror.css"
-
-import { activeSnippetState } from "../../state"
-
-export default function Editor() {
-  const activeSnippet = useRecoilValue(activeSnippetState)
-  const editorRef = useRef<IEditor>()
-  const editorElRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    editorRef.current = CodeMirror(editorElRef.current!, {
-      tabSize: 2,
-      autoRefresh: { delay: 25 },
-    })
-  }, [])
-
-  useEffect(() => {
-    editorRef.current!.setValue(activeSnippet?.value || "// ...")
-  }, [activeSnippet])
-
-  return <div ref={editorElRef} className="codemirror-container"></div>
-}
+import { defineMode } from "codemirror"
 
 defineMode("erml", () => {
   const regexs = {
@@ -98,3 +75,5 @@ defineMode("erml", () => {
     startState: () => ({ multiLineCommentStarted: false }),
   }
 })
+
+export { Controlled as default } from "react-codemirror2"

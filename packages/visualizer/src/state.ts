@@ -36,6 +36,20 @@ export const activeSnippetState = selector<Snippet | undefined>({
     const snippets = get(snippetsState)
     return snippets.find(({ active }) => active) || snippets[0]
   },
+  set({ set }, newValue) {
+    set(snippetsState, (snippets) =>
+      snippets.map((snippet) =>
+        snippet.name === (newValue as Snippet).name
+          ? (newValue as Snippet)
+          : snippet
+      )
+    )
+  },
+})
+
+export const newSnippetValueState = atom({
+  key: "newSnippetValueState",
+  default: "// Code written here will be saved to newly created snippets",
 })
 
 export const activeViewerState = atom<ActiveViewer>({
