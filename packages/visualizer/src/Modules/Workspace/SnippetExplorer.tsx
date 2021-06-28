@@ -22,19 +22,18 @@ const SnippetItem: ItemRenderer<Snippet> = (
   { handleClick, modifiers }
 ) => {
   const SnippetItemContent = (
-    <>
-      <div onClick={handleClick}>
-        {name}
+    <div onClick={handleClick} className="flex">
+      <div className="w-full">{name}</div>
+      <div>
         <Icon
           icon="cross"
           onClick={(event) => {
             event.stopPropagation()
             handleClick(Object.assign(event, { intent: "remove" }))
           }}
-          style={{ float: "right", marginTop: 2.5 }}
         />
       </div>
-    </>
+    </div>
   )
 
   return (
