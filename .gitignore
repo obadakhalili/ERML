@@ -3,5 +3,7 @@ node_modules
 packages/**/node_modules
 packages/**/dist
 
+packages/visualizer/src/styles/tailwind-output.css
+
 *.log
 todo.md

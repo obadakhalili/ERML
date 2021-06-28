@@ -4,7 +4,7 @@ import SplitPane from "react-split-pane"
 
 import EditorPane from "./EditorPane"
 import ViewerPane from "./ViewerPane"
-import "./styles.css"
+import "../../styles/react-split-pane.css"
 
 const Workspace: FC<RouteComponentProps> = () => {
   return (

@@ -2,7 +2,7 @@ import ReactDOM from "react-dom"
 import { RecoilRoot } from "recoil"
 
 import Modules from "./Modules"
-import "./index.css"
+import "./styles/main.css"
 
 ReactDOM.render(
   <RecoilRoot>

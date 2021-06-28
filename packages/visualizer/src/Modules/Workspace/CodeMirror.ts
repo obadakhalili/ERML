@@ -1,5 +1,6 @@
 import "codemirror/addon/display/autorefresh.js"
 import "codemirror/lib/codemirror.css"
+import "../../styles/CodeMirror.css"
 import { defineMode } from "codemirror"
 
 defineMode("erml", () => {

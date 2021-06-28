@@ -56,7 +56,6 @@ export default function EditorPane() {
             ? setActiveSnippet({ ...activeSnippet, value })
             : setFirstSnippetValue(value)
         }
-        className="codemirror-container"
       />
     </>
   )

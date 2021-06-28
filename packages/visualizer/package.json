@@ -10,10 +10,21 @@
     "url": "https://github.com/obadakhalili/ERML.git"
   },
   "scripts": {
-    "dev": "cross-env BROWSER=none PORT=8080 react-scripts start",
-    "format": "yarn run prettier --ignore-path ../../.gitignore --write .",
-    "build": "cross-env BUILD_PATH=dist react-scripts build",
-    "build:rm": "rimraf dist"
+    "dev": "yarn tailwind:build && cross-env BROWSER=none PORT=8080 react-scripts start",
+    "tailwind:watch": "npm-watch tailwind:build",
+    "tailwind:build": "postcss src/styles/tailwind.css --output src/styles/tailwind-output.css",
+    "build": "yarn tailwind:build && cross-env BUILD_PATH=dist react-scripts build",
+    "build:rm": "rimraf dist",
+    "format": "yarn run prettier --ignore-path ../../.gitignore --write ."
+  },
+  "watch": {
+    "tailwind:build": {
+      "patterns": [
+        "src",
+        "public"
+      ],
+      "extensions": "ts,tsx"
+    }
   },
   "dependencies": {
     "@blueprintjs/core": "^3.45.0",
@@ -31,9 +42,14 @@
     "@types/reach__router": "^1.3.8",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "autoprefixer": "^10.2.6",
     "cross-env": "^7.0.3",
+    "npm-watch": "^0.10.0",
+    "postcss": "^8.3.5",
+    "postcss-cli": "^8.3.1",
     "react-scripts": "^4.0.3",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "tailwindcss": "^2.2.4"
   },
   "browserslist": {
     "production": [
