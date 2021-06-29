@@ -8,13 +8,18 @@ import ViewerPane from "./ViewerPane"
 import "../../styles/react-split-pane.css"
 
 const Workspace: FC<RouteComponentProps> = () => (
-  <SplitPane defaultSize={350} minSize={350} maxSize={500}>
-    <>
-      <Controllers />
+  <>
+    <Controllers />
+    <SplitPane
+      defaultSize={350}
+      minSize={350}
+      maxSize={500}
+      className="!h-[calc(100%-94px)]"
+    >
       <EditorPane />
-    </>
-    <ViewerPane />
-  </SplitPane>
+      <ViewerPane />
+    </SplitPane>
+  </>
 )
 
 export default Workspace

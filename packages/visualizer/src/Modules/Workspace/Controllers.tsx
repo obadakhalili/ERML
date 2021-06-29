@@ -5,7 +5,7 @@ import {
   MenuDivider,
   Checkbox,
   Popover,
-  Button,
+  Icon,
   Position,
 } from "@blueprintjs/core"
 
@@ -56,15 +56,16 @@ export default function Controllers() {
   )
 
   return (
-    <>
+    <div className="h-11 px-2 flex justify-between items-center border-0 border-b border-solid border-[#ddd]">
       <SnippetExplorer />
       <Popover
         autoFocus={false}
-        position={Position.BOTTOM_LEFT}
+        position={Position.RIGHT_TOP}
         content={OptionsContent}
+        className="cursor-pointer"
       >
-        <Button text="options" rightIcon="cog" />
+        <Icon icon="cog" />
       </Popover>
-    </>
+    </div>
   )
 }
