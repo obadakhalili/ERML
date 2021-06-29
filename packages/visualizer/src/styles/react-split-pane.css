@@ -43,7 +43,7 @@
 }
 
 .Resizer.disabled {
-  cursor: not-allowed;
+  cursor: default;
 }
 
 .Resizer.disabled:hover {
