@@ -16,12 +16,17 @@ export default function EditorPane() {
         firstSnippetValue ||
         "// Code written here will be saved to newly created snippets"
       }
-      options={{ lineWrapping: true, autoRefresh: { delay: 50 } }}
+      options={{
+        lineWrapping: true,
+        lineNumbers: true,
+        autoRefresh: { delay: 50 },
+      }}
       onBeforeChange={(editor, change, value) =>
         activeSnippet
           ? setActiveSnippet({ ...activeSnippet, value })
           : setFirstSnippetValue(value)
       }
+      className="h-full"
     />
   )
 }

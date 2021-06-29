@@ -19,7 +19,7 @@ const ViewerItem: ItemRenderer<ActiveViewer> = (
   />
 )
 
-export default function ControllerPane() {
+export default function Controllers() {
   const [activeViewer, setActiveViewer] = useRecoilState(activeViewerState)
 
   return (
