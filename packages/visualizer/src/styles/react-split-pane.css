@@ -1,6 +1,5 @@
 .Resizer {
-  background: #000;
-  opacity: 0.2;
+  background: #ddd;
   z-index: 1;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -15,22 +14,8 @@
   transition: all 2s ease;
 }
 
-.Resizer.horizontal {
-  height: 11px;
-  margin: -5px 0;
-  border-top: 5px solid rgba(255, 255, 255, 0);
-  border-bottom: 5px solid rgba(255, 255, 255, 0);
-  cursor: row-resize;
-  width: 100%;
-}
-
-.Resizer.horizontal:hover {
-  border-top: 5px solid rgba(0, 0, 0, 0.5);
-  border-bottom: 5px solid rgba(0, 0, 0, 0.5);
-}
-
 .Resizer.vertical {
-  width: 11px;
+  width: 10.5px;
   margin: 0 -5px;
   border-left: 5px solid rgba(255, 255, 255, 0);
   border-right: 5px solid rgba(255, 255, 255, 0);
@@ -38,8 +23,8 @@
 }
 
 .Resizer.vertical:hover {
-  border-left: 5px solid rgba(0, 0, 0, 0.5);
-  border-right: 5px solid rgba(0, 0, 0, 0.5);
+  border-left: 5px solid rgb(231, 229, 229);
+  border-right: 5px solid rgb(231, 229, 229);
 }
 
 .Resizer.disabled {

@@ -9,7 +9,7 @@ const Workspace = lazy(() => import("./Workspace"))
 export default function Visualizer() {
   return (
     <Suspense fallback={<Spinner />}>
-      <Navbar>
+      <Navbar className="!shadow-none border-0 border-b border-solid border-[#ddd]">
         <Navbar.Group align={Alignment.LEFT}>
           <Navbar.Heading>
             <h3>ERML Visualizer</h3>

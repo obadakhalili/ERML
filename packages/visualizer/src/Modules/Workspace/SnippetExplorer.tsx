@@ -82,7 +82,7 @@ export default function SnippetExplorer() {
       )}
     >
       <Button
-        rightIcon="document"
+        icon="document"
         text={activeSnippet?.name || "Create New Snippet"}
       />
     </SnippetSelect>

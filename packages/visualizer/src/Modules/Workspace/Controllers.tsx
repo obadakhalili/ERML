@@ -64,7 +64,7 @@ export default function Controllers() {
         content={OptionsContent}
         className="cursor-pointer"
       >
-        <Icon icon="cog" />
+        <Icon icon="cog" className="hover:opacity-80" />
       </Popover>
     </div>
   )
