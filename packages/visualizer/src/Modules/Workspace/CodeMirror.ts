@@ -1,5 +1,8 @@
-import "codemirror/addon/scroll/simplescrollbars"
+import "codemirror/addon/edit/matchbrackets.js"
+import "codemirror/addon/selection/active-line.js"
+import "codemirror/addon/scroll/simplescrollbars.js"
 import "codemirror/addon/display/autorefresh.js"
+
 import "codemirror/lib/codemirror.css"
 import "codemirror/addon/scroll/simplescrollbars.css"
 import { defineMode } from "codemirror"

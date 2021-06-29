@@ -19,6 +19,8 @@ export default function EditorPane() {
       options={{
         lineWrapping: true,
         lineNumbers: true,
+        matchBrackets: true,
+        styleActiveLine: true,
         scrollbarStyle: "simple",
         autoRefresh: { delay: 50 },
       }}
