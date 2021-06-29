@@ -1,5 +1,7 @@
+import "codemirror/addon/scroll/simplescrollbars"
 import "codemirror/addon/display/autorefresh.js"
 import "codemirror/lib/codemirror.css"
+import "codemirror/addon/scroll/simplescrollbars.css"
 import { defineMode } from "codemirror"
 
 import "../../styles/CodeMirror.css"

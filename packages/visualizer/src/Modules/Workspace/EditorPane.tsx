@@ -19,6 +19,7 @@ export default function EditorPane() {
       options={{
         lineWrapping: true,
         lineNumbers: true,
+        scrollbarStyle: "simple",
         autoRefresh: { delay: 50 },
       }}
       onBeforeChange={(editor, change, value) =>
