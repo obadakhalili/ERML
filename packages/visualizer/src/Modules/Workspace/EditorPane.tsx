@@ -1,9 +1,14 @@
-import { useRecoilState } from "recoil"
+import { useRecoilState, useRecoilValue } from "recoil"
 
 import CodeMirror from "./CodeMirror"
-import { activeSnippetState, firstSnippetValueState } from "../../state"
+import {
+  workspaceOptionsState,
+  activeSnippetState,
+  firstSnippetValueState,
+} from "../../state"
 
 export default function EditorPane() {
+  const { lineWrapped } = useRecoilValue(workspaceOptionsState)
   const [activeSnippet, setActiveSnippet] = useRecoilState(activeSnippetState)
   const [firstSnippetValue, setFirstSnippetValue] = useRecoilState(
     firstSnippetValueState
@@ -17,7 +22,7 @@ export default function EditorPane() {
         "// Code written here will be saved to newly created snippets"
       }
       options={{
-        lineWrapping: true,
+        lineWrapping: lineWrapped,
         lineNumbers: true,
         matchBrackets: true,
         styleActiveLine: true,

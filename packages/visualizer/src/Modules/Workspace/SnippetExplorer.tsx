@@ -103,6 +103,10 @@ export default function SnippetExplorer() {
     selectedSnippet: Snippet,
     event?: SyntheticEvent & { intent?: "add" | "remove" }
   ) {
+    if (selectedSnippet.name.length > 30) {
+      return
+    }
+
     const newSnippets =
       event!.intent === "remove"
         ? snippets.filter((snippet) => snippet.name !== selectedSnippet.name)
@@ -118,7 +122,11 @@ export default function SnippetExplorer() {
                 ? false
                 : snippet.active,
           }))
-    !newSnippets.length && setFirstSnippetValue(undefined)
+
+    if (!newSnippets.length) {
+      setFirstSnippetValue(undefined)
+    }
+
     setSnippets(newSnippets)
   }
 }

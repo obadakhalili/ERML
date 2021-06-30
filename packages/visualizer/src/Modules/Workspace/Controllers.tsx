@@ -10,10 +10,10 @@ import {
 } from "@blueprintjs/core"
 
 import SnippetExplorer from "./SnippetExplorer"
-import { workspaceOptionsState } from "../../state"
+import { workspaceOptionsState, WorkspaceOptions } from "../../state"
 
 export default function Controllers() {
-  const [{ activeViewer }, setWorkspaceOptions] = useRecoilState(
+  const [{ lineWrapped, activeViewer }, setWorkspaceOptions] = useRecoilState(
     workspaceOptionsState
   )
 
@@ -33,8 +33,14 @@ export default function Controllers() {
         shouldDismissPopover={false}
         text={
           <div className="flex">
-            <div className="w-full">Word Wrap</div>
-            <Checkbox checked={true} />
+            <div className="w-full">Line Wrap</div>
+            <Checkbox
+              checked={lineWrapped}
+              onChange={handleWorkspaceOptionsChange<boolean>(
+                "lineWrapped",
+                !lineWrapped
+              )}
+            />
           </div>
         }
         icon="compressed"
@@ -45,23 +51,17 @@ export default function Controllers() {
           text="Diagram"
           icon="graph"
           disabled={activeViewer === "Diagram"}
-          onClick={() =>
-            setWorkspaceOptions((options) => ({
-              ...options,
-              activeViewer: "Diagram",
-            }))
-          }
+          onClick={handleWorkspaceOptionsChange<
+            WorkspaceOptions["activeViewer"]
+          >("activeViewer", "Diagram")}
         />
         <MenuItem
           text="AST"
           icon="diagram-tree"
           disabled={activeViewer === "AST"}
-          onClick={() =>
-            setWorkspaceOptions((options) => ({
-              ...options,
-              activeViewer: "AST",
-            }))
-          }
+          onClick={handleWorkspaceOptionsChange<
+            WorkspaceOptions["activeViewer"]
+          >("activeViewer", "AST")}
         />
       </MenuItem>
     </Menu>
@@ -80,4 +80,15 @@ export default function Controllers() {
       </Popover>
     </div>
   )
+
+  function handleWorkspaceOptionsChange<T>(
+    option: keyof WorkspaceOptions,
+    value: T
+  ) {
+    return () =>
+      setWorkspaceOptions((options) => ({
+        ...options,
+        [option]: value,
+      }))
+  }
 }
