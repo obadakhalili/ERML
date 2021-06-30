@@ -11,11 +11,11 @@
 
 .Resizer:hover {
   -webkit-transition: all 2s ease;
-  transition: all 2s ease;
+  transition: all 1s ease;
 }
 
 .Resizer.vertical {
-  width: 10.5px;
+  width: 11px;
   margin: 0 -5px;
   border-left: 5px solid rgba(255, 255, 255, 0);
   border-right: 5px solid rgba(255, 255, 255, 0);
@@ -23,8 +23,8 @@
 }
 
 .Resizer.vertical:hover {
-  border-left: 5px solid rgb(231, 229, 229);
-  border-right: 5px solid rgb(231, 229, 229);
+  border-left: 5px solid rgba(0, 0, 0, 0.1);
+  border-right: 5px solid rgba(0, 0, 0, 0.1);
 }
 
 .Resizer.disabled {
