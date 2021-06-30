@@ -1,5 +1,5 @@
 ENTITY User {
-  PRIMARY "ID", // one-liner comment
+  PRIMARY "ID",
   SIMPLE "DoB",
   DERIVED "Age"
 }
@@ -12,9 +12,9 @@ IDEN REL Borrow {
   User <PARTIAL, 1>,
   User <TOTAL, N>,
   ATTRIBUTES { SIMPLE "Borrowing_date" }
-
-  /*
-  * multi-line
-  * comment
-  */
 }
+
+/*
+  To learn more about ERML, visit:
+  https://erml.netlify.app/
+*/
