@@ -10,10 +10,12 @@ import {
 } from "@blueprintjs/core"
 
 import SnippetExplorer from "./SnippetExplorer"
-import { activeViewerState } from "../../state"
+import { workspaceOptionsState } from "../../state"
 
 export default function Controllers() {
-  const [activeViewer, setActiveViewer] = useRecoilState(activeViewerState)
+  const [{ activeViewer }, setWorkspaceOptions] = useRecoilState(
+    workspaceOptionsState
+  )
 
   const OptionsContent = (
     <Menu>
@@ -43,13 +45,23 @@ export default function Controllers() {
           text="Diagram"
           icon="graph"
           disabled={activeViewer === "Diagram"}
-          onClick={() => setActiveViewer("Diagram")}
+          onClick={() =>
+            setWorkspaceOptions((options) => ({
+              ...options,
+              activeViewer: "Diagram",
+            }))
+          }
         />
         <MenuItem
           text="AST"
           icon="diagram-tree"
           disabled={activeViewer === "AST"}
-          onClick={() => setActiveViewer("AST")}
+          onClick={() =>
+            setWorkspaceOptions((options) => ({
+              ...options,
+              activeViewer: "AST",
+            }))
+          }
         />
       </MenuItem>
     </Menu>

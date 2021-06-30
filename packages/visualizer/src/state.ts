@@ -1,9 +1,6 @@
-import { atom, selector, DefaultValue } from "recoil"
+import { atom, selector, AtomEffect } from "recoil"
 
-import {
-  getSnippetsFromLocalStorage,
-  saveSnippetsToLocalStorage,
-} from "./utils"
+import { isNotValidSnippets, isNotValidWorkspaceOptions } from "./utils"
 
 export interface Snippet {
   name: string
@@ -13,20 +10,58 @@ export interface Snippet {
 
 export type Snippets = Snippet[]
 
-export type ActiveViewer = "Diagram" | "AST"
+export interface WorkspaceOptions {
+  vimEnabled: boolean
+  wordWrapped: boolean
+  splitPaneDefaultSize: number
+  activeViewer: "Diagram" | "AST"
+}
+
+function localStorageSideEffect<T>(
+  key: string,
+  isNotValid: (value: any) => boolean,
+  defaultValue: () => T | Promise<T>
+) {
+  const effect: AtomEffect<T> = ({ setSelf, onSet }) => {
+    try {
+      const parsedItem = JSON.parse(localStorage.getItem(key)!)
+
+      if (isNotValid(parsedItem)) {
+        throw new Error()
+      }
+
+      setSelf(parsedItem)
+    } catch {
+      Promise.resolve(defaultValue()).then((defaultValue) => {
+        setSelf(defaultValue)
+        localStorage.setItem(key, JSON.stringify(defaultValue))
+      })
+    }
+
+    onSet((newValue) => localStorage.setItem(key, JSON.stringify(newValue)))
+  }
+
+  return effect
+}
 
 export const snippetsState = atom<Snippets>({
   key: "snippetsState",
-  default: getSnippetsFromLocalStorage(),
+  default: [],
   effects_UNSTABLE: [
-    ({ onSet }) =>
-      onSet((snippets, oldSnippets) =>
-        saveSnippetsToLocalStorage(
-          snippets instanceof DefaultValue
-            ? (oldSnippets as Snippets)
-            : snippets
-        )
-      ),
+    localStorageSideEffect<Snippets>(
+      "snippets",
+      isNotValidSnippets,
+      async () => {
+        const response = await fetch("./editor-placeholder.erml")
+        return [
+          {
+            name: "Library ERD",
+            value: await response.text(),
+            active: true,
+          },
+        ]
+      }
+    ),
   ],
 })
 
@@ -52,7 +87,19 @@ export const firstSnippetValueState = atom<string | undefined>({
   default: undefined,
 })
 
-export const activeViewerState = atom<ActiveViewer>({
-  key: "activeViewerState",
-  default: "Diagram",
+export const workspaceOptionsState = atom<WorkspaceOptions>({
+  key: "WorkspaceOptionsState",
+  default: {} as WorkspaceOptions,
+  effects_UNSTABLE: [
+    localStorageSideEffect<WorkspaceOptions>(
+      "workspace_options",
+      isNotValidWorkspaceOptions,
+      () => ({
+        vimEnabled: false,
+        wordWrapped: false,
+        splitPaneDefaultSize: 350,
+        activeViewer: "Diagram",
+      })
+    ),
+  ],
 })
