@@ -8,7 +8,7 @@ import {
 } from "../../state"
 
 export default function EditorPane() {
-  const { lineWrapped } = useRecoilValue(workspaceOptionsState)
+  const { vimEnabled, lineWrapped } = useRecoilValue(workspaceOptionsState)
   const [activeSnippet, setActiveSnippet] = useRecoilState(activeSnippetState)
   const [firstSnippetValue, setFirstSnippetValue] = useRecoilState(
     firstSnippetValueState
@@ -27,6 +27,7 @@ export default function EditorPane() {
         matchBrackets: true,
         styleActiveLine: true,
         scrollbarStyle: "simple",
+        keyMap: vimEnabled ? "vim" : "default",
         autoRefresh: { delay: 50 },
       }}
       onBeforeChange={(editor, change, value) =>
