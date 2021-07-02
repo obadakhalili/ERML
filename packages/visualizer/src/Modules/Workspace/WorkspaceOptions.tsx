@@ -13,7 +13,7 @@ import { workspaceOptionsState, IWorkspaceOptions } from "../../state"
 
 export default function WorkspaceOptions() {
   const [
-    { vimEnabled, minimapDisplayed, lineWrapped, activeViewer },
+    { vimEnabled, minimapDisplayed, wordWrapped, activeViewer },
     setWorkspaceOptions,
   ] = useRecoilState(workspaceOptionsState)
 
@@ -57,10 +57,10 @@ export default function WorkspaceOptions() {
           <div className="flex">
             <div className="w-full">Line Wrap</div>
             <Checkbox
-              checked={lineWrapped}
+              checked={wordWrapped}
               onChange={handleWorkspaceOptionsChange<boolean>(
-                "lineWrapped",
-                !lineWrapped
+                "wordWrapped",
+                !wordWrapped
               )}
             />
           </div>

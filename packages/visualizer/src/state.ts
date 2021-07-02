@@ -12,7 +12,7 @@ export type Snippets = Snippet[]
 
 export interface IWorkspaceOptions {
   vimEnabled: boolean
-  lineWrapped: boolean
+  wordWrapped: boolean
   minimapDisplayed: boolean
   splitPaneDefaultSize: number
   activeViewer: "Diagram" | "AST"
@@ -97,7 +97,7 @@ export const workspaceOptionsState = atom<IWorkspaceOptions>({
       isNotValidWorkspaceOptions,
       () => ({
         vimEnabled: false,
-        lineWrapped: false,
+        wordWrapped: false,
         minimapDisplayed: true,
         splitPaneDefaultSize: 350,
         activeViewer: "Diagram",

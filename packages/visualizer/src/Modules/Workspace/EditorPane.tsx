@@ -18,7 +18,7 @@ function defineERML(monaco: Monaco) {
 const focusEditor: OnEditorMount = (editor) => editor.focus()
 
 export default function EditorPane() {
-  const { lineWrapped, minimapDisplayed } = useRecoilValue(
+  const { wordWrapped, minimapDisplayed } = useRecoilValue(
     workspaceOptionsState
   )
   const [activeSnippet, setActiveSnippet] = useRecoilState(activeSnippetState)
@@ -38,7 +38,7 @@ export default function EditorPane() {
           : setFirstSnippetValue(value)
       }}
       options={{
-        wordWrap: lineWrapped ? "on" : "off",
+        wordWrap: wordWrapped ? "on" : "off",
         minimap: { enabled: minimapDisplayed },
       }}
       value={
