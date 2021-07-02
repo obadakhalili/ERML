@@ -10,7 +10,7 @@ export interface Snippet {
 
 export type Snippets = Snippet[]
 
-export interface WorkspaceOptions {
+export interface IWorkspaceOptions {
   vimEnabled: boolean
   lineWrapped: boolean
   minimapDisplayed: boolean
@@ -88,11 +88,11 @@ export const firstSnippetValueState = atom<string | undefined>({
   default: undefined,
 })
 
-export const workspaceOptionsState = atom<WorkspaceOptions>({
+export const workspaceOptionsState = atom<IWorkspaceOptions>({
   key: "WorkspaceOptionsState",
-  default: {} as WorkspaceOptions,
+  default: {} as IWorkspaceOptions,
   effects_UNSTABLE: [
-    localStorageSideEffect<WorkspaceOptions>(
+    localStorageSideEffect<IWorkspaceOptions>(
       "workspace_options",
       isNotValidWorkspaceOptions,
       () => ({
