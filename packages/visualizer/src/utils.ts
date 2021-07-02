@@ -1,5 +1,6 @@
 export const isNotValidSnippets = (value: any) =>
   value?.constructor !== Array ||
+  value.length > 20 ||
   value.some(
     (item) =>
       typeof item?.active !== "boolean" ||

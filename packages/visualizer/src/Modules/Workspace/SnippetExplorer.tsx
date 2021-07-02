@@ -130,11 +130,19 @@ export default function SnippetExplorer() {
       )
     }
 
+    if (snippets.length === 20) {
+      return toast.show({
+        intent: Intent.WARNING,
+        message: "You cannot store more than 20 snippets",
+        timeout: 2500,
+      })
+    }
+
     if (selectedSnippet.name.length > 30) {
       return toast.show({
+        intent: Intent.WARNING,
         message: "Snippet name cannot exceed 30 characters",
         timeout: 2500,
-        intent: Intent.WARNING,
       })
     }
 
