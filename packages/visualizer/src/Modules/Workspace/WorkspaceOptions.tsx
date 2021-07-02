@@ -23,7 +23,7 @@ export default function WorkspaceOptions() {
         shouldDismissPopover={false}
         text={
           <div className="flex">
-            <div className="w-full">Enable Vim</div>
+            <div className="w-full">Vim</div>
             <Checkbox
               checked={vimEnabled}
               onChange={handleWorkspaceOptionsChange<boolean>(
@@ -39,7 +39,7 @@ export default function WorkspaceOptions() {
         shouldDismissPopover={false}
         text={
           <div className="flex">
-            <div className="w-full">Display Minimap</div>
+            <div className="w-full">Minimap</div>
             <Checkbox
               checked={minimapDisplayed}
               onChange={handleWorkspaceOptionsChange<boolean>(
@@ -49,13 +49,13 @@ export default function WorkspaceOptions() {
             />
           </div>
         }
-        icon="key"
+        icon="path-search"
       />
       <MenuItem
         shouldDismissPopover={false}
         text={
           <div className="flex">
-            <div className="w-full">Line Wrap</div>
+            <div className="w-full">Word Wrap</div>
             <Checkbox
               checked={wordWrapped}
               onChange={handleWorkspaceOptionsChange<boolean>(
