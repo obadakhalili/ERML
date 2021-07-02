@@ -1,4 +1,4 @@
-import { SyntheticEvent } from "react"
+import { SyntheticEvent, useContext } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
 import {
   Select,
@@ -6,7 +6,7 @@ import {
   ItemRenderer,
   ItemsEqualComparator,
 } from "@blueprintjs/select"
-import { Button, MenuItem, Icon } from "@blueprintjs/core"
+import { Button, MenuItem, Icon, Intent } from "@blueprintjs/core"
 
 import {
   snippetsState,
@@ -14,6 +14,7 @@ import {
   firstSnippetValueState,
   Snippet,
 } from "../../state"
+import { AppContext } from "../.."
 
 const SnippetSelect = Select.ofType<Snippet>()
 
@@ -22,7 +23,7 @@ const SnippetItem: ItemRenderer<Snippet> = (
   { handleClick, modifiers }
 ) => {
   const SnippetItemContent = (
-    <div onClick={handleClick} className="flex">
+    <div onClick={handleClick} className="flex gap-2">
       <div className="w-full">{name}</div>
       <div>
         <Icon
@@ -59,6 +60,7 @@ export default function SnippetExplorer() {
   const [firstSnippetValue, setFirstSnippetValue] = useRecoilState(
     firstSnippetValueState
   )
+  const { toast } = useContext(AppContext)
 
   return (
     <SnippetSelect
@@ -91,7 +93,7 @@ export default function SnippetExplorer() {
   function composeSnippetFromQuery(query: string) {
     return {
       name: query,
-      active: false,
+      active: true,
       value:
         activeSnippet || !firstSnippetValue
           ? `ENTITY Example { SIMPLE "attribute" }`
@@ -103,30 +105,43 @@ export default function SnippetExplorer() {
     selectedSnippet: Snippet,
     event?: SyntheticEvent & { intent?: "add" | "remove" }
   ) {
+    event = event!
+
+    if (event.intent === "remove") {
+      const newSnippets = snippets.filter(
+        (snippet) => snippet.name !== selectedSnippet.name
+      )
+
+      if (!newSnippets.length) {
+        setFirstSnippetValue(undefined)
+      }
+
+      return setSnippets(newSnippets)
+    }
+
+    const isNotNew = snippets.includes(selectedSnippet)
+
+    if (isNotNew) {
+      return setSnippets(
+        snippets.map((snippet) => ({
+          ...snippet,
+          active: snippet === selectedSnippet || false,
+        }))
+      )
+    }
+
     if (selectedSnippet.name.length > 30) {
-      return
+      return toast.show({
+        message: "Snippet name cannot exceed 30 characters",
+        timeout: 2500,
+        intent: Intent.WARNING,
+      })
     }
 
-    const newSnippets =
-      event!.intent === "remove"
-        ? snippets.filter((snippet) => snippet.name !== selectedSnippet.name)
-        : (event!.intent === "add"
-            ? snippets.concat(selectedSnippet)
-            : snippets
-          ).map((snippet) => ({
-            ...snippet,
-            active:
-              snippet.name === selectedSnippet.name
-                ? true
-                : snippet.active
-                ? false
-                : snippet.active,
-          }))
-
-    if (!newSnippets.length) {
-      setFirstSnippetValue(undefined)
-    }
-
-    setSnippets(newSnippets)
+    setSnippets(
+      snippets
+        .map((snippet) => ({ ...snippet, active: false }))
+        .concat(selectedSnippet)
+    )
   }
 }
