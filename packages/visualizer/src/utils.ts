@@ -16,5 +16,6 @@ export const isNotValidWorkspaceOptions = (value: any) =>
   value?.constructor !== Object ||
   typeof value.vimEnabled !== "boolean" ||
   typeof value.lineWrapped !== "boolean" ||
+  typeof value.minimapDisplayed !== "boolean" ||
   typeof value.splitPaneDefaultSize !== "number" ||
   typeof value.activeViewer !== "string"

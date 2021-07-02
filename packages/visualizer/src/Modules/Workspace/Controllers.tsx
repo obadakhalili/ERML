@@ -13,8 +13,10 @@ import SnippetExplorer from "./SnippetExplorer"
 import { workspaceOptionsState, WorkspaceOptions } from "../../state"
 
 export default function Controllers() {
-  const [{ vimEnabled, lineWrapped, activeViewer }, setWorkspaceOptions] =
-    useRecoilState(workspaceOptionsState)
+  const [
+    { vimEnabled, minimapDisplayed, lineWrapped, activeViewer },
+    setWorkspaceOptions,
+  ] = useRecoilState(workspaceOptionsState)
 
   const OptionsContent = (
     <Menu>
@@ -28,6 +30,22 @@ export default function Controllers() {
               onChange={handleWorkspaceOptionsChange<boolean>(
                 "vimEnabled",
                 !vimEnabled
+              )}
+            />
+          </div>
+        }
+        icon="key"
+      />
+      <MenuItem
+        shouldDismissPopover={false}
+        text={
+          <div className="flex">
+            <div className="w-full">Display Minimap</div>
+            <Checkbox
+              checked={minimapDisplayed}
+              onChange={handleWorkspaceOptionsChange<boolean>(
+                "minimapDisplayed",
+                !minimapDisplayed
               )}
             />
           </div>
