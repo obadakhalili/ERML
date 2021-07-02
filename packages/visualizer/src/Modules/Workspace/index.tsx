@@ -3,7 +3,8 @@ import { useRecoilState } from "recoil"
 import { RouteComponentProps } from "@reach/router"
 import SplitPane from "react-split-pane"
 
-import ToolBar from "./ToolBar"
+import SnippetExplorer from "./SnippetExplorer"
+import WorkspaceOptions from "./WorkspaceOptions"
 import EditorPane from "./EditorPane"
 import ViewerPane from "./ViewerPane"
 import { workspaceOptionsState } from "../../state"
@@ -16,7 +17,10 @@ const Workspace: FC<RouteComponentProps> = () => {
 
   return (
     <>
-      <ToolBar />
+      <div className="h-11 px-2 flex justify-between items-center border-0 border-b border-solid border-[#ddd]">
+        <SnippetExplorer />
+        <WorkspaceOptions />
+      </div>
       <SplitPane
         className="!h-[calc(100%-94px)]"
         defaultSize={splitPaneDefaultSize}
