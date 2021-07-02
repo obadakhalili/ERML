@@ -12,7 +12,7 @@ import {
 import SnippetExplorer from "./SnippetExplorer"
 import { workspaceOptionsState, WorkspaceOptions } from "../../state"
 
-export default function Controllers() {
+export default function ToolBar() {
   const [
     { vimEnabled, minimapDisplayed, lineWrapped, activeViewer },
     setWorkspaceOptions,
