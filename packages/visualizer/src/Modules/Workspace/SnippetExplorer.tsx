@@ -34,7 +34,7 @@ const SnippetItem: ItemRenderer<Snippet> = (
   )
 
   return (
-    <MenuItem key={name} text={SnippetItemContent} active={modifiers.active} />
+    <MenuItem key={name} active={modifiers.active} text={SnippetItemContent} />
   )
 }
 
@@ -60,7 +60,9 @@ function composeSnippetFromQuery(query: string) {
 
 export default function SnippetExplorer() {
   const [snippets, setSnippets] = useRecoilState(snippetsState)
+
   const activeSnippet = useRecoilValue(activeSnippetState)
+
   const toast = useContext(ToasterContext)
 
   return (
@@ -74,10 +76,11 @@ export default function SnippetExplorer() {
       onItemSelect={handleSnippetSelect}
       itemRenderer={SnippetItem}
       noResults={NoResultsSnippetItem}
-      createNewItemRenderer={(query, _, handleClick) => (
+      createNewItemRenderer={(query, active, handleClick) => (
         <MenuItem
           icon="add"
           text={`Create "${query}"`}
+          active={active}
           onClick={(event) =>
             handleClick(Object.assign(event, { intent: "add" }))
           }
