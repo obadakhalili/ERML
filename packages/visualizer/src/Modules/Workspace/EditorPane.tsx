@@ -26,26 +26,32 @@ export default function EditorPane() {
     firstSnippetValueState
   )
 
+  const editorOptions = {
+    wordWrap: wordWrapped ? "on" : "off",
+    minimap: { enabled: minimapDisplayed },
+  } as const
+
+  const editorValue =
+    activeSnippet?.value ||
+    firstSnippetValue ||
+    "// Code here will be saved to the first created snippet"
+
   return (
     <Editor
       language="erml"
       loading={<Spinner />}
       beforeMount={defineERML}
       onMount={focusEditor}
-      onChange={(value) => {
-        activeSnippet
-          ? setActiveSnippet({ ...activeSnippet, value: value! })
-          : setFirstSnippetValue(value)
-      }}
-      options={{
-        wordWrap: wordWrapped ? "on" : "off",
-        minimap: { enabled: minimapDisplayed },
-      }}
-      value={
-        activeSnippet?.value ||
-        firstSnippetValue ||
-        "// Code here will be saved to the first created snippet"
-      }
+      onChange={handleEditorChange}
+      options={editorOptions}
+      value={editorValue}
     />
   )
+
+  function handleEditorChange(newValue?: string) {
+    if (activeSnippet) {
+      return setActiveSnippet({ ...activeSnippet, value: newValue! })
+    }
+    setFirstSnippetValue(newValue)
+  }
 }

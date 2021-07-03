@@ -24,20 +24,22 @@ const Workspace: FC<RouteComponentProps> = () => {
       <SplitPane
         className="!h-[calc(100%-94px)]"
         defaultSize={splitPaneDefaultSize}
+        onChange={handleSplitPaneChange}
         minSize={350}
         maxSize={500}
-        onChange={(newSize) =>
-          setWorkspaceOptions((options) => ({
-            ...options,
-            splitPaneDefaultSize: newSize,
-          }))
-        }
       >
         <EditorPane />
         <ViewerPane />
       </SplitPane>
     </>
   )
+
+  function handleSplitPaneChange(newSize: number) {
+    setWorkspaceOptions((options) => ({
+      ...options,
+      splitPaneDefaultSize: newSize,
+    }))
+  }
 }
 
 export default Workspace
