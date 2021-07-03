@@ -1,13 +1,15 @@
+import { SnippetRules } from "./rules"
+
 export const isNotValidSnippets = (value: any) =>
   value?.constructor !== Array ||
-  value.length > 20 ||
+  value.length > SnippetRules.SNIPPETS_MAX_LENGTH ||
   value.some(
     (item) =>
       typeof item?.active !== "boolean" ||
       typeof item?.value !== "string" ||
       typeof item?.name !== "string" ||
-      item.name.length > 30 ||
-      item.name.length < 1
+      item.name.length > SnippetRules.SNIPPET_MAX_LENGTH ||
+      item.name.length < SnippetRules.SNIPPET_MIN_LENGTH
   ) ||
   value
     .map(({ name }) => name)

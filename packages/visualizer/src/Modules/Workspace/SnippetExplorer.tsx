@@ -10,6 +10,7 @@ import { Button, MenuItem, Icon, Intent } from "@blueprintjs/core"
 
 import { snippetsState, activeSnippetState, Snippet } from "../../state"
 import { ToasterContext } from "../.."
+import { SnippetRules } from "../../rules"
 
 const SnippetSelect = Select.ofType<Snippet>()
 
@@ -53,7 +54,7 @@ function composeSnippetFromQuery(query: string) {
   return {
     name: query,
     active: true,
-    value: `ENTITY Example { SIMPLE "attribute" }`,
+    value: `ENTITY Dummy_entity { /* .. */ }`,
   }
 }
 
@@ -113,7 +114,7 @@ export default function SnippetExplorer() {
       )
     }
 
-    if (snippets.length === 20) {
+    if (snippets.length === SnippetRules.SNIPPETS_MAX_LENGTH) {
       return toast.show({
         intent: Intent.WARNING,
         message: "You cannot store more than 20 snippets",
@@ -121,7 +122,7 @@ export default function SnippetExplorer() {
       })
     }
 
-    if (selectedSnippet.name.length > 30) {
+    if (selectedSnippet.name.length > SnippetRules.SNIPPET_MAX_LENGTH) {
       return toast.show({
         intent: Intent.WARNING,
         message: "Snippet name cannot exceed 30 characters",
