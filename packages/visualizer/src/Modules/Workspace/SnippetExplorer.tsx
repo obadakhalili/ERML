@@ -9,7 +9,7 @@ import {
 import { Button, MenuItem, Icon, Intent } from "@blueprintjs/core"
 
 import { snippetsState, activeSnippetState, Snippet } from "../../state"
-import { AppContext } from "../.."
+import { ToasterContext } from "../.."
 
 const SnippetSelect = Select.ofType<Snippet>()
 
@@ -60,7 +60,7 @@ function composeSnippetFromQuery(query: string) {
 export default function SnippetExplorer() {
   const [snippets, setSnippets] = useRecoilState(snippetsState)
   const activeSnippet = useRecoilValue(activeSnippetState)
-  const { toast } = useContext(AppContext)
+  const toast = useContext(ToasterContext)
 
   return (
     <SnippetSelect
