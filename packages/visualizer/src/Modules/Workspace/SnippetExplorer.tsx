@@ -8,12 +8,7 @@ import {
 } from "@blueprintjs/select"
 import { Button, MenuItem, Icon, Intent } from "@blueprintjs/core"
 
-import {
-  snippetsState,
-  activeSnippetState,
-  firstSnippetValueState,
-  Snippet,
-} from "../../state"
+import { snippetsState, activeSnippetState, Snippet } from "../../state"
 import { AppContext } from "../.."
 
 const SnippetSelect = Select.ofType<Snippet>()
@@ -54,12 +49,17 @@ const snippetsEqual: ItemsEqualComparator<Snippet> = (
   secondSnippet
 ) => firstSnippet.name === secondSnippet.name
 
+function composeSnippetFromQuery(query: string) {
+  return {
+    name: query,
+    active: true,
+    value: `ENTITY Example { SIMPLE "attribute" }`,
+  }
+}
+
 export default function SnippetExplorer() {
   const [snippets, setSnippets] = useRecoilState(snippetsState)
   const activeSnippet = useRecoilValue(activeSnippetState)
-  const [firstSnippetValue, setFirstSnippetValue] = useRecoilState(
-    firstSnippetValueState
-  )
   const { toast } = useContext(AppContext)
 
   return (
@@ -90,17 +90,6 @@ export default function SnippetExplorer() {
     </SnippetSelect>
   )
 
-  function composeSnippetFromQuery(query: string) {
-    return {
-      name: query,
-      active: true,
-      value:
-        activeSnippet || !firstSnippetValue
-          ? `ENTITY Example { SIMPLE "attribute" }`
-          : firstSnippetValue,
-    }
-  }
-
   function handleSnippetSelect(
     selectedSnippet: Snippet,
     event?: SyntheticEvent & { intent?: "add" | "remove" }
@@ -108,15 +97,9 @@ export default function SnippetExplorer() {
     event = event!
 
     if (event.intent === "remove") {
-      const newSnippets = snippets.filter(
-        (snippet) => snippet.name !== selectedSnippet.name
+      return setSnippets(
+        snippets.filter((snippet) => snippet.name !== selectedSnippet.name)
       )
-
-      if (!newSnippets.length) {
-        setFirstSnippetValue(undefined)
-      }
-
-      return setSnippets(newSnippets)
     }
 
     const isNotNew = snippets.includes(selectedSnippet)

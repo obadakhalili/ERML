@@ -83,11 +83,6 @@ export const activeSnippetState = selector<Snippet | undefined>({
   },
 })
 
-export const firstSnippetValueState = atom<string | undefined>({
-  key: "firstSnippetValueState",
-  default: undefined,
-})
-
 export const workspaceOptionsState = atom<IWorkspaceOptions>({
   key: "WorkspaceOptionsState",
   default: {} as IWorkspaceOptions,

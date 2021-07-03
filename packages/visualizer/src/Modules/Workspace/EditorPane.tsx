@@ -3,11 +3,7 @@ import Editor, { Monaco, OnMount as OnEditorMount } from "@monaco-editor/react"
 import { Spinner } from "@blueprintjs/core"
 
 import * as ERML from "./ERML"
-import {
-  workspaceOptionsState,
-  activeSnippetState,
-  firstSnippetValueState,
-} from "../../state"
+import { workspaceOptionsState, activeSnippetState } from "../../state"
 
 function defineERML(monaco: Monaco) {
   monaco.languages.register({ id: "erml" })
@@ -18,12 +14,13 @@ function defineERML(monaco: Monaco) {
 const focusEditor: OnEditorMount = (editor) => editor.focus()
 
 export default function EditorPane() {
+  const [activeSnippet, setActiveSnippet] = useRecoilState(activeSnippetState)
+
+  const editorValue =
+    activeSnippet?.value || "// Create a new snippet, and start coding .."
+
   const { wordWrapped, minimapDisplayed } = useRecoilValue(
     workspaceOptionsState
-  )
-  const [activeSnippet, setActiveSnippet] = useRecoilState(activeSnippetState)
-  const [firstSnippetValue, setFirstSnippetValue] = useRecoilState(
-    firstSnippetValueState
   )
 
   const editorOptions = {
@@ -31,20 +28,15 @@ export default function EditorPane() {
     minimap: { enabled: minimapDisplayed },
   } as const
 
-  const editorValue =
-    activeSnippet?.value ||
-    firstSnippetValue ||
-    "// Code here will be saved to the first created snippet"
-
   return (
     <Editor
       language="erml"
       loading={<Spinner />}
+      value={editorValue}
+      options={editorOptions}
       beforeMount={defineERML}
       onMount={focusEditor}
       onChange={handleEditorChange}
-      options={editorOptions}
-      value={editorValue}
     />
   )
 
@@ -52,6 +44,5 @@ export default function EditorPane() {
     if (activeSnippet) {
       return setActiveSnippet({ ...activeSnippet, value: newValue! })
     }
-    setFirstSnippetValue(newValue)
   }
 }
