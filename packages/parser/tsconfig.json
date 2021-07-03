@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "dist",
-    "declaration": true
+    "declaration": true,
+    "noUncheckedIndexedAccess": false
   },
   "include": ["src/engine", "src/playground.ts"]
 }
