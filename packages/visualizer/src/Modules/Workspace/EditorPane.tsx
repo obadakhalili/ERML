@@ -1,9 +1,12 @@
+import { useRef, useEffect } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
-import Editor, { Monaco, OnMount as OnEditorMount } from "@monaco-editor/react"
+import { editor } from "monaco-editor"
+import Editor, { Monaco } from "@monaco-editor/react"
+import { initVimMode } from "monaco-vim"
 import { Spinner } from "@blueprintjs/core"
 
 import * as ERML from "./ERML"
-import { workspaceOptionsState, activeSnippetState } from "../../state"
+import { activeSnippetState, workspaceOptionsState } from "../../state"
 
 function defineERML(monaco: Monaco) {
   monaco.languages.register({ id: "erml" })
@@ -11,15 +14,13 @@ function defineERML(monaco: Monaco) {
   monaco.languages.setMonarchTokensProvider("erml", ERML.lang)
 }
 
-const focusEditor: OnEditorMount = (editor) => editor.focus()
-
 export default function EditorPane() {
   const [activeSnippet, setActiveSnippet] = useRecoilState(activeSnippetState)
 
   const editorValue =
-    activeSnippet?.value || "// Create a new snippet, and start coding .."
+    activeSnippet?.value ?? "// Create a new snippet, and start coding .."
 
-  const { wordWrapped, minimapDisplayed } = useRecoilValue(
+  const { wordWrapped, minimapDisplayed, vimEnabled } = useRecoilValue(
     workspaceOptionsState
   )
 
@@ -28,17 +29,50 @@ export default function EditorPane() {
     minimap: { enabled: minimapDisplayed },
   } as const
 
+  const editorRef = useRef<editor.IStandaloneCodeEditor>()
+  const vimModeRef = useRef<{ dispose: () => void }>(undefined!)
+  const vimStatusBarRef = useRef(null)
+
+  useEffect(() => {
+    if (editorRef.current) {
+      if (vimEnabled) {
+        return (vimModeRef.current = initVimMode(
+          editorRef.current,
+          vimStatusBarRef.current
+        ))
+      }
+      vimModeRef.current.dispose()
+    }
+  }, [vimEnabled])
+
   return (
-    <Editor
-      language="erml"
-      loading={<Spinner />}
-      value={editorValue}
-      options={editorOptions}
-      beforeMount={defineERML}
-      onMount={focusEditor}
-      onChange={handleEditorChange}
-    />
+    <>
+      <div className={vimEnabled ? "h-[calc(100%-26.6px)]" : "h-full"}>
+        <Editor
+          language="erml"
+          loading={<Spinner />}
+          value={editorValue}
+          options={editorOptions}
+          beforeMount={defineERML}
+          onMount={handleEditorMount}
+          onChange={handleEditorChange}
+        />
+      </div>
+      {vimEnabled && (
+        <div
+          ref={vimStatusBarRef}
+          className="py-1 px-3 border-0 border-t border-solid border-[#ddd]"
+        ></div>
+      )}
+    </>
   )
+
+  function handleEditorMount(editor: editor.IStandaloneCodeEditor) {
+    vimEnabled &&
+      (vimModeRef.current = initVimMode(editor, vimStatusBarRef.current))
+    editorRef.current = editor
+    editor.focus()
+  }
 
   function handleEditorChange(newValue?: string) {
     if (activeSnippet) {
