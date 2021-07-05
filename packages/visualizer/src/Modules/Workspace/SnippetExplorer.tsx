@@ -51,13 +51,11 @@ const snippetsEqual: ItemsEqualComparator<Snippet> = (
   secondSnippet
 ) => firstSnippet.name === secondSnippet.name
 
-function composeSnippetFromQuery(query: string) {
-  return {
-    name: query,
-    active: true,
-    value: "// " + getRandomJoke(),
-  }
-}
+const composeSnippetFromQuery = (query: string) => ({
+  name: query,
+  active: true,
+  value: "// " + getRandomJoke(),
+})
 
 export default function SnippetExplorer() {
   const [snippets, setSnippets] = useRecoilState(snippetsState)
