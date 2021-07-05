@@ -27,6 +27,7 @@ export default function EditorPane() {
   const editorOptions = {
     wordWrap: wordWrapped ? "on" : "off",
     minimap: { enabled: minimapDisplayed },
+    tabSize: 2,
   } as const
 
   const editorRef = useRef<editor.IStandaloneCodeEditor>()
