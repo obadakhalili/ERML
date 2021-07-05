@@ -7,6 +7,7 @@ import {
   ItemsEqualComparator,
 } from "@blueprintjs/select"
 import { Button, MenuItem, Icon, Intent } from "@blueprintjs/core"
+import { getRandomJoke } from "awesome-dev-jokes"
 
 import { snippetsState, activeSnippetState, Snippet } from "../../state"
 import { ToasterContext } from "../.."
@@ -54,7 +55,7 @@ function composeSnippetFromQuery(query: string) {
   return {
     name: query,
     active: true,
-    value: `ENTITY Dummy_entity { /* .. */ }`,
+    value: "// " + getRandomJoke(),
   }
 }
 
