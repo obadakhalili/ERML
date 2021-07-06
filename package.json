@@ -32,7 +32,7 @@
     "prepublish": "npm run build"
   },
   "devDependencies": {
-    "@types/jest": "26.0.23",
+    "@types/jest": "26.0.24",
     "jest": "27.0.4",
     "prettier": "2.3.1",
     "rimraf": "3.0.2",
