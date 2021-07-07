@@ -59,9 +59,7 @@ const composeSnippetFromQuery = (query: string) => ({
 
 export default function SnippetExplorer() {
   const [snippets, setSnippets] = useRecoilState(snippetsState)
-
   const activeSnippet = useRecoilValue(activeSnippetState)
-
   const toast = useContext(ToasterContext)
 
   return (
