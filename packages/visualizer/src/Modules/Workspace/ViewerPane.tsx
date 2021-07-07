@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useRef, useMemo } from "react"
 import { lazy } from "react"
 import { useRecoilValue } from "recoil"
 import { activeSnippetState, workspaceOptionsState } from "../../state"
@@ -10,13 +10,14 @@ const ASTViewer = lazy(() => import("./ASTViewer"))
 export default function ViewerPane() {
   const { activeViewer } = useRecoilValue(workspaceOptionsState)
   const activeSnippet = useRecoilValue(activeSnippetState)
+  const lastValidASTRef = useRef<ReturnType<typeof ERMLParser>>()
 
   const AST = useMemo(() => {
     try {
-      return ERMLParser(activeSnippet?.value || "")
-    } catch (e) {
-      console.log(e.message)
-      return []
+      lastValidASTRef.current = ERMLParser(activeSnippet?.value || "")
+      return lastValidASTRef.current
+    } catch {
+      return lastValidASTRef.current || []
     }
   }, [activeSnippet?.value])
 
