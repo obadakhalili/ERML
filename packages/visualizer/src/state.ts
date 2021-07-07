@@ -100,3 +100,8 @@ export const workspaceOptionsState = atom<IWorkspaceOptions>({
     ),
   ],
 })
+
+export const parsingErrorState = atom<string | null>({
+  key: "parsingErrorState",
+  default: null,
+})

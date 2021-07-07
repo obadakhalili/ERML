@@ -3,10 +3,15 @@ import { useRecoilState, useRecoilValue } from "recoil"
 import { editor } from "monaco-editor"
 import Editor, { Monaco } from "@monaco-editor/react"
 import { initVimMode } from "monaco-vim"
-import { Spinner } from "@blueprintjs/core"
+import { Callout, Spinner } from "@blueprintjs/core"
 
 import * as ERML from "./ERML"
-import { activeSnippetState, workspaceOptionsState } from "../../state"
+import {
+  activeSnippetState,
+  parsingErrorState,
+  workspaceOptionsState,
+} from "../../state"
+import { debounce } from "../../utils"
 
 function defineERML(monaco: Monaco) {
   monaco.languages.register({ id: "erml" })
@@ -46,25 +51,26 @@ export default function EditorPane() {
     }
   }, [vimEnabled])
 
+  const parsingError = useRecoilValue(parsingErrorState)
+
   return (
     <>
-      <div className={vimEnabled ? "h-[calc(100%-26.6px)]" : "h-full"}>
-        <Editor
-          language="erml"
-          loading={<Spinner />}
-          value={editorValue}
-          options={editorOptions}
-          beforeMount={defineERML}
-          onMount={handleEditorMount}
-          onChange={handleEditorChange}
-        />
-      </div>
+      {parsingError && <Callout>{parsingError}</Callout>}
       {vimEnabled && (
         <div
           ref={vimStatusBarRef}
           className="py-1 px-3 border-0 border-t border-solid border-[#ddd]"
         ></div>
       )}
+      <Editor
+        language="erml"
+        loading={<Spinner />}
+        value={editorValue}
+        options={editorOptions}
+        beforeMount={defineERML}
+        onMount={handleEditorMount}
+        onChange={debounce(handleEditorChange)}
+      />
     </>
   )
 

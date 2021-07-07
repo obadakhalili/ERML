@@ -22,3 +22,13 @@ export const isNotValidWorkspaceOptions = (value: any) =>
   typeof value.minimapDisplayed !== "boolean" ||
   typeof value.splitPaneDefaultSize !== "number" ||
   typeof value.activeViewer !== "string"
+
+export function debounce(fn: Function, timeout = 500) {
+  let handle: NodeJS.Timeout
+  return (...args: unknown[]) => {
+    if (handle) {
+      clearTimeout(handle)
+    }
+    handle = setTimeout(() => fn(...args), timeout)
+  }
+}
