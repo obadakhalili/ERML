@@ -6,9 +6,15 @@ import { Spinner, Navbar, Alignment } from "@blueprintjs/core"
 import Workspace from "./Workspace"
 import "./styles/main.css"
 
+const SuspenseFallback = (
+  <div className="h-screen flex justify-center">
+    <Spinner />
+  </div>
+)
+
 ReactDOM.render(
   <RecoilRoot>
-    <Suspense fallback={<Spinner />}>
+    <Suspense fallback={SuspenseFallback}>
       <Navbar className="!shadow-none border-0 border-b border-solid border-[#ddd]">
         <Navbar.Group align={Alignment.LEFT}>
           <h3>ERML Visualizer</h3>
