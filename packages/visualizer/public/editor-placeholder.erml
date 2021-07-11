@@ -10,6 +10,6 @@ WEAK ENTITY Book OWNER User {
 
 IDEN REL Borrow {
   User <PARTIAL, 1>,
-  User <TOTAL, N>,
+  Book <TOTAL, N>,
   ATTRIBUTES { SIMPLE "Borrowing_date" }
 }
