@@ -68,7 +68,11 @@ export default function WorkspaceOptions() {
         icon="compressed"
       />
       <MenuDivider />
-      <MenuItem icon="eye-open" text="Viewer">
+      <MenuItem
+        popoverProps={{ openOnTargetFocus: false }}
+        icon="eye-open"
+        text="Viewer"
+      >
         <MenuItem
           text="Diagram"
           icon="graph"
