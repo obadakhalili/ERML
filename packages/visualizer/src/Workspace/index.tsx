@@ -1,16 +1,14 @@
-import { FC } from "react"
 import { useRecoilState } from "recoil"
-import { RouteComponentProps } from "@reach/router"
 import SplitPane from "react-split-pane"
 
 import SnippetExplorer from "./SnippetExplorer"
 import WorkspaceOptions from "./WorkspaceOptions"
 import EditorPane from "./EditorPane"
 import ViewerPane from "./ViewerPane"
-import { workspaceOptionsState } from "../../state"
-import "../../styles/react-split-pane.css"
+import { workspaceOptionsState } from "../state"
+import "../styles/react-split-pane.css"
 
-const Workspace: FC<RouteComponentProps> = () => {
+export default function Workspace() {
   const [{ splitPaneDefaultSize }, setWorkspaceOptions] = useRecoilState(
     workspaceOptionsState
   )
@@ -41,5 +39,3 @@ const Workspace: FC<RouteComponentProps> = () => {
     }))
   }
 }
-
-export default Workspace

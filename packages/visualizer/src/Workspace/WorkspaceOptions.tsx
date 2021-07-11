@@ -9,7 +9,7 @@ import {
   Position,
 } from "@blueprintjs/core"
 
-import { workspaceOptionsState, IWorkspaceOptions } from "../../state"
+import { workspaceOptionsState, IWorkspaceOptions } from "../state"
 
 export default function WorkspaceOptions() {
   const [

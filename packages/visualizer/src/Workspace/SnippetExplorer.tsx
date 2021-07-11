@@ -1,4 +1,4 @@
-import { SyntheticEvent, useContext } from "react"
+import { SyntheticEvent } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
 import {
   Select,
@@ -6,12 +6,11 @@ import {
   ItemRenderer,
   ItemsEqualComparator,
 } from "@blueprintjs/select"
-import { Button, MenuItem, Icon, Intent } from "@blueprintjs/core"
+import { Button, MenuItem, Icon, Toaster, Intent } from "@blueprintjs/core"
 import { getRandomJoke } from "awesome-dev-jokes"
 
-import { snippetsState, activeSnippetState, Snippet } from "../../state"
-import { ToasterContext } from "../.."
-import { SnippetRules } from "../../rules"
+import { snippetsState, activeSnippetState, Snippet } from "../state"
+import { SnippetRules } from "../rules"
 
 const SnippetSelect = Select.ofType<Snippet>()
 
@@ -57,10 +56,11 @@ const composeSnippetFromQuery = (query: string) => ({
   value: "// " + getRandomJoke(),
 })
 
+const toast = Toaster.create()
+
 export default function SnippetExplorer() {
   const [snippets, setSnippets] = useRecoilState(snippetsState)
   const activeSnippet = useRecoilValue(activeSnippetState)
-  const toast = useContext(ToasterContext)
 
   return (
     <SnippetSelect

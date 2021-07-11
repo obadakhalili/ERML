@@ -13,8 +13,3 @@ IDEN REL Borrow {
   User <TOTAL, N>,
   ATTRIBUTES { SIMPLE "Borrowing_date" }
 }
-
-/*
-  To learn more about ERML, visit:
-  https://erml.netlify.app/
-*/

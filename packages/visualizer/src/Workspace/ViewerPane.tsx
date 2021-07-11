@@ -7,7 +7,7 @@ import {
   activeSnippetState,
   parsingErrorState,
   workspaceOptionsState,
-} from "../../state"
+} from "../state"
 
 const Diagram = lazy(() => import("./Diagram"))
 const ASTViewer = lazy(() => import("./ASTViewer"))

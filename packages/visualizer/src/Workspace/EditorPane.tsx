@@ -5,13 +5,13 @@ import Editor, { Monaco } from "@monaco-editor/react"
 import { initVimMode } from "monaco-vim"
 import { Callout, Spinner } from "@blueprintjs/core"
 
-import * as ERML from "./ERML"
+import * as ERML from "../ERML"
 import {
   activeSnippetState,
   parsingErrorState,
   workspaceOptionsState,
-} from "../../state"
-import { debounce } from "../../utils"
+} from "../state"
+import { debounce } from "../utils"
 
 function defineERML(monaco: Monaco) {
   monaco.languages.register({ id: "erml" })
