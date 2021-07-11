@@ -13,7 +13,7 @@ export default function ASTViewer({
       collapsed={1}
       indentWidth={2}
       name="AST"
-      theme="bright:inverted"
+      theme="rjv-default"
     />
   )
 }
