@@ -3,7 +3,8 @@ import { useRecoilState, useRecoilValue } from "recoil"
 import { editor } from "monaco-editor"
 import Editor, { Monaco } from "@monaco-editor/react"
 import { initVimMode } from "monaco-vim"
-import { Callout, Spinner } from "@blueprintjs/core"
+import nightOwlTheme from "monaco-themes/themes/Night Owl.json"
+import { Spinner } from "@blueprintjs/core"
 
 import * as ERML from "../ERML"
 import {
@@ -13,10 +14,14 @@ import {
 } from "../state"
 import { debounce } from "../utils"
 
-function defineERML(monaco: Monaco) {
+function handleBeforeEditorMount(monaco: Monaco) {
   monaco.languages.register({ id: "erml" })
   monaco.languages.setLanguageConfiguration("erml", ERML.config)
   monaco.languages.setMonarchTokensProvider("erml", ERML.lang)
+  monaco.editor.defineTheme(
+    "night-owl",
+    nightOwlTheme as editor.IStandaloneThemeData
+  )
 }
 
 export default function EditorPane() {
@@ -55,19 +60,24 @@ export default function EditorPane() {
 
   return (
     <>
-      {parsingError && <Callout>{parsingError}</Callout>}
+      {parsingError && (
+        <div className="bp3-callout !rounded-none !bg-[#394b59]">
+          {parsingError}
+        </div>
+      )}
       {vimEnabled && (
         <div
           ref={vimStatusBarRef}
-          className="py-1 px-3 border-0 border-t border-solid border-[#ddd]"
+          className="bp3-callout !rounded-none !bg-[#394b59]"
         ></div>
       )}
       <Editor
         language="erml"
+        theme="night-owl"
         loading={<Spinner />}
         value={editorValue}
         options={editorOptions}
-        beforeMount={defineERML}
+        beforeMount={handleBeforeEditorMount}
         onMount={handleEditorMount}
         onChange={debounce(handleEditorChange)}
       />

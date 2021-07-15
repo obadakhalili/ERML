@@ -30,7 +30,7 @@ export default function ViewerPane() {
   }, [activeSnippet?.value, setParsingError])
 
   return (
-    <div className="p-2 h-full overflow-auto">
+    <div className="h-full">
       {activeViewer === "Diagram" ? <Diagram /> : <ASTViewer AST={AST} />}
     </div>
   )

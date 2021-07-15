@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
 import SplitPane from "react-split-pane"
-import { Icon, Drawer, DrawerSize } from "@blueprintjs/core"
+import { Navbar, Icon, Drawer, DrawerSize, Alignment } from "@blueprintjs/core"
 
 import SnippetExplorer from "./SnippetExplorer"
 import WorkspaceOptions from "./WorkspaceOptions"
@@ -24,9 +24,11 @@ export default function Workspace() {
 
   return (
     <>
-      <div className="h-11 px-2 flex justify-between items-center border-0 border-b border-solid border-[#ddd]">
-        <SnippetExplorer />
-        <div>
+      <Navbar>
+        <Navbar.Group>
+          <SnippetExplorer />
+        </Navbar.Group>
+        <Navbar.Group align={Alignment.RIGHT}>
           <WorkspaceOptions />
           {isPhoneWidth && (
             <Icon
@@ -35,23 +37,24 @@ export default function Workspace() {
               className="hover:cursor-pointer hover:opacity-80 ml-3"
             />
           )}
-        </div>
-      </div>
+        </Navbar.Group>
+      </Navbar>
       {isPhoneWidth ? (
-        <>
+        <div className="h-[calc(100vh-100px)]">
           <Drawer
             isOpen={isDrawerOpen}
             size={DrawerSize.LARGE}
             title={activeSnippet?.name || "Create New Snippet"}
             onClose={handleToggleDrawerButton}
+            className="bp3-dark"
           >
             <EditorPane />
           </Drawer>
           <ViewerPane />
-        </>
+        </div>
       ) : (
         <SplitPane
-          className="!h-[calc(100%-94px)]"
+          className="!h-[calc(100vh-100px)]"
           defaultSize={splitPaneDefaultSize}
           onChange={handleSplitPaneChange}
           minSize={350}

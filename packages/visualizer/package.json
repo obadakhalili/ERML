@@ -33,6 +33,7 @@
     "awesome-dev-jokes": "^1.0.3",
     "erml-parser": "1.2.3",
     "monaco-editor": "^0.25.2",
+    "monaco-themes": "^0.3.3",
     "monaco-vim": "^0.1.15",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
