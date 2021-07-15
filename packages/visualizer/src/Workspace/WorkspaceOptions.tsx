@@ -76,10 +76,10 @@ export default function WorkspaceOptions() {
         <MenuItem
           text="Diagram"
           icon="graph"
-          disabled={activeViewer === "Diagram"}
+          disabled={activeViewer === "diagram"}
           onClick={handleWorkspaceOptionsChange<
             IWorkspaceOptions["activeViewer"]
-          >("activeViewer", "Diagram")}
+          >("activeViewer", "diagram")}
         />
         <MenuItem
           text="AST"

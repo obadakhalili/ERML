@@ -31,7 +31,7 @@ export default function ViewerPane() {
 
   return (
     <div className="h-full">
-      {activeViewer === "Diagram" ? <Diagram /> : <ASTViewer AST={AST} />}
+      {activeViewer === "diagram" ? <Diagram /> : <ASTViewer AST={AST} />}
     </div>
   )
 }

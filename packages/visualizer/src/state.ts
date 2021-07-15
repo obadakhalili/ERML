@@ -1,6 +1,10 @@
 import { atom, selector, AtomEffect } from "recoil"
 
-import { isNotValidSnippets, isNotValidWorkspaceOptions } from "./utils"
+import {
+  isNotValidSnippets,
+  isNotValidTheme,
+  isNotValidWorkspaceOptions,
+} from "./utils"
 
 export interface Snippet {
   name: string
@@ -15,31 +19,46 @@ export interface IWorkspaceOptions {
   wordWrapped: boolean
   minimapDisplayed: boolean
   splitPaneDefaultSize: number
-  activeViewer: "Diagram" | "AST"
+  activeViewer: "diagram" | "AST"
 }
+
+type Theme = "dark" | "light"
 
 function localStorageSideEffect<T>(
   key: string,
   isNotValid: (value: any) => boolean,
-  defaultValue: () => T | Promise<T>
+  defaultValue: () => T | Promise<T>,
+  isJSON = true
 ) {
   const effect: AtomEffect<T> = ({ setSelf, onSet }) => {
     try {
-      const parsedItem = JSON.parse(localStorage.getItem(key)!)
+      const item = isJSON
+        ? JSON.parse(localStorage.getItem(key)!)
+        : localStorage.getItem(key)
 
-      if (isNotValid(parsedItem)) {
+      if (isNotValid(item)) {
         throw new Error()
       }
 
-      setSelf(parsedItem)
+      setSelf(item)
     } catch {
       Promise.resolve(defaultValue()).then((defaultValue) => {
         setSelf(defaultValue)
-        localStorage.setItem(key, JSON.stringify(defaultValue))
+        localStorage.setItem(
+          key,
+          isJSON
+            ? JSON.stringify(defaultValue)
+            : (defaultValue as unknown as string)
+        )
       })
     }
 
-    onSet((newValue) => localStorage.setItem(key, JSON.stringify(newValue)))
+    onSet((newValue) =>
+      localStorage.setItem(
+        key,
+        isJSON ? JSON.stringify(newValue) : (newValue as unknown as string)
+      )
+    )
   }
 
   return effect
@@ -95,7 +114,7 @@ export const workspaceOptionsState = atom<IWorkspaceOptions>({
         wordWrapped: false,
         minimapDisplayed: true,
         splitPaneDefaultSize: 350,
-        activeViewer: "Diagram",
+        activeViewer: "diagram",
       })
     ),
   ],
@@ -104,4 +123,17 @@ export const workspaceOptionsState = atom<IWorkspaceOptions>({
 export const parsingErrorState = atom<string | null>({
   key: "parsingErrorState",
   default: null,
+})
+
+export const themeState = atom<Theme>({
+  key: "themeState",
+  default: "dark",
+  effects_UNSTABLE: [
+    localStorageSideEffect<Theme>(
+      "theme",
+      isNotValidTheme,
+      () => "dark",
+      false
+    ),
+  ],
 })

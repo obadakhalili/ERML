@@ -23,6 +23,8 @@ export const isNotValidWorkspaceOptions = (value: any) =>
   typeof value.splitPaneDefaultSize !== "number" ||
   typeof value.activeViewer !== "string"
 
+export const isNotValidTheme = (value: any) => typeof value !== "string"
+
 export function debounce(fn: Function, timeout = 500) {
   let handle: NodeJS.Timeout
   return (...args: unknown[]) => {
