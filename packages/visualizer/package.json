@@ -10,25 +10,15 @@
     "url": "https://github.com/obadakhalili/ERML.git"
   },
   "scripts": {
-    "dev": "yarn tailwind:build && cross-env BROWSER=none PORT=8080 react-scripts start",
-    "tailwind:watch": "npm-watch tailwind:build",
-    "tailwind:build": "postcss src/styles/tailwind.css --output src/styles/tailwind-output.css",
-    "build": "yarn tailwind:build && cross-env BUILD_PATH=dist react-scripts build",
-    "build:rm": "rimraf dist",
-    "format": "yarn run prettier --ignore-path ../../.gitignore --write ."
-  },
-  "watch": {
-    "tailwind:build": {
-      "patterns": [
-        "src",
-        "public"
-      ],
-      "extensions": "ts,tsx"
-    }
+    "dev": "cross-env TAILWIND_MODE=watch BROWSER=none PORT=8080 craco start",
+    "format": "yarn run prettier --ignore-path ../../.gitignore --write .",
+    "build": "cross-env BUILD_PATH=dist craco build",
+    "build:rm": "rimraf dist"
   },
   "dependencies": {
     "@blueprintjs/core": "^3.45.0",
     "@blueprintjs/select": "^3.16.4",
+    "@craco/craco": "^6.2.0",
     "@monaco-editor/react": "^4.2.1",
     "awesome-dev-jokes": "^1.0.3",
     "erml-parser": "1.2.3",
@@ -38,20 +28,18 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-json-view": "^1.21.3",
+    "react-scripts": "^4.0.3",
     "react-split-pane": "^0.1.92",
     "recoil": "^0.3.1"
   },
   "devDependencies": {
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "autoprefixer": "^10.2.6",
+    "autoprefixer": "9",
     "cross-env": "^7.0.3",
-    "npm-watch": "^0.10.0",
-    "postcss": "^8.3.5",
-    "postcss-cli": "^8.3.1",
-    "react-scripts": "^4.0.3",
+    "postcss": "7",
     "rimraf": "^3.0.2",
-    "tailwindcss": "^2.2.4"
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
   },
   "browserslist": {
     "production": [
