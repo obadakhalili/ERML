@@ -1,10 +1,6 @@
 import { atom, selector, AtomEffect } from "recoil"
 
-import {
-  isNotValidSnippets,
-  isNotValidTheme,
-  isNotValidWorkspaceOptions,
-} from "./utils"
+import { isNotValidSnippets, isNotValidWorkspaceOptions } from "./utils"
 
 export interface Snippet {
   name: string
@@ -37,38 +33,25 @@ type ITheme = `${Theme}`
 function localStorageSideEffect<T>(
   key: string,
   isNotValid: (value: any) => boolean,
-  defaultValue: () => T | Promise<T>,
-  isJSON = true
+  defaultValue: () => T | Promise<T>
 ) {
   const effect: AtomEffect<T> = ({ setSelf, onSet }) => {
     try {
-      const item = isJSON
-        ? JSON.parse(localStorage.getItem(key)!)
-        : localStorage.getItem(key)
+      const parsedItem = JSON.parse(localStorage.getItem(key)!)
 
-      if (isNotValid(item)) {
+      if (isNotValid(parsedItem)) {
         throw new Error()
       }
 
-      setSelf(item)
+      setSelf(parsedItem)
     } catch {
       Promise.resolve(defaultValue()).then((defaultValue) => {
         setSelf(defaultValue)
-        localStorage.setItem(
-          key,
-          isJSON
-            ? JSON.stringify(defaultValue)
-            : (defaultValue as unknown as string)
-        )
+        localStorage.setItem(key, JSON.stringify(defaultValue))
       })
     }
 
-    onSet((newValue) =>
-      localStorage.setItem(
-        key,
-        isJSON ? JSON.stringify(newValue) : (newValue as unknown as string)
-      )
-    )
+    onSet((newValue) => localStorage.setItem(key, JSON.stringify(newValue)))
   }
 
   return effect
@@ -139,11 +122,11 @@ export const themeState = atom<ITheme>({
   key: "themeState",
   default: Theme.DARK,
   effects_UNSTABLE: [
-    localStorageSideEffect<ITheme>(
-      "theme",
-      isNotValidTheme,
-      () => Theme.DARK,
-      false
-    ),
+    ({ setSelf, onSet }) => {
+      const theme = localStorage.getItem("theme") as Theme
+
+      setSelf([Theme.DARK, Theme.LIGHT].includes(theme) ? theme : Theme.DARK)
+      onSet((theme) => localStorage.setItem("theme", theme as Theme))
+    },
   ],
 })
