@@ -1,34 +1,15 @@
-import { useRef, useMemo } from "react"
 import { lazy } from "react"
-import { useRecoilValue, useSetRecoilState } from "recoil"
-import ERMLParser from "erml-parser"
+import { useRecoilValue } from "recoil"
 
-import {
-  activeSnippetState,
-  parsingErrorState,
-  workspaceOptionsState,
-  ActiveViewer,
-} from "../state"
+import { workspaceOptionsState, ActiveViewer } from "../state"
+import { useMemoizedAST } from "../hooks"
 
 const Diagram = lazy(() => import("./Diagram"))
 const ASTViewer = lazy(() => import("./ASTViewer"))
 
 export default function ViewerPane() {
   const { activeViewer } = useRecoilValue(workspaceOptionsState)
-  const activeSnippet = useRecoilValue(activeSnippetState)
-  const lastValidASTRef = useRef<ReturnType<typeof ERMLParser>>()
-  const setParsingError = useSetRecoilState(parsingErrorState)
-
-  const AST = useMemo(() => {
-    try {
-      lastValidASTRef.current = ERMLParser(activeSnippet?.value || "")
-      setParsingError(null)
-      return lastValidASTRef.current
-    } catch (e) {
-      setParsingError(e.message)
-      return lastValidASTRef.current || []
-    }
-  }, [activeSnippet?.value, setParsingError])
+  const AST = useMemoizedAST()
 
   return (
     <div className="h-full">

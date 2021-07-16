@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { useRecoilValue, useSetRecoilState } from "recoil"
+import ERMLParser from "erml-parser"
+
+import { activeSnippetState, parsingErrorState } from "./state"
 
 export function useWindowWidth() {
   const [windowWidth, setWindowSize] = useState(window.innerWidth)
@@ -14,4 +18,21 @@ export function useWindowWidth() {
   })
 
   return windowWidth
+}
+
+export function useMemoizedAST() {
+  const activeSnippet = useRecoilValue(activeSnippetState)
+  const lastValidASTRef = useRef<ReturnType<typeof ERMLParser>>()
+  const setParsingError = useSetRecoilState(parsingErrorState)
+
+  return useMemo(() => {
+    try {
+      lastValidASTRef.current = ERMLParser(activeSnippet?.value || "")
+      setParsingError(null)
+      return lastValidASTRef.current
+    } catch (e) {
+      setParsingError(e.message)
+      return lastValidASTRef.current || []
+    }
+  }, [activeSnippet?.value, setParsingError])
 }

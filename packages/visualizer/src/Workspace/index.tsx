@@ -15,12 +15,11 @@ export default function Workspace() {
   const [{ splitPaneDefaultSize }, setWorkspaceOptions] = useRecoilState(
     workspaceOptionsState
   )
-
   const windowWidth = useWindowWidth()
-  const isPhoneWidth = windowWidth < 868
-
   const [isDrawerOpen, toggleDrawer] = useState(false)
   const activeSnippet = useRecoilValue(activeSnippetState)
+
+  const isPhoneWidth = windowWidth < 868
 
   return (
     <>
