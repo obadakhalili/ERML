@@ -22,7 +22,12 @@ export interface IWorkspaceOptions {
   activeViewer: "diagram" | "AST"
 }
 
-type Theme = "dark" | "light"
+export enum Theme {
+  DARK = "Dark",
+  LIGHT = "Light",
+}
+
+type ITheme = `${Theme}`
 
 function localStorageSideEffect<T>(
   key: string,
@@ -125,14 +130,14 @@ export const parsingErrorState = atom<string | null>({
   default: null,
 })
 
-export const themeState = atom<Theme>({
+export const themeState = atom<ITheme>({
   key: "themeState",
-  default: "dark",
+  default: Theme.DARK,
   effects_UNSTABLE: [
-    localStorageSideEffect<Theme>(
+    localStorageSideEffect<ITheme>(
       "theme",
       isNotValidTheme,
-      () => "dark",
+      () => Theme.DARK,
       false
     ),
   ],

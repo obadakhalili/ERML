@@ -4,13 +4,12 @@ import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil"
 import {
   Spinner,
   Navbar as BPNavbar,
-  Icon,
   Alignment,
   Classes,
 } from "@blueprintjs/core"
 
 import Workspace from "./Workspace"
-import { themeState } from "./state"
+import { themeState, Theme } from "./state"
 import "./styles/main.css"
 
 const SuspenseFallback = (
@@ -30,11 +29,12 @@ const Navbar = () => {
         </BPNavbar.Heading>
       </BPNavbar.Group>
       <BPNavbar.Group align={Alignment.RIGHT}>
-        <Icon
+        <span
           onClick={handleThemeIconClick}
-          icon={theme === "dark" ? "flash" : "moon"}
-          className="hover:cursor-pointer hover:opacity-80"
-        />
+          className="font-semibold cursor-pointer hover:opacity-80"
+        >
+          {theme === Theme.DARK ? Theme.LIGHT : Theme.DARK}
+        </span>
         <BPNavbar.Divider />
         <a href="https://erml.netlify.app/" target="_blank" rel="noreferrer">
           ERML
@@ -52,7 +52,7 @@ const Navbar = () => {
   )
 
   function handleThemeIconClick() {
-    toggleTheme(theme === "dark" ? "light" : "dark")
+    toggleTheme(theme === Theme.DARK ? Theme.LIGHT : Theme.DARK)
   }
 }
 
@@ -61,7 +61,7 @@ const App = () => {
 
   useEffect(
     () =>
-      document.body.classList[theme === "dark" ? "add" : "remove"](
+      document.body.classList[theme === Theme.DARK ? "add" : "remove"](
         Classes.DARK
       ),
     [theme]

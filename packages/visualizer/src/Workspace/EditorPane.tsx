@@ -10,8 +10,9 @@ import * as ERML from "../ERML"
 import {
   activeSnippetState,
   parsingErrorState,
-  themeState,
   workspaceOptionsState,
+  themeState,
+  Theme,
 } from "../state"
 import { debounce } from "../utils"
 
@@ -69,7 +70,7 @@ export default function EditorPane() {
       )}
       <Editor
         language="erml"
-        theme={theme === "dark" ? "night-owl" : ""}
+        theme={theme === Theme.DARK ? "night-owl" : ""}
         loading={<Spinner />}
         value={editorValue}
         options={editorOptions}
