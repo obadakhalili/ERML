@@ -10,8 +10,8 @@ import {
 } from "@blueprintjs/core"
 
 import Workspace from "./Workspace"
-import "./styles/main.css"
 import { themeState } from "./state"
+import "./styles/main.css"
 
 const SuspenseFallback = (
   <div className="h-screen flex justify-center">
