@@ -96,7 +96,7 @@ export const activeSnippetState = selector<Snippet | undefined>({
 })
 
 export const workspaceOptionsState = atom<IWorkspaceOptions>({
-  key: "WorkspaceOptionsState",
+  key: "workspaceOptionsState",
   default: {} as IWorkspaceOptions,
   effects_UNSTABLE: [
     localStorageSideEffect<IWorkspaceOptions>(
