@@ -9,7 +9,11 @@ import {
   Position,
 } from "@blueprintjs/core"
 
-import { workspaceOptionsState, IWorkspaceOptions } from "../state"
+import {
+  workspaceOptionsState,
+  ActiveViewer,
+  IWorkspaceOptions,
+} from "../state"
 
 export default function WorkspaceOptions() {
   const [
@@ -74,20 +78,20 @@ export default function WorkspaceOptions() {
         text="Viewer"
       >
         <MenuItem
-          text="Diagram"
+          text={ActiveViewer.DIAGRAM}
           icon="graph"
-          disabled={activeViewer === "diagram"}
+          disabled={activeViewer === ActiveViewer.DIAGRAM}
           onClick={handleWorkspaceOptionsChange<
             IWorkspaceOptions["activeViewer"]
-          >("activeViewer", "diagram")}
+          >("activeViewer", ActiveViewer.DIAGRAM)}
         />
         <MenuItem
-          text="AST"
+          text={ActiveViewer.AST}
           icon="diagram-tree"
-          disabled={activeViewer === "AST"}
+          disabled={activeViewer === ActiveViewer.AST}
           onClick={handleWorkspaceOptionsChange<
             IWorkspaceOptions["activeViewer"]
-          >("activeViewer", "AST")}
+          >("activeViewer", ActiveViewer.AST)}
         />
       </MenuItem>
     </Menu>

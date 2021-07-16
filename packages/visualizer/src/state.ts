@@ -14,12 +14,17 @@ export interface Snippet {
 
 export type Snippets = Snippet[]
 
+export enum ActiveViewer {
+  DIAGRAM = "Diagram",
+  AST = "AST",
+}
+
 export interface IWorkspaceOptions {
   vimEnabled: boolean
   wordWrapped: boolean
   minimapDisplayed: boolean
   splitPaneDefaultSize: number
-  activeViewer: "diagram" | "AST"
+  activeViewer: ActiveViewer
 }
 
 export enum Theme {
@@ -119,7 +124,7 @@ export const workspaceOptionsState = atom<IWorkspaceOptions>({
         wordWrapped: false,
         minimapDisplayed: true,
         splitPaneDefaultSize: 350,
-        activeViewer: "diagram",
+        activeViewer: ActiveViewer.DIAGRAM,
       })
     ),
   ],

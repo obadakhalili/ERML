@@ -7,6 +7,7 @@ import {
   activeSnippetState,
   parsingErrorState,
   workspaceOptionsState,
+  ActiveViewer,
 } from "../state"
 
 const Diagram = lazy(() => import("./Diagram"))
@@ -31,7 +32,11 @@ export default function ViewerPane() {
 
   return (
     <div className="h-full">
-      {activeViewer === "diagram" ? <Diagram /> : <ASTViewer AST={AST} />}
+      {activeViewer === ActiveViewer.DIAGRAM ? (
+        <Diagram />
+      ) : (
+        <ASTViewer AST={AST} />
+      )}
     </div>
   )
 }
