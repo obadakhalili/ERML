@@ -46,7 +46,6 @@ export default function Workspace() {
             size={DrawerSize.LARGE}
             title={activeSnippet?.name || "Create New Snippet"}
             onClose={handleToggleDrawerButton}
-            className="bp3-dark"
           >
             <EditorPane />
           </Drawer>

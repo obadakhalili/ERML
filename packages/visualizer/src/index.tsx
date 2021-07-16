@@ -1,7 +1,13 @@
-import { Suspense } from "react"
+import { Suspense, useEffect } from "react"
 import ReactDOM from "react-dom"
-import { RecoilRoot, useRecoilState } from "recoil"
-import { Spinner, Navbar as BPNavbar, Icon, Alignment } from "@blueprintjs/core"
+import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil"
+import {
+  Spinner,
+  Navbar as BPNavbar,
+  Icon,
+  Alignment,
+  Classes,
+} from "@blueprintjs/core"
 
 import Workspace from "./Workspace"
 import "./styles/main.css"
@@ -50,13 +56,29 @@ const Navbar = () => {
   }
 }
 
+const App = () => {
+  const theme = useRecoilValue(themeState)
+
+  useEffect(
+    () =>
+      document.body.classList[theme === "dark" ? "add" : "remove"](
+        Classes.DARK
+      ),
+    [theme]
+  )
+
+  return (
+    <>
+      <Navbar />
+      <Workspace />
+    </>
+  )
+}
+
 ReactDOM.render(
   <RecoilRoot>
     <Suspense fallback={SuspenseFallback}>
-      <div className="bp3-dark">
-        <Navbar />
-        <Workspace />
-      </div>
+      <App />
     </Suspense>
   </RecoilRoot>,
   document.getElementById("root")

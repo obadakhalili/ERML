@@ -4,3 +4,7 @@
 @import "~@blueprintjs/select/lib/css/blueprint-select.css";
 @import "./react-split-pane.css";
 @import "./tailwind-output.css";
+
+.bp3-dark {
+  background-color: #293742;
+}
