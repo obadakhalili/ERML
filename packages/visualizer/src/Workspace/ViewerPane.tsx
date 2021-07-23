@@ -11,13 +11,9 @@ export default function ViewerPane() {
   const { activeViewer } = useRecoilValue(workspaceOptionsState)
   const AST = useMemoizedAST()
 
-  return (
-    <div className="h-full">
-      {activeViewer === ActiveViewer.DIAGRAM ? (
-        <Diagram />
-      ) : (
-        <ASTViewer AST={AST} />
-      )}
-    </div>
+  return activeViewer === ActiveViewer.DIAGRAM ? (
+    <Diagram />
+  ) : (
+    <ASTViewer AST={AST} />
   )
 }

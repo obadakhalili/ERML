@@ -39,7 +39,7 @@ export default function Workspace() {
         </Navbar.Group>
       </Navbar>
       {isPhoneWidth ? (
-        <div className="h-[calc(100vh-100px)]">
+        <>
           <Drawer
             isOpen={isDrawerOpen}
             size={DrawerSize.LARGE}
@@ -49,14 +49,14 @@ export default function Workspace() {
             <EditorPane />
           </Drawer>
           <ViewerPane />
-        </div>
+        </>
       ) : (
         <SplitPane
-          className="!h-[calc(100vh-100px)]"
           defaultSize={splitPaneDefaultSize}
           onChange={handleSplitPaneChange}
           minSize={350}
           maxSize={500}
+          className="!static"
         >
           <EditorPane />
           <ViewerPane />

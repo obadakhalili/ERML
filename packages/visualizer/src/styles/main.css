@@ -6,6 +6,23 @@
 @import "./tailwind.css";
 @import "./react-split-pane.css";
 
+html,
+body,
+#root,
+.react-json-view {
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+.react-json-view {
+  padding: 8px;
+  overflow: auto;
+}
+
 .bp3-dark {
   background-color: #394b59;
 }

@@ -19,7 +19,6 @@ export default function ASTViewer({
       indentWidth={2}
       name="AST"
       theme={theme === Theme.DARK ? "harmonic" : "rjv-default"}
-      style={{ height: "inherit", padding: "8px", overflow: "auto" }}
     />
   )
 }
