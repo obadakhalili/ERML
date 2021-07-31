@@ -4,7 +4,7 @@ import { useRecoilValue } from "recoil"
 import { workspaceOptionsState, ActiveViewer } from "../state"
 import { useMemoizedAST } from "../hooks"
 
-const Diagram = lazy(() => import("./Diagram"))
+const Diagram = lazy(() => import("./DiagramViewer"))
 const ASTViewer = lazy(() => import("./ASTViewer"))
 
 export default function ViewerPane() {
