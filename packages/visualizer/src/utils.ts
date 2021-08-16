@@ -1,4 +1,4 @@
-import { SnippetRules } from "./rules"
+import { SnippetRules } from "./Workspace/SnippetExplorer"
 
 export const isNotValidSnippets = (value: any) =>
   value?.constructor !== Array ||

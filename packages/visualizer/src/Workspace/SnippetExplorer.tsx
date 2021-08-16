@@ -10,7 +10,12 @@ import { Button, MenuItem, Icon, Toaster, Intent } from "@blueprintjs/core"
 import { getRandomJoke } from "awesome-dev-jokes"
 
 import { snippetsState, activeSnippetState, Snippet } from "../state"
-import { SnippetRules } from "../rules"
+
+export enum SnippetRules {
+  SNIPPETS_MAX_LENGTH = 20,
+  SNIPPET_MAX_LENGTH = 30,
+  SNIPPET_MIN_LENGTH = 1,
+}
 
 const SnippetSelect = Select.ofType<Snippet>()
 

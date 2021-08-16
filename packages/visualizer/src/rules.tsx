@@ -1,5 +1,0 @@
-export enum SnippetRules {
-  SNIPPETS_MAX_LENGTH = 20,
-  SNIPPET_MAX_LENGTH = 30,
-  SNIPPET_MIN_LENGTH = 1,
-}
