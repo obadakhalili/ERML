@@ -22,7 +22,7 @@ export function useWindowWidth() {
 
 export function useMemoizedAST() {
   const activeSnippet = useRecoilValue(activeSnippetState)
-  const lastValidASTRef = useRef<ReturnType<typeof ERMLParser>>()
+  const lastValidASTRef = useRef<ERMLParser.AST>()
   const setParsingError = useSetRecoilState(parsingErrorState)
 
   return useMemo(() => {
