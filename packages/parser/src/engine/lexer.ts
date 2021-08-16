@@ -3,6 +3,7 @@ export interface Token {
   position: number
   line: number
 }
+
 export type Tokens = Token[]
 
 const tokensRegexs = [

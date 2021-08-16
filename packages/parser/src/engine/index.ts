@@ -1,8 +1,8 @@
 import { clearIdentifiers } from "./parser/identifiers"
 import tokenize from "./lexer"
-import parse from "./parser"
+import parse, { API } from "./parser"
 
-export = function (ERML: string) {
+function ERMLParser(ERML: string) {
   if (typeof ERML !== "string") {
     throw new TypeError("Argument passed to parser must be of type string")
   }
@@ -10,3 +10,7 @@ export = function (ERML: string) {
   const tokens = tokenize(ERML)
   return parse(tokens)
 }
+
+ERMLParser.API = API
+
+export = ERMLParser

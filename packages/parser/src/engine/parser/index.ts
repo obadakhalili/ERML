@@ -9,8 +9,19 @@ import {
   walkPipeline,
 } from "./pipeline"
 import { Tokens } from "../lexer"
+import {
+  Attribute,
+  Attributes,
+  EntityNode,
+  WeakEntityNode,
+  RelPartEntity,
+  RelPartEntities,
+  RelBody,
+  RelNode,
+  Node,
+} from "../types"
 
-export const enum Delimiters {
+export enum Delimiters {
   OPENING_BRACE = "{",
   CLOSING_BRACE = "}",
   OPENING_ANGLE = "<",
@@ -20,24 +31,7 @@ export const enum Delimiters {
   COMMA = ",",
 }
 
-const enum Keywords {
-  ENTITY = "ENTITY",
-  WEAK = "WEAK",
-  OWNER = "OWNER",
-  REL = "REL",
-  IDEN = "IDEN",
-  PARTIAL = "PARTIAL",
-  TOTAL = "TOTAL",
-  ATTRIBUTES = "ATTRIBUTES",
-  SIMPLE = "SIMPLE",
-  ATOMIC = "ATOMIC",
-  PRIMARY = "PRIMARY",
-  DERIVED = "DERIVED",
-  MULTIVALUED = "MULTIVALUED",
-  COMPOSITE = "COMPOSITE",
-}
-
-const enum API {
+export enum API {
   ENTITY = "entity",
   WEAK_ENTITY = "weak entity",
   REL = "rel",
@@ -56,59 +50,22 @@ const enum API {
   COMPOSITE = "composite",
 }
 
-interface BaseNode {
-  name: string
-  start: number // Inclusive
-  end: number // Inclusive
+enum Keywords {
+  ENTITY = "ENTITY",
+  WEAK = "WEAK",
+  OWNER = "OWNER",
+  REL = "REL",
+  IDEN = "IDEN",
+  PARTIAL = "PARTIAL",
+  TOTAL = "TOTAL",
+  ATTRIBUTES = "ATTRIBUTES",
+  SIMPLE = "SIMPLE",
+  ATOMIC = "ATOMIC",
+  PRIMARY = "PRIMARY",
+  DERIVED = "DERIVED",
+  MULTIVALUED = "MULTIVALUED",
+  COMPOSITE = "COMPOSITE",
 }
-
-type Attributes = Attribute[]
-
-interface Attribute {
-  name: string
-  type:
-    | API.SIMPLE
-    | API.ATOMIC
-    | API.PRIMARY
-    | API.PARTIAL
-    | API.DERIVED
-    | API.MULTIVALUED
-    | API.COMPOSITE
-  componentAttributes?: Attributes
-}
-
-interface EntityNode extends BaseNode {
-  type: API.ENTITY
-  attributes: Attributes
-}
-
-type WeakEntityNode = Omit<EntityNode, "type"> & {
-  type: API.WEAK_ENTITY
-  owner: string
-}
-
-interface RelPartEntity {
-  name: string
-  notation: API.SEPARATE | API.MIN_MAX
-  structConstraints: {
-    partConstraint: API.PARTIAL | API.TOTAL | number
-    cardinalityRatio: API.ONE | API.N | number
-  }
-}
-
-type RelPartEntities = RelPartEntity[]
-
-interface RelBody {
-  partEntities: RelPartEntities
-  attributes?: Attributes
-}
-
-interface RelNode extends BaseNode {
-  type: API.REL | API.IDEN_REL
-  body: RelBody
-}
-
-export type Node = EntityNode | WeakEntityNode | RelNode
 
 function parseAttributes(
   tokens: Tokens,
