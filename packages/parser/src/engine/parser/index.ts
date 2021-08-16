@@ -328,7 +328,7 @@ function parseRelBody(
 
   return {
     partEntities,
-    ...(attributes.length ? { attributes } : {}),
+    ...(attributes.length && { attributes }),
   }
 }
 
