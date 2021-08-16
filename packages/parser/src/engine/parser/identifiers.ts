@@ -1,7 +1,7 @@
 let identifiers: string[] = []
 
 export function isValidIdentifier(identifier: string) {
-  /** Valid identifier requirements
+  /** Valid identifier requirements:
    * Maximum of 30 characters
    * Starts with an uppercase/lowercase letter (a-z, A-Z), or an underscore
    * Every character after the first should either be a number, an underscore, or an uppercase/lowercase letter (a-z, A-Z)
