@@ -3,7 +3,7 @@ import { useRecoilValue } from "recoil"
 
 import { workspaceOptionsState, ActiveViewer } from "../state"
 import { useMemoizedAST } from "../hooks"
-import mapASTIntoDiagramSchema from "../ASTDiagramSchemaMapper"
+import { mapASTIntoDiagramSchema } from "../utils"
 
 const Diagram = lazy(() => import("./DiagramViewer"))
 const ASTViewer = lazy(() => import("./ASTViewer"))

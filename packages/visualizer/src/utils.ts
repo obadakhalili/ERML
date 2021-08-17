@@ -1,3 +1,5 @@
+import ERMLParser from "erml-parser"
+
 import { SnippetRules } from "./rules"
 
 export const isNotValidSnippets = (value: any) =>
@@ -30,5 +32,106 @@ export function debounce(fn: Function, timeout = 500) {
       clearTimeout(handle)
     }
     handle = setTimeout(() => fn(...args), timeout)
+  }
+}
+
+export function mapASTIntoDiagramSchema(AST: ERMLParser.AST) {
+  const diagramNodes: Array<{
+    id: string
+    type: string
+    text: string
+    textUnderlined?: boolean
+    textDotted?: boolean
+  }> = []
+  const diagramLinks: Array<{
+    src: string
+    target: string
+    text: string
+    double?: boolean
+  }> = []
+
+  const nodeShapeMapper = {
+    // Entity type into shape
+    entity: "rect",
+    "weak entity": "rect",
+
+    // Relationship type into shape
+    rel: "diamond",
+    "iden rel": "double diamond",
+
+    // Attribute type into shape
+    simple: "oval",
+    atomic: "oval",
+    primary: "oval",
+    partial: "oval",
+    composite: "oval",
+    derived: "dotted oval",
+    multivalued: "double oval",
+  }
+  const entityIdMapper: Record<string, string> = {}
+
+  const generateId = () => Math.random().toString(36).substr(2)
+
+  for (const node of AST) {
+    const id = generateId()
+
+    diagramNodes.push({
+      id,
+      type: nodeShapeMapper[node.type],
+      text: node.name,
+    })
+
+    if (node.type.endsWith(ERMLParser.API.ENTITY)) {
+      entityIdMapper[node.name] = id
+      mapAttributes((node as ERMLParser.EntityNode).attributes, id)
+    }
+
+    if (node.type.endsWith(ERMLParser.API.REL)) {
+      const body = (node as ERMLParser.RelNode).body
+
+      for (const entity of body.partEntities) {
+        const structConstraints = entity.structConstraints
+
+        diagramLinks.push({
+          src: id,
+          target: entityIdMapper[entity.name]!,
+          text:
+            entity.notation === ERMLParser.API.MIN_MAX
+              ? `(${structConstraints.partConstraint}, ${structConstraints.cardinalityRatio})`
+              : structConstraints.cardinalityRatio.toString(),
+          double: structConstraints.partConstraint === ERMLParser.API.TOTAL,
+        })
+      }
+
+      if (body.attributes) {
+        mapAttributes(body.attributes, id)
+      }
+    }
+  }
+
+  return { diagramNodes, diagramLinks }
+
+  function mapAttributes(attributes: ERMLParser.Attributes, root: string) {
+    for (const attribute of attributes) {
+      const id = generateId()
+
+      diagramNodes.push({
+        id,
+        type: nodeShapeMapper[attribute.type],
+        text: attribute.name,
+        textUnderlined: attribute.type === ERMLParser.API.PRIMARY,
+        textDotted: attribute.type === ERMLParser.API.PARTIAL,
+      })
+
+      diagramLinks.push({
+        src: root,
+        target: id,
+        text: "",
+      })
+
+      if (attribute.type === ERMLParser.API.COMPOSITE) {
+        mapAttributes(attribute.componentAttributes!, id)
+      }
+    }
   }
 }
