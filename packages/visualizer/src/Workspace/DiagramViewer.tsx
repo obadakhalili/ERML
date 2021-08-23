@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import * as d3 from "d3"
 import dagreD3 from "dagre-d3"
 
@@ -15,9 +15,23 @@ export default function Diagram({
   diagramSchema: ReturnType<typeof mapASTIntoDiagramSchema>
 }) {
   const dagreSchema = mapDiagramSchemaIntoDagreSchema(diagramSchema)
+  const diagramViewerRef = useRef<any>()
+  const groupRef = useRef<any>()
+
+  useEffect(() => {
+    diagramViewerRef.current = d3.select("#diagramViewer")
+    groupRef.current = d3.select("#diagramViewer g")
+
+    const zoom = d3
+      .zoom()
+      .on("zoom", (event: any) =>
+        groupRef.current.attr("transform", event.transform)
+      )
+    diagramViewerRef.current.call(zoom)
+  }, [])
 
   useEffect(
-    () => renderDagreSchema(d3.select("#diagramViewer g"), dagreSchema),
+    () => renderDagreSchema(groupRef.current, dagreSchema),
     [dagreSchema]
   )
 
