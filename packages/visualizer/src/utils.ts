@@ -1,4 +1,6 @@
 import ERMLParser from "erml-parser"
+import * as d3 from "d3"
+import dagreD3 from "dagre-d3"
 
 import { SnippetRules } from "./rules"
 
@@ -38,36 +40,36 @@ export function debounce(fn: Function, timeout = 500) {
 export function mapASTIntoDiagramSchema(AST: ERMLParser.AST) {
   const diagramNodes: Array<{
     id: string
-    type: string
+    type: typeof nodeShapeMapper[keyof typeof nodeShapeMapper]
     text: string
     textUnderlined?: boolean
     textDotted?: boolean
   }> = []
-  const diagramLinks: Array<{
+  const diagramEdges: Array<{
     src: string
     target: string
-    text: string
+    text?: string
     double?: boolean
   }> = []
 
   const nodeShapeMapper = {
     // Entity type into shape
     entity: "rect",
-    "weak entity": "rect",
+    "weak entity": "rect double",
 
     // Relationship type into shape
     rel: "diamond",
-    "iden rel": "double diamond",
+    "iden rel": "diamond double",
 
     // Attribute type into shape
-    simple: "oval",
-    atomic: "oval",
-    primary: "oval",
-    partial: "oval",
-    composite: "oval",
-    derived: "dotted oval",
-    multivalued: "double oval",
-  }
+    simple: "ellipse",
+    atomic: "ellipse",
+    primary: "ellipse",
+    partial: "ellipse",
+    composite: "ellipse",
+    derived: "ellipse dashed",
+    multivalued: "ellipse double",
+  } as const
   const entityIdMapper: Record<string, string> = {}
 
   const generateId = () => Math.random().toString(36).substr(2)
@@ -92,7 +94,7 @@ export function mapASTIntoDiagramSchema(AST: ERMLParser.AST) {
       for (const entity of body.partEntities) {
         const structConstraints = entity.structConstraints
 
-        diagramLinks.push({
+        diagramEdges.push({
           src: id,
           target: entityIdMapper[entity.name]!,
           text:
@@ -109,7 +111,7 @@ export function mapASTIntoDiagramSchema(AST: ERMLParser.AST) {
     }
   }
 
-  return { diagramNodes, diagramLinks }
+  return { diagramNodes, diagramEdges }
 
   function mapAttributes(attributes: ERMLParser.Attributes, root: string) {
     for (const attribute of attributes) {
@@ -123,10 +125,9 @@ export function mapASTIntoDiagramSchema(AST: ERMLParser.AST) {
         textDotted: attribute.type === ERMLParser.API.PARTIAL,
       })
 
-      diagramLinks.push({
+      diagramEdges.push({
         src: root,
         target: id,
-        text: "",
       })
 
       if (attribute.type === ERMLParser.API.COMPOSITE) {
@@ -134,4 +135,39 @@ export function mapASTIntoDiagramSchema(AST: ERMLParser.AST) {
       }
     }
   }
+}
+
+export function mapDiagramSchemaIntoDagreSchema(
+  diagramSchema: ReturnType<typeof mapASTIntoDiagramSchema>
+) {
+  const graphSchema = new dagreD3.graphlib.Graph().setGraph({})
+
+  diagramSchema.diagramNodes.forEach(
+    ({ id, text, type, textUnderlined, textDotted }) => {
+      const [shape, decoration] = type.split(" ")
+
+      graphSchema.setNode(id, {
+        shape,
+        label: text,
+        class: [
+          decoration && `${decoration}-node`,
+          textUnderlined && "text-underlined-node",
+          textDotted && "text-dotted-node",
+        ]
+          .filter(Boolean)
+          .join(" "),
+      })
+    }
+  )
+
+  diagramSchema.diagramEdges.forEach(({ src, target, text, double }) =>
+    graphSchema.setEdge(src, target, {
+      label: text,
+      class: double && "double-edge",
+      arrowhead: "undirected",
+      curve: d3.curveBasis,
+    })
+  )
+
+  return graphSchema
 }
