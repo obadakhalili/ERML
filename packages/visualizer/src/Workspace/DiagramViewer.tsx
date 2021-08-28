@@ -21,7 +21,7 @@ export default function Diagram({
   const diagramViewerRef = useRef<any>()
   const groupRef = useRef<any>()
 
-  const [workspaceOptions, setworkspaceOptions] = useRecoilState(
+  const [workspaceOptions, setWorkspaceOptions] = useRecoilState(
     workspaceOptionsState
   )
 
@@ -29,15 +29,27 @@ export default function Diagram({
     diagramViewerRef.current = d3.select("#diagramViewer")
     groupRef.current = d3.select("#diagramViewer g")
 
-    const zoom = d3.zoom().on("zoom", (event: any) => {
-      groupRef.current.attr("transform", event.transform)
-      setworkspaceOptions({
+    diagramViewerRef.current.call(
+      d3
+        .zoom()
+        .on("zoom", (event: any) =>
+          groupRef.current.attr("transform", event.transform)
+        )
+    )
+
+    window.addEventListener("beforeunload", () => {
+      const {
+        e: x,
+        f: y,
+        d: k,
+      } = groupRef.current.node().transform.baseVal.consolidate().matrix
+
+      setWorkspaceOptions({
         ...workspaceOptions,
-        diagramViewerTransform: event.transform,
+        diagramViewerTransform: { x, y, k },
       })
     })
-    diagramViewerRef.current.call(zoom)
-  }, [workspaceOptions, setworkspaceOptions])
+  }, [setWorkspaceOptions])
 
   useEffect(
     () => renderDagreSchema(groupRef.current, dagreSchema),
