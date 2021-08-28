@@ -21,6 +21,11 @@ export interface IWorkspaceOptions {
   minimapDisplayed: boolean
   splitPaneDefaultSize: number
   activeViewer: ActiveViewer
+  diagramViewerTransform?: {
+    x?: number
+    y?: number
+    k?: number
+  }
 }
 
 export enum Theme {
