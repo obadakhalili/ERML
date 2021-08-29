@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect } from "react"
 import { useRecoilState } from "recoil"
 import * as d3 from "d3"
 import dagreD3 from "dagre-d3"
@@ -18,23 +18,18 @@ export default function Diagram({
 }) {
   const dagreSchema = mapDiagramSchemaIntoDagreSchema(diagramSchema)
 
-  const diagramViewerRef = useRef<any>()
-  const groupRef = useRef<any>()
-
   const [workspaceOptions, setWorkspaceOptions] = useRecoilState(
     workspaceOptionsState
   )
 
   useEffect(() => {
-    diagramViewerRef.current = d3.select("#diagramViewer")
-    groupRef.current = d3.select("#diagramViewer g")
+    const diagramViewer = d3.select<SVGElement, unknown>("#diagramViewer")
+    const group = diagramViewer.select("g")
 
-    diagramViewerRef.current.call(
+    diagramViewer.call(
       d3
-        .zoom()
-        .on("zoom", (event: any) =>
-          groupRef.current.attr("transform", event.transform)
-        )
+        .zoom<SVGElement, unknown>()
+        .on("zoom", (event) => group.attr("transform", event.transform))
     )
 
     window.addEventListener("beforeunload", () => {
@@ -42,17 +37,17 @@ export default function Diagram({
         e: x,
         f: y,
         d: k,
-      } = groupRef.current.node().transform.baseVal.consolidate().matrix
+      } = (group.node() as SVGGElement).transform.baseVal.consolidate().matrix
 
       setWorkspaceOptions({
         ...workspaceOptions,
         diagramViewerTransform: { x, y, k },
       })
     })
-  }, [setWorkspaceOptions])
+  }, [workspaceOptions, setWorkspaceOptions])
 
   useEffect(
-    () => renderDagreSchema(groupRef.current, dagreSchema),
+    () => renderDagreSchema(d3.select("#diagramViewer g"), dagreSchema),
     [dagreSchema]
   )
 

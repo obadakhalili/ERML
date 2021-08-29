@@ -15,17 +15,19 @@ export enum ActiveViewer {
   AST = "AST",
 }
 
+export interface DiagramViewerTransform {
+  x?: number
+  y?: number
+  k?: number
+}
+
 export interface IWorkspaceOptions {
   vimEnabled: boolean
   wordWrapped: boolean
   minimapDisplayed: boolean
   splitPaneDefaultSize: number
   activeViewer: ActiveViewer
-  diagramViewerTransform?: {
-    x?: number
-    y?: number
-    k?: number
-  }
+  diagramViewerTransform?: DiagramViewerTransform
 }
 
 export enum Theme {
