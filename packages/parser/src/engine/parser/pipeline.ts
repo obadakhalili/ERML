@@ -3,8 +3,8 @@ import {
   isValidReference,
   isDuplicateIdentifier,
 } from "./identifiers"
-import { Delimiters } from "./"
 import { Token, Tokens, stringLiteralRegexp } from "../lexer"
+import { Delimiters } from "."
 
 export type PipelineFunction = (
   token: Token,

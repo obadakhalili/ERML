@@ -15,12 +15,19 @@ export enum ActiveViewer {
   AST = "AST",
 }
 
+export interface DiagramViewerTransform {
+  x?: number
+  y?: number
+  k?: number
+}
+
 export interface IWorkspaceOptions {
   vimEnabled: boolean
   wordWrapped: boolean
   minimapDisplayed: boolean
   splitPaneDefaultSize: number
   activeViewer: ActiveViewer
+  diagramViewerTransform: DiagramViewerTransform
 }
 
 export enum Theme {
@@ -108,6 +115,11 @@ export const workspaceOptionsState = atom<IWorkspaceOptions>({
         minimapDisplayed: true,
         splitPaneDefaultSize: 350,
         activeViewer: ActiveViewer.DIAGRAM,
+        diagramViewerTransform: {
+          x: 25,
+          y: 25,
+          k: 1,
+        },
       })
     ),
   ],

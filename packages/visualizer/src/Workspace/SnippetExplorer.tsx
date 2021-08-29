@@ -1,3 +1,5 @@
+// TODO: Implement edit snippet functionality
+
 import { SyntheticEvent } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
 import {
@@ -58,6 +60,8 @@ const snippetsEqual: ItemsEqualComparator<Snippet> = (
 const composeSnippetFromQuery = (query: string) => ({
   name: query,
   active: true,
+
+  // TODO: Use template literals
   value: "// " + getRandomJoke(),
 })
 

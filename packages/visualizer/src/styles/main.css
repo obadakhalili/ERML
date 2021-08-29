@@ -26,3 +26,45 @@ body,
 .bp3-dark {
   background-color: #394b59;
 }
+
+text {
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+}
+
+.node rect,
+.node ellipse,
+.node polygon {
+  stroke: #999;
+  fill: #fff;
+  stroke-width: 1.5px;
+}
+
+.double-node {
+  filter: drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white)
+    drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white)
+    drop-shadow(1px 0 0 #999) drop-shadow(-1px 0 0 #999)
+    drop-shadow(0 -1px 0 #999) drop-shadow(0 1px 0 #999);
+}
+
+.dashed-node {
+  stroke-dasharray: 5, 5;
+}
+
+.text-underlined-node {
+  text-decoration: underline;
+}
+
+.text-dotted-node {
+  text-decoration: dotted;
+}
+
+.edgePath {
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+
+.double-edge {
+  filter: drop-shadow(2px 0 0 white) drop-shadow(2px 0 0 #000);
+}

@@ -1,6 +1,6 @@
 {
   "name": "erml-parser",
-  "version": "1.2.3",
+  "version": "1.0.0",
   "author": "Obada Khalili",
   "license": "MIT",
   "description": "ERML Parser for representing conceptual data models using the Entity-Relationship (ER) modeling concepts",
@@ -15,10 +15,11 @@
   ],
   "homepage": "https://erml.netlify.app/",
   "files": [
-    "dist/engine/**/*"
+    "dist/engine/**/*",
+    "src"
   ],
   "main": "dist/engine/index.js",
-  "types": "dist/engine/index.d.ts",
+  "types": "src/engine/types.d.ts",
   "scripts": {
     "watch": "tsc --watch",
     "dev": "nodemon dist/playground.js",

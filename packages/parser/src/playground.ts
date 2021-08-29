@@ -1,5 +1,5 @@
 import tokenize from "./engine/lexer"
-import ERMLParser from "./engine/index"
+import ERMLParser from "./engine"
 
 const ERMLCode = `ENTITY Employee {
   PRIMARY "SSN",

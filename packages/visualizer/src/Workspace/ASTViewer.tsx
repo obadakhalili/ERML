@@ -4,11 +4,7 @@ import ERMLParser from "erml-parser"
 
 import { themeState, Theme } from "../state"
 
-export default function ASTViewer({
-  AST,
-}: {
-  AST: ReturnType<typeof ERMLParser>
-}) {
+export default function ASTViewer({ AST }: { AST: ERMLParser.AST }) {
   const theme = useRecoilValue(themeState)
 
   return (
