@@ -54,7 +54,10 @@ export default function Diagram({
   return (
     <svg id="diagramViewer" width="100%" height="100%">
       <g
-        transform={`translate(${workspaceOptions.diagramViewerTransform?.x}, ${workspaceOptions.diagramViewerTransform?.y}), scale(${workspaceOptions.diagramViewerTransform?.k})`}
+        transform={`translate(
+          ${workspaceOptions.diagramViewerTransform.x},
+          ${workspaceOptions.diagramViewerTransform.y}
+        ), scale(${workspaceOptions.diagramViewerTransform.k})`}
       />
     </svg>
   )

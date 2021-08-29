@@ -26,9 +26,9 @@ export const isNotValidWorkspaceOptions = (value: any) =>
   typeof value.minimapDisplayed !== "boolean" ||
   typeof value.splitPaneDefaultSize !== "number" ||
   typeof value.activeViewer !== "string" ||
-  !["number", "undefined"].includes(typeof value.diagramViewerTransform?.x) ||
-  !["number", "undefined"].includes(typeof value.diagramViewerTransform?.y) ||
-  !["number", "undefined"].includes(typeof value.diagramViewerTransform?.k)
+  typeof value.diagramViewerTransform?.x !== "number" ||
+  typeof value.diagramViewerTransform?.y !== "number" ||
+  typeof value.diagramViewerTransform?.k !== "number"
 
 export function debounce(fn: Function, timeout = 500) {
   let handle: NodeJS.Timeout
