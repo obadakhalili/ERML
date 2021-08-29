@@ -1,3 +1,5 @@
+// TODO: Allow moving nodes and edges
+
 import { useEffect } from "react"
 import { useRecoilState } from "recoil"
 import * as d3 from "d3"
@@ -26,6 +28,7 @@ export default function Diagram({
     const diagramViewer = d3.select<SVGElement, unknown>("#diagramViewer")
     const group = diagramViewer.select("g")
 
+    // FIXME: Prevent moving diagram when AST is empty
     diagramViewer.call(
       d3
         .zoom<SVGElement, unknown>()

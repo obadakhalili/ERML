@@ -64,6 +64,7 @@ export default function EditorPane() {
 
   return (
     <>
+      {/* TODO: Append the next two sections after `<Editor />`, and split them with a line */}
       {parsingError && <Callout>{parsingError}</Callout>}
       {vimEnabled && (
         <div ref={vimStatusBarRef} className={Classes.CALLOUT}></div>

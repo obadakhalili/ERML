@@ -155,6 +155,8 @@ export function mapDiagramSchemaIntoDagreSchema(
         class: [
           decoration && `${decoration}-node`,
           textUnderlined && "text-underlined-node",
+
+          // FIXME: Sould make text dotted
           textDotted && "text-dotted-node",
         ]
           .filter(Boolean)
