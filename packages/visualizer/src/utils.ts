@@ -30,7 +30,7 @@ export const isNotValidWorkspaceOptions = (value: any) =>
   typeof value.diagramViewerTransform?.y !== "number" ||
   typeof value.diagramViewerTransform?.k !== "number"
 
-export function debounce(fn: Function, timeout = 500) {
+export function debounce(fn: Function, timeout = 100) {
   let handle: NodeJS.Timeout
   return (...args: unknown[]) => {
     if (handle) {
