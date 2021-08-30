@@ -12,8 +12,6 @@ declare module "dagre-d3" {
     ): void
   }
 
-  dagre.graphlib.Graph
-
   export const render: { new (): Render }
   export const graphlib: typeof dagre.graphlib
 }

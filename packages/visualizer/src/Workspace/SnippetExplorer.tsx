@@ -1,6 +1,6 @@
 // TODO: Implement edit snippet functionality
 
-import { SyntheticEvent } from "react"
+import React, { SyntheticEvent } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
 import {
   Select,

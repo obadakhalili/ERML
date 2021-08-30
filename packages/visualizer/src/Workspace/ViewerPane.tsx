@@ -1,4 +1,4 @@
-import { lazy, useMemo } from "react"
+import React, { lazy, useMemo } from "react"
 import { useRecoilValue } from "recoil"
 
 import { workspaceOptionsState, ActiveViewer } from "../state"
