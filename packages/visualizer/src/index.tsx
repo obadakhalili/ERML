@@ -29,13 +29,15 @@ const Navbar = () => {
         </BPNavbar.Heading>
       </BPNavbar.Group>
       <BPNavbar.Group align={Alignment.RIGHT}>
-        <span
+
+        {/* TODO: Support dark mode for diagram viewer */}
+        {/* <span
           onClick={handleThemeIconClick}
           className="font-semibold cursor-pointer hover:opacity-80"
         >
           {theme === Theme.DARK ? Theme.LIGHT : Theme.DARK}
         </span>
-        <BPNavbar.Divider />
+        <BPNavbar.Divider /> */}
         <a href="https://erml.netlify.app/" target="_blank" rel="noreferrer">
           ERML
         </a>
@@ -51,6 +53,7 @@ const Navbar = () => {
     </BPNavbar>
   )
 
+  // eslint-disable-next-line
   function handleThemeIconClick() {
     toggleTheme(theme === Theme.DARK ? Theme.LIGHT : Theme.DARK)
   }
