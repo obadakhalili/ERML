@@ -1,6 +1,6 @@
 // TODO: Allow moving nodes and edges
 
-import { useEffect } from "react"
+import React, { useEffect } from "react"
 import { useRecoilState } from "recoil"
 import * as d3 from "d3"
 import dagreD3 from "dagre-d3"
@@ -28,11 +28,21 @@ export default function Diagram({
     const diagramViewer = d3.select<SVGElement, unknown>("#diagramViewer")
     const group = diagramViewer.select("g")
 
+    const zoom = d3
+      .zoom<SVGElement, unknown>()
+      .on("zoom", (event) => group.attr("transform", event.transform))
+
     // FIXME: Prevent moving diagram when AST is empty
+    diagramViewer.call(zoom)
+
     diagramViewer.call(
-      d3
-        .zoom<SVGElement, unknown>()
-        .on("zoom", (event) => group.attr("transform", event.transform))
+      zoom.transform,
+      d3.zoomIdentity
+        .translate(
+          workspaceOptions.diagramViewerTransform.x!,
+          workspaceOptions.diagramViewerTransform.y!
+        )
+        .scale(workspaceOptions.diagramViewerTransform.k!)
     )
 
     // FIXME: Should save transform values before leaving to AST Viewer as well
@@ -57,12 +67,7 @@ export default function Diagram({
 
   return (
     <svg id="diagramViewer" width="100%" height="100%">
-      <g
-        transform={`translate(
-          ${workspaceOptions.diagramViewerTransform.x},
-          ${workspaceOptions.diagramViewerTransform.y}
-        ), scale(${workspaceOptions.diagramViewerTransform.k})`}
-      />
+      <g />
     </svg>
   )
 }
