@@ -41,6 +41,8 @@ export function debounce(fn: Function, timeout = 100) {
 }
 
 export function mapASTIntoDiagramSchema(AST: ERMLParser.AST) {
+  // TODO: Define return types as TS types
+
   const diagramNodes: Array<{
     id: string
     type: typeof nodeShapeMapper[keyof typeof nodeShapeMapper]

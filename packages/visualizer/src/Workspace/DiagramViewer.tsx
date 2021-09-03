@@ -35,12 +35,13 @@ export default function Diagram({
         .on("zoom", (event) => group.attr("transform", event.transform))
     )
 
+    // FIXME: Should save transform values before leaving to AST Viewer as well
     window.addEventListener("beforeunload", () => {
       const {
         e: x,
         f: y,
         d: k,
-      } = (group.node() as SVGGElement).transform.baseVal.consolidate().matrix
+      } = (group.node() as SVGGElement).transform.baseVal.consolidate()!.matrix
 
       setWorkspaceOptions({
         ...workspaceOptions,
