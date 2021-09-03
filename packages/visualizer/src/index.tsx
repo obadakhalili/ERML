@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from "react"
+import React, { Suspense, useEffect } from "react"
 import ReactDOM from "react-dom"
 import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil"
 import {
@@ -29,7 +29,6 @@ const Navbar = () => {
         </BPNavbar.Heading>
       </BPNavbar.Group>
       <BPNavbar.Group align={Alignment.RIGHT}>
-
         {/* TODO: Support dark mode for diagram viewer */}
         {/* <span
           onClick={handleThemeIconClick}

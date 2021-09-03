@@ -1,12 +1,12 @@
-import { useRef, useEffect } from "react"
+import React, { useRef, useEffect } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
 import { editor } from "monaco-editor"
 import Editor, { Monaco } from "@monaco-editor/react"
 import { initVimMode } from "monaco-vim"
-import nightOwlTheme from "monaco-themes/themes/Night Owl.json"
 import { Callout, Classes, Spinner } from "@blueprintjs/core"
 
 import * as ERML from "../ERML"
+import nightOwlTheme from "../NightOwlTheme"
 import {
   activeSnippetState,
   parsingErrorState,

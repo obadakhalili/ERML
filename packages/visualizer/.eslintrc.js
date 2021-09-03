@@ -1,1 +1,6 @@
-module.exports = { extends: ["react-app"] }
+module.exports = {
+  extends: ["react-app"],
+  rules: {
+    "import/no-anonymous-default-export": "off",
+  },
+}

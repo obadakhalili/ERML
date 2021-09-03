@@ -31,8 +31,10 @@ export function useMemoizedAST() {
       setParsingError(null)
       return lastValidASTRef.current
     } catch (e) {
-      setParsingError(e.message)
+      setParsingError((e as { message: string }).message)
       return lastValidASTRef.current || []
     }
+
+    // eslint-disable-next-line
   }, [activeSnippet?.value, setParsingError])
 }
