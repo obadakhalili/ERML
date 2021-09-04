@@ -6,10 +6,11 @@ import * as d3 from "d3"
 import dagreD3 from "dagre-d3"
 
 import {
+  debounce,
   mapASTIntoDiagramSchema,
   mapDiagramSchemaIntoDagreSchema,
 } from "../utils"
-import { workspaceOptionsState } from "../state"
+import { workspaceOptionsState, DiagramViewerTransform } from "../state"
 
 const renderDagreSchema = new dagreD3.render()
 
@@ -20,17 +21,28 @@ export default function Diagram({
 }) {
   const dagreSchema = mapDiagramSchemaIntoDagreSchema(diagramSchema)
 
-  const [workspaceOptions, setWorkspaceOptions] = useRecoilState(
-    workspaceOptionsState
-  )
+  const [
+    { diagramViewerTransform: diagramViewerInitialTransform },
+    setWorkspaceOptions,
+  ] = useRecoilState(workspaceOptionsState)
 
   useEffect(() => {
     const diagramViewer = d3.select<SVGElement, unknown>("#diagramViewer")
     const group = diagramViewer.select("g")
 
-    const zoom = d3
-      .zoom<SVGElement, unknown>()
-      .on("zoom", (event) => group.attr("transform", event.transform))
+    const setNewDiagramTransform = debounce(
+      (diagramViewerTransform: DiagramViewerTransform) =>
+        setWorkspaceOptions((options) => ({
+          ...options,
+          diagramViewerTransform,
+        })),
+      250
+    )
+
+    const zoom = d3.zoom<SVGElement, unknown>().on("zoom", (event) => {
+      setNewDiagramTransform(event.transform)
+      group.attr("transform", event.transform)
+    })
 
     // FIXME: Prevent moving diagram when AST is empty
     diagramViewer.call(zoom)
@@ -39,26 +51,14 @@ export default function Diagram({
       zoom.transform,
       d3.zoomIdentity
         .translate(
-          workspaceOptions.diagramViewerTransform.x!,
-          workspaceOptions.diagramViewerTransform.y!
+          diagramViewerInitialTransform.x,
+          diagramViewerInitialTransform.y
         )
-        .scale(workspaceOptions.diagramViewerTransform.k!)
+        .scale(diagramViewerInitialTransform.k)
     )
 
-    // FIXME: Should save transform values before leaving to AST Viewer as well
-    window.addEventListener("beforeunload", () => {
-      const {
-        e: x,
-        f: y,
-        d: k,
-      } = (group.node() as SVGGElement).transform.baseVal.consolidate()!.matrix
-
-      setWorkspaceOptions({
-        ...workspaceOptions,
-        diagramViewerTransform: { x, y, k },
-      })
-    })
-  }, [workspaceOptions, setWorkspaceOptions])
+    // eslint-disable-next-line
+  }, [])
 
   useEffect(
     () => renderDagreSchema(d3.select("#diagramViewer g"), dagreSchema),
