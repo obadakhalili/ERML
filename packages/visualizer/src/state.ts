@@ -21,21 +21,20 @@ export interface DiagramViewerTransform {
   k: number
 }
 
+export enum Theme {
+  LIGHT = "Light",
+  DARK = "Dark",
+}
+
 export interface IWorkspaceOptions {
   vimEnabled: boolean
   wordWrapped: boolean
   minimapDisplayed: boolean
   splitPaneDefaultSize: number
+  theme: Theme
   activeViewer: ActiveViewer
   diagramViewerTransform: DiagramViewerTransform
 }
-
-export enum Theme {
-  DARK = "Dark",
-  LIGHT = "Light",
-}
-
-type ITheme = `${Theme}`
 
 function localStorageSideEffect<T>(
   key: string,
@@ -114,6 +113,7 @@ export const workspaceOptionsState = atom<IWorkspaceOptions>({
         wordWrapped: false,
         minimapDisplayed: true,
         splitPaneDefaultSize: 350,
+        theme: Theme.LIGHT,
         activeViewer: ActiveViewer.DIAGRAM,
         diagramViewerTransform: {
           x: 25,
@@ -128,18 +128,4 @@ export const workspaceOptionsState = atom<IWorkspaceOptions>({
 export const parsingErrorState = atom<string | null>({
   key: "parsingErrorState",
   default: null,
-})
-
-// TODO: Include theme to workspace options
-export const themeState = atom<ITheme>({
-  key: "themeState",
-  default: Theme.DARK,
-  effects_UNSTABLE: [
-    ({ setSelf, onSet }) => {
-      const theme = localStorage.getItem("theme") as Theme
-
-      setSelf([Theme.DARK, Theme.LIGHT].includes(theme) ? theme : Theme.LIGHT)
-      onSet((theme) => localStorage.setItem("theme", theme as Theme))
-    },
-  ],
 })

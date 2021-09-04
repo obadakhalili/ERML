@@ -3,6 +3,7 @@ import * as d3 from "d3"
 import dagreD3 from "dagre-d3"
 
 import { SnippetRules } from "./Workspace/SnippetExplorer"
+import { Theme } from "./state"
 
 export const isNotValidSnippets = (value: any) =>
   value?.constructor !== Array ||
@@ -25,6 +26,7 @@ export const isNotValidWorkspaceOptions = (value: any) =>
   typeof value.wordWrapped !== "boolean" ||
   typeof value.minimapDisplayed !== "boolean" ||
   typeof value.splitPaneDefaultSize !== "number" ||
+  ![Theme.LIGHT, Theme.DARK].includes(value.theme) ||
   typeof value.activeViewer !== "string" ||
   typeof value.diagramViewerTransform?.x !== "number" ||
   typeof value.diagramViewerTransform?.y !== "number" ||
@@ -41,8 +43,6 @@ export function debounce(fn: Function, timeout = 100) {
 }
 
 export function mapASTIntoDiagramSchema(AST: ERMLParser.AST) {
-  // TODO: Define return types as TS types
-
   const diagramNodes: Array<{
     id: string
     type: typeof nodeShapeMapper[keyof typeof nodeShapeMapper]

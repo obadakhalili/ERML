@@ -3,10 +3,10 @@ import { useRecoilValue } from "recoil"
 import ReactJson from "react-json-view"
 import ERMLParser from "erml-parser"
 
-import { themeState, Theme } from "../state"
+import { workspaceOptionsState, Theme } from "../state"
 
 export default function ASTViewer({ AST }: { AST: ERMLParser.AST }) {
-  const theme = useRecoilValue(themeState)
+  const { theme } = useRecoilValue(workspaceOptionsState)
 
   return (
     <ReactJson

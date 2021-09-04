@@ -9,7 +9,7 @@ import {
 } from "@blueprintjs/core"
 
 import Workspace from "./Workspace"
-import { themeState, Theme } from "./state"
+import { workspaceOptionsState, Theme } from "./state"
 import "./styles/main.css"
 
 const SuspenseFallback = (
@@ -19,7 +19,9 @@ const SuspenseFallback = (
 )
 
 const Navbar = () => {
-  const [theme, toggleTheme] = useRecoilState(themeState)
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+
+  const [{ theme }, setWorkspaceOptions] = useRecoilState(workspaceOptionsState)
 
   return (
     <BPNavbar>
@@ -52,14 +54,16 @@ const Navbar = () => {
     </BPNavbar>
   )
 
-  // eslint-disable-next-line
   function handleThemeIconClick() {
-    toggleTheme(theme === Theme.DARK ? Theme.LIGHT : Theme.DARK)
+    setWorkspaceOptions((options) => ({
+      ...options,
+      theme: options.theme === Theme.DARK ? Theme.LIGHT : Theme.DARK,
+    }))
   }
 }
 
 const App = () => {
-  const theme = useRecoilValue(themeState)
+  const { theme } = useRecoilValue(workspaceOptionsState)
 
   useEffect(
     () =>

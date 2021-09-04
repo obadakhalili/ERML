@@ -11,7 +11,6 @@ import {
   activeSnippetState,
   parsingErrorState,
   workspaceOptionsState,
-  themeState,
   Theme,
 } from "../state"
 import { debounce } from "../utils"
@@ -32,7 +31,7 @@ export default function EditorPane() {
   const editorValue =
     activeSnippet?.value ?? "// Create a new snippet, and start coding .."
 
-  const { wordWrapped, minimapDisplayed, vimEnabled } = useRecoilValue(
+  const { wordWrapped, minimapDisplayed, vimEnabled, theme } = useRecoilValue(
     workspaceOptionsState
   )
 
@@ -59,8 +58,6 @@ export default function EditorPane() {
   }, [vimEnabled])
 
   const parsingError = useRecoilValue(parsingErrorState)
-
-  const theme = useRecoilValue(themeState)
 
   return (
     <>
