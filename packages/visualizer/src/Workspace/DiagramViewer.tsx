@@ -40,25 +40,26 @@ export default function Diagram({
     )
 
     const zoom = d3.zoom<SVGElement, unknown>().on("zoom", (event) => {
-      setNewDiagramTransform(event.transform)
-      group.attr("transform", event.transform)
+      if (diagramSchema.diagramNodes.length) {
+        setNewDiagramTransform(event.transform)
+        group.attr("transform", event.transform)
+      }
     })
 
-    // FIXME: Prevent moving diagram when AST is empty
-    diagramViewer.call(zoom)
-
-    diagramViewer.call(
-      zoom.transform,
-      d3.zoomIdentity
-        .translate(
-          diagramViewerInitialTransform.x,
-          diagramViewerInitialTransform.y
-        )
-        .scale(diagramViewerInitialTransform.k)
-    )
+    diagramViewer
+      .call(zoom)
+      .call(
+        zoom.transform,
+        d3.zoomIdentity
+          .translate(
+            diagramViewerInitialTransform.x,
+            diagramViewerInitialTransform.y
+          )
+          .scale(diagramViewerInitialTransform.k)
+      )
 
     // eslint-disable-next-line
-  }, [])
+  }, [diagramSchema])
 
   useEffect(
     () => renderDagreSchema(d3.select("#diagramViewer g"), dagreSchema),
