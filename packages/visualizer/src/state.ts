@@ -130,6 +130,7 @@ export const parsingErrorState = atom<string | null>({
   default: null,
 })
 
+// TODO: Include theme to workspace options
 export const themeState = atom<ITheme>({
   key: "themeState",
   default: Theme.DARK,

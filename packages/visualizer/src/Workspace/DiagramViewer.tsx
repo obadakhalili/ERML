@@ -1,4 +1,7 @@
 // TODO: Allow moving nodes and edges
+// TODO: Add "lock diagram" to workspace options
+// TODO: Set diagram cursor to "grab" only when diagram is unlocked
+// TODO: Add "reset diagram transform" button
 
 import React, { useEffect } from "react"
 import { useRecoilState } from "recoil"
@@ -68,7 +71,7 @@ export default function Diagram({
 
   return (
     <svg id="diagramViewer" width="100%" height="100%">
-      <g />
+      <g cursor="grab" />
     </svg>
   )
 }
