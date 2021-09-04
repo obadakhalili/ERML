@@ -9,6 +9,8 @@ import {
   ItemsEqualComparator,
 } from "@blueprintjs/select"
 import { Button, MenuItem, Icon, Toaster, Intent } from "@blueprintjs/core"
+
+// TODO: Find better jokes library
 import { getRandomJoke } from "awesome-dev-jokes"
 
 import { snippetsState, activeSnippetState, Snippet } from "../state"
@@ -60,9 +62,7 @@ const snippetsEqual: ItemsEqualComparator<Snippet> = (
 const composeSnippetFromQuery = (query: string) => ({
   name: query,
   active: true,
-
-  // TODO: Use template literals
-  value: "// " + getRandomJoke(),
+  value: `// ${getRandomJoke()}`,
 })
 
 const toast = Toaster.create()
