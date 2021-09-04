@@ -16,9 +16,9 @@ export enum ActiveViewer {
 }
 
 export interface DiagramViewerTransform {
-  x?: number
-  y?: number
-  k?: number
+  x: number
+  y: number
+  k: number
 }
 
 export interface IWorkspaceOptions {
