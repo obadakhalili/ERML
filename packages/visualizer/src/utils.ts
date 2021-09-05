@@ -48,7 +48,7 @@ export function mapASTIntoDiagramSchema(AST: ERMLParser.AST) {
     type: typeof nodeShapeMapper[keyof typeof nodeShapeMapper]
     text: string
     textUnderlined?: boolean
-    textDotted?: boolean
+    textDashed?: boolean
   }> = []
   const diagramEdges: Array<{
     src: string
@@ -127,7 +127,7 @@ export function mapASTIntoDiagramSchema(AST: ERMLParser.AST) {
         type: nodeShapeMapper[attribute.type],
         text: attribute.name,
         textUnderlined: attribute.type === ERMLParser.API.PRIMARY,
-        textDotted: attribute.type === ERMLParser.API.PARTIAL,
+        textDashed: attribute.type === ERMLParser.API.PARTIAL,
       })
 
       diagramEdges.push({
@@ -148,7 +148,7 @@ export function mapDiagramSchemaIntoDagreSchema(
   const graphSchema = new dagreD3.graphlib.Graph().setGraph({})
 
   diagramSchema.diagramNodes.forEach(
-    ({ id, text, type, textUnderlined, textDotted }) => {
+    ({ id, text, type, textUnderlined, textDashed }) => {
       const [shape, decoration] = type.split(" ")
 
       graphSchema.setNode(id, {
@@ -157,9 +157,7 @@ export function mapDiagramSchemaIntoDagreSchema(
         class: [
           decoration && `${decoration}-node`,
           textUnderlined && "text-underlined-node",
-
-          // FIXME: Sould make text dotted
-          textDotted && "text-dotted-node",
+          textDashed && "text-dashed-node",
         ]
           .filter(Boolean)
           .join(" "),

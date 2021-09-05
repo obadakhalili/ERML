@@ -52,12 +52,17 @@ text {
   stroke-dasharray: 5, 5;
 }
 
+.text-underlined-node,
+.text-dashed-node {
+  text-underline-offset: 4px;
+}
+
 .text-underlined-node {
   text-decoration: underline;
 }
 
-.text-dotted-node {
-  text-decoration: dotted;
+.text-dashed-node {
+  text-decoration: underline dashed;
 }
 
 .edgePath {
