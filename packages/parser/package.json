@@ -1,12 +1,12 @@
 {
-  "name": "erml-parser",
+  "name": "@erml/parser",
   "version": "1.0.0",
   "author": "Obada Khalili",
   "license": "MIT",
-  "description": "ERML Parser for representing conceptual data models using the Entity-Relationship (ER) modeling concepts",
+  "description": "Parser implementation of ERML",
   "repository": {
     "type": "git",
-    "url": "https://github.com/obadakhalili/ERML.git"
+    "url": "https://github.com/obadakhalili/ERML/tree/main/packages/parser"
   },
   "keywords": [
     "entity-relationship-diagram",
