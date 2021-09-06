@@ -1,4 +1,4 @@
-import ERMLParser from "erml-parser"
+import ERMLParser from "@erml/parser"
 import * as d3 from "d3"
 import dagreD3 from "dagre-d3"
 

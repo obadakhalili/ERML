@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useRecoilValue, useSetRecoilState } from "recoil"
-import ERMLParser from "erml-parser"
+import ERMLParser from "@erml/parser"
 
 import { activeSnippetState, parsingErrorState } from "./state"
 
