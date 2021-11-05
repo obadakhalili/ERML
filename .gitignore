@@ -6,3 +6,4 @@ packages/**/dist
 packages/visualizer/src/styles/tailwind-output.css
 
 *.log
+.env.local

@@ -20,11 +20,12 @@
   "dependencies": {
     "@blueprintjs/core": "^3.45.0",
     "@blueprintjs/select": "^3.16.4",
+    "@erml/parser": "^1.0.0",
     "@monaco-editor/react": "^4.2.1",
     "awesome-dev-jokes": "^1.0.3",
     "d3": "^7.0.1",
     "dagre-d3": "^0.6.4",
-    "@erml/parser": "^1.0.0",
+    "emailjs-com": "^3.2.0",
     "monaco-editor": "^0.25.2",
     "monaco-vim": "^0.1.15",
     "react": "^17.0.2",
