@@ -1,6 +1,6 @@
 // TODO: Implement edit snippet functionality
 
-import React, { SyntheticEvent } from "react"
+import React, { SyntheticEvent, useContext } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
 import {
   Select,
@@ -8,12 +8,13 @@ import {
   ItemRenderer,
   ItemsEqualComparator,
 } from "@blueprintjs/select"
-import { Button, MenuItem, Icon, Toaster, Intent } from "@blueprintjs/core"
+import { Button, MenuItem, Icon, Intent } from "@blueprintjs/core"
 
 // TODO: Find better jokes library
 import { getRandomJoke } from "awesome-dev-jokes"
 
 import { snippetsState, activeSnippetState, Snippet } from "../state"
+import { AppContext } from ".."
 
 export enum SnippetRules {
   SNIPPETS_MAX_LENGTH = 20,
@@ -65,11 +66,10 @@ const composeSnippetFromQuery = (query: string) => ({
   value: `// ${getRandomJoke()}`,
 })
 
-const toast = Toaster.create()
-
 export default function SnippetExplorer() {
   const [snippets, setSnippets] = useRecoilState(snippetsState)
   const activeSnippet = useRecoilValue(activeSnippetState)
+  const { toast } = useContext(AppContext)
 
   return (
     <SnippetSelect
