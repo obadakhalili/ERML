@@ -45,6 +45,7 @@ export enum API {
   SIMPLE = "simple",
   ATOMIC = "atomic",
   PRIMARY = "primary",
+  UNIQUE = "unique",
   DERIVED = "derived",
   MULTIVALUED = "multivalued",
   COMPOSITE = "composite",
@@ -62,6 +63,7 @@ enum Keywords {
   SIMPLE = "SIMPLE",
   ATOMIC = "ATOMIC",
   PRIMARY = "PRIMARY",
+  UNIQUE = "UNIQUE",
   DERIVED = "DERIVED",
   MULTIVALUED = "MULTIVALUED",
   COMPOSITE = "COMPOSITE",
@@ -81,6 +83,7 @@ function parseAttributes(
     Keywords.SIMPLE,
     Keywords.ATOMIC,
     Keywords.PRIMARY,
+    Keywords.UNIQUE,
     Keywords.PARTIAL,
     Keywords.DERIVED,
   ]
@@ -94,12 +97,12 @@ function parseAttributes(
         tokens,
         tokenIndex,
         (bodyStart, bodyEnd) =>
-        (currentAttribute.componentAttributes = parseAttributes(
-          tokens,
-          bodyStart,
-          bodyEnd,
-          false
-        ))
+          (currentAttribute.componentAttributes = parseAttributes(
+            tokens,
+            bodyStart,
+            bodyEnd,
+            false
+          ))
       ),
     (token, tokenIndex) =>
       tokenIndex > bodyEnd ? undefined : assertToken(token, [Delimiters.COMMA]),
@@ -110,17 +113,18 @@ function parseAttributes(
         token,
         allowedTypes,
         (matchedIndex) =>
-        (currentAttribute.type = (
-          [
-            API.COMPOSITE,
-            API.SIMPLE,
-            API.ATOMIC,
-            API.PRIMARY,
-            API.PARTIAL,
-            API.DERIVED,
-            API.MULTIVALUED,
-          ] as const
-        )[matchedIndex])
+          (currentAttribute.type = (
+            [
+              API.COMPOSITE,
+              API.SIMPLE,
+              API.ATOMIC,
+              API.PRIMARY,
+              API.UNIQUE,
+              API.PARTIAL,
+              API.DERIVED,
+              API.MULTIVALUED,
+            ] as const
+          )[matchedIndex])
       ),
     (token) =>
       processStringLiteral(
@@ -135,7 +139,7 @@ function parseAttributes(
     },
   ]
 
-  for (let currentTokenIndex = bodyStart; currentTokenIndex <= bodyEnd;) {
+  for (let currentTokenIndex = bodyStart; currentTokenIndex <= bodyEnd; ) {
     attributes.push((currentAttribute = {} as Attribute))
     currentTokenIndex = walkPipeline(commonPipeline, tokens, currentTokenIndex)
 
@@ -171,11 +175,11 @@ function parseRelBody(
         tokens,
         tokenIndex,
         (attributesBodyStart, attributesBodyEnd) =>
-        (attributes = parseAttributes(
-          tokens,
-          attributesBodyStart,
-          attributesBodyEnd
-        ))
+          (attributes = parseAttributes(
+            tokens,
+            attributesBodyStart,
+            attributesBodyEnd
+          ))
       ),
     common.possibleComma,
   ]
@@ -185,9 +189,9 @@ function parseRelBody(
         token,
         [Keywords.PARTIAL, Keywords.TOTAL],
         (matchedIndex) =>
-        (currentPartEntity.structConstraints.partConstraint = (
-          [API.PARTIAL, API.TOTAL] as const
-        )[matchedIndex])
+          (currentPartEntity.structConstraints.partConstraint = (
+            [API.PARTIAL, API.TOTAL] as const
+          )[matchedIndex])
       ),
     common.comma,
     (token) => {
@@ -196,8 +200,8 @@ function parseRelBody(
         token,
         allowedTokens,
         (matchedIndex) =>
-        (currentPartEntity.structConstraints.cardinalityRatio =
-          allowedTokens[matchedIndex])
+          (currentPartEntity.structConstraints.cardinalityRatio =
+            allowedTokens[matchedIndex])
       )
     },
     (token) => assertToken(token, [Delimiters.CLOSING_ANGLE]),
@@ -258,7 +262,7 @@ function parseRelBody(
       ),
   ]
 
-  for (let currentTokenIndex = bodyStart; currentTokenIndex <= bodyEnd;) {
+  for (let currentTokenIndex = bodyStart; currentTokenIndex <= bodyEnd; ) {
     if (tokens[currentTokenIndex].value === Keywords.ATTRIBUTES) {
       if (attributes.length) {
         throw new SyntaxError(
@@ -418,7 +422,7 @@ export default function (tokens: Tokens) {
     [Keywords.IDEN]: parseIdenRel,
   }
 
-  for (let i = 0, l = tokens.length, currentParser: ParseFunction; i < l;) {
+  for (let i = 0, l = tokens.length, currentParser: ParseFunction; i < l; ) {
     currentParser = parsers[tokens[i].value as InitializerKeyword]
 
     if (currentParser === undefined) {

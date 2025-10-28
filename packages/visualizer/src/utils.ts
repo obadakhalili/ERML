@@ -70,6 +70,7 @@ export function mapASTIntoDiagramSchema(AST: ERMLParser.AST) {
     simple: "ellipse",
     atomic: "ellipse",
     primary: "ellipse",
+    unique: "ellipse",
     partial: "ellipse",
     composite: "ellipse",
     derived: "ellipse dashed",
