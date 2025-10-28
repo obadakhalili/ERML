@@ -48,28 +48,6 @@ describe("tests for parseAttributes", () => {
   })
 })
 
-it("should parse UNIQUE attributes", () => {
-  const tokens = tokenize(`ENTITY User {
-    PRIMARY "user_id",
-    UNIQUE "email",
-    SIMPLE "full_name"
-  }`)
-  const result = parseAttributes(tokens, 3, tokens.length - 3)
-  expect(result).toHaveLength(3)
-  expect(result[0]).toEqual({
-    type: "primary",
-    name: "user_id"
-  })
-  expect(result[1]).toEqual({
-    type: "unique",
-    name: "email"
-  })
-  expect(result[2]).toEqual({
-    type: "simple",
-    name: "full_name"
-  })
-})
-
 describe("tests for parseRelBody", () => {
   it("should throw a syntax error", () => {
     isDuplicateIdentifier("Part_entity_1")

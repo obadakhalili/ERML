@@ -13,7 +13,6 @@ declare namespace ERMLParser {
     SIMPLE = "simple",
     ATOMIC = "atomic",
     PRIMARY = "primary",
-    UNIQUE = "unique",
     DERIVED = "derived",
     MULTIVALUED = "multivalued",
     COMPOSITE = "composite",
@@ -31,7 +30,6 @@ declare namespace ERMLParser {
       | API.SIMPLE
       | API.ATOMIC
       | API.PRIMARY
-      | API.UNIQUE
       | API.PARTIAL
       | API.DERIVED
       | API.MULTIVALUED
